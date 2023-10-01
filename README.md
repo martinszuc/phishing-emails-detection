@@ -1,6 +1,7 @@
 # Phishing Emails Detection
 
 This project aims to detect phishing emails using federated learning for OS Android.
+![fl](https://github.com/martinszuc/phishing-emails-detection/assets/100486753/7965ae5e-9ff2-4d95-a1f4-9390d5733c72)
 
 ## Table of Contents
 
