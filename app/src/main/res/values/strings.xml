@@ -2,7 +2,7 @@
     <string name="app_name">phising-emails-detection</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
+    <string name="login_fragment_label">Login fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
@@ -43,4 +43,7 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="sign_in_to_your_email_account">Sign in to your email account:</string>
+    <string name="sender">Sender</string>
+    <string name="subject">Subject</string>
 </resources>
