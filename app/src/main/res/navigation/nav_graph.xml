@@ -1,28 +1,56 @@
-<?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/LoginFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.martinszuc.phising_emails_detection.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:id="@+id/LoginFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.view.LoginFragment"
+        android:label="@string/login_fragment_label"
+        tools:layout="@layout/fragment_login">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_LoginFragment_to_DashboardFragment"
+            app:destination="@id/DashboardFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/DashboardFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.view.DashboardFragment"
+        android:label="dashboard_fragment_label"
+        tools:layout="@layout/fragment_dashboard">
+
+        <action
+            android:id="@+id/action_DashboardFragment_to_EmailImportFragment"
+            app:destination="@id/EmailImportFragment" />
+
+<!--        &lt;!&ndash; Optional: In case you want to allow navigation back to LoginFragment &ndash;&gt;-->
+<!--        <action-->
+<!--            android:id="@+id/action_DashboardFragment_to_LoginFragment"-->
+<!--            app:destination="@id/LoginFragment" />-->
+    </fragment>
+
+    <fragment
+        android:id="@+id/EmailImportFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.view.EmailImportFragment"
+        android:label="email_import_fragment_label"
+        tools:layout="@layout/fragment_email_import">
+
+        <action
+            android:id="@+id/action_EmailImportFragment_to_DashboardFragment"
+            app:destination="@id/DashboardFragment" />
+    </fragment>
+
+    <!-- SecondFragment remains unchanged, but I suggest renaming it to better describe its purpose -->
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.martinszuc.phising_emails_detection.SecondFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.view.SecondFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_SecondFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
     </fragment>
 </navigation>

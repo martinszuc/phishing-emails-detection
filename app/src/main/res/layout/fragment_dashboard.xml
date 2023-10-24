@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="2"
+    android:rowCount="4"
+    android:padding="16dp">
+
+    <Button
+        android:id="@+id/importEmailButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_columnWeight="0.8"
+        android:layout_rowWeight="0.8"
+        android:layout_margin="10dp"
+        android:text="Import Email"
+        android:background="@drawable/button_dashboard"/>
+
+    <Button
+        android:background="@drawable/button_dashboard"
+        android:id="@+id/button2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_columnWeight="0.8"
+        android:layout_rowWeight="0.8"
+        android:layout_margin="10dp"
+        android:text="Button 2" />
+
+    <Button
+        android:background="@drawable/button_dashboard"
+        android:id="@+id/button3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_columnWeight="0.8"
+        android:layout_rowWeight="0.8"
+        android:layout_margin="10dp"
+        android:text="Button 3" />
+
+    <Button
+        android:background="@drawable/button_dashboard"
+        android:id="@+id/button4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_columnWeight="0.8"
+        android:layout_rowWeight="0.8"
+        android:layout_margin="10dp"
+        android:text="Button 4" />
+
+    <Button
+        android:background="@drawable/button_dashboard"
+        android:id="@+id/button5"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_columnWeight="0.8"
+        android:layout_rowWeight="0.8"
+        android:layout_margin="10dp"
+        android:text="Button 5" />
+
+    <Button
+        android:background="@drawable/button_dashboard"
+        android:id="@+id/button1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_columnWeight="0.8"
+        android:layout_rowWeight="0.8"
+        android:layout_margin="10dp"
+        android:text="Button 6" />
+
+
+
+</GridLayout>
+
