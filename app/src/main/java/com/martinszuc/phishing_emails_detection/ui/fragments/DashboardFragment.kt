@@ -1,4 +1,4 @@
-package com.martinszuc.phising_emails_detection.ui.fragments
+package com.martinszuc.phishing_emails_detection.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.martinszuc.phising_emails_detection.R
-import com.martinszuc.phising_emails_detection.databinding.FragmentDashboardBinding
+import com.martinszuc.phishing_emails_detection.R
+import com.martinszuc.phishing_emails_detection.databinding.FragmentDashboardBinding
 
 // TODO there is a back button from this to the login screen
 // TODO change labels everywhere
@@ -20,7 +20,7 @@ class DashboardFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         return binding.root
     }

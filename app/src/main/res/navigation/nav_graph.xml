@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/LoginFragment"
-        android:name="com.martinszuc.phising_emails_detection.ui.fragments.LoginFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.fragments.LoginFragment"
         android:label="@string/login_fragment_label"
         tools:layout="@layout/fragment_login">
 
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/DashboardFragment"
-        android:name="com.martinszuc.phising_emails_detection.ui.fragments.DashboardFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.fragments.DashboardFragment"
         android:label="dashboard_fragment_label"
         tools:layout="@layout/fragment_dashboard">
 
@@ -33,7 +33,7 @@
 
     <fragment
         android:id="@+id/EmailImportFragment"
-        android:name="com.martinszuc.phising_emails_detection.ui.fragments.EmailImportFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.fragments.EmailImportFragment"
         android:label="email_import_fragment_label"
         tools:layout="@layout/fragment_email_import">
 
@@ -45,7 +45,7 @@
     <!-- SecondFragment remains unchanged, but I suggest renaming it to better describe its purpose -->
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.martinszuc.phising_emails_detection.ui.fragments.SecondFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.fragments.SecondFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
 

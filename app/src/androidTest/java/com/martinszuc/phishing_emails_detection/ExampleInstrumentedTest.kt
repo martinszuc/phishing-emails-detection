@@ -1,4 +1,4 @@
-package com.martinszuc.phising_emails_detection
+package com.martinszuc.phishing_emails_detection
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry

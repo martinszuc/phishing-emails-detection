@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.martinszuc.phising_emails_detection"
+    namespace = "com.martinszuc.phishing_emails_detection"
     compileSdk = 34
 
     packaging {
@@ -14,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.martinszuc.phising_emails_detection"
+        applicationId = "com.martinszuc.phishing_emails_detection"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -60,7 +60,7 @@ dependencies {
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.31.5")
     implementation("com.google.apis:google-api-services-gmail:v1-rev110-1.25.0")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:4.9.0")

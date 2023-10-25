@@ -1,4 +1,4 @@
-package com.martinszuc.phising_emails_detection.network
+package com.martinszuc.phishing_emails_detection.network
 
 import android.content.Context
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -6,7 +6,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
 
-import com.martinszuc.phising_emails_detection.data.models.Email
+import com.martinszuc.phishing_emails_detection.data.models.Email
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

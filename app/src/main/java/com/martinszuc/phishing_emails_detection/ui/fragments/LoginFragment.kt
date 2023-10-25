@@ -1,4 +1,4 @@
-package com.martinszuc.phising_emails_detection.ui.fragments
+package com.martinszuc.phishing_emails_detection.ui.fragments
 
 import android.app.Activity
 import android.os.Bundle
@@ -14,9 +14,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Scope
-import com.martinszuc.phising_emails_detection.R
-import com.martinszuc.phising_emails_detection.databinding.FragmentLoginBinding
-import com.martinszuc.phising_emails_detection.ui.viewmodels.SharedViewModel
+import com.martinszuc.phishing_emails_detection.R
+import com.martinszuc.phishing_emails_detection.databinding.FragmentLoginBinding
+import com.martinszuc.phishing_emails_detection.ui.viewmodels.SharedViewModel
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.

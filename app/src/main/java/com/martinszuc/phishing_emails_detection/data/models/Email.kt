@@ -1,4 +1,4 @@
-package com.martinszuc.phising_emails_detection.data.models
+package com.martinszuc.phishing_emails_detection.data.models
 
 data class Email(
     val from: String,

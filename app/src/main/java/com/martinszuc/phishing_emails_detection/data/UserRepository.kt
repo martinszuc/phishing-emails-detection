@@ -1,4 +1,4 @@
-package com.martinszuc.phising_emails_detection.data
+package com.martinszuc.phishing_emails_detection.data
 
 import android.content.Context
 

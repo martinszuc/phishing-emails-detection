@@ -1,4 +1,4 @@
-package com.martinszuc.phising_emails_detection.ui
+package com.martinszuc.phishing_emails_detection.ui
 
 import android.os.Bundle
 import android.view.Menu
@@ -11,11 +11,11 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.material.snackbar.Snackbar
-import com.martinszuc.phising_emails_detection.R
-import com.martinszuc.phising_emails_detection.data.UserRepository
-import com.martinszuc.phising_emails_detection.databinding.ActivityMainBinding
-import com.martinszuc.phising_emails_detection.ui.viewmodels.SharedViewModel
-import com.martinszuc.phising_emails_detection.ui.viewmodels.SharedViewModelFactory
+import com.martinszuc.phishing_emails_detection.R
+import com.martinszuc.phishing_emails_detection.data.UserRepository
+import com.martinszuc.phishing_emails_detection.databinding.ActivityMainBinding
+import com.martinszuc.phishing_emails_detection.ui.viewmodels.SharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.viewmodels.SharedViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 

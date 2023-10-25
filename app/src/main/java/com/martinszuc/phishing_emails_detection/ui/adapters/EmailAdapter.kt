@@ -1,11 +1,11 @@
-package com.martinszuc.phising_emails_detection.ui.adapters
+package com.martinszuc.phishing_emails_detection.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.martinszuc.phising_emails_detection.data.models.Email
-import com.martinszuc.phising_emails_detection.databinding.ItemEmailSelectionBinding
-import com.martinszuc.phising_emails_detection.ui.viewmodels.EmailViewModel
+import com.martinszuc.phishing_emails_detection.data.models.Email
+import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSelectionBinding
+import com.martinszuc.phishing_emails_detection.ui.viewmodels.EmailViewModel
 
 class EmailAdapter(private var emails: List<Email>, private val viewModel: EmailViewModel) : RecyclerView.Adapter<EmailAdapter.EmailViewHolder>() {
 

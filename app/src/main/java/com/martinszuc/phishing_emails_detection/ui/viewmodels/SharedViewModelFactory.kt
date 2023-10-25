@@ -1,8 +1,8 @@
-package com.martinszuc.phising_emails_detection.ui.viewmodels
+package com.martinszuc.phishing_emails_detection.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.martinszuc.phising_emails_detection.data.UserRepository
+import com.martinszuc.phishing_emails_detection.data.UserRepository
 
 class SharedViewModelFactory(private val userRepository: UserRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

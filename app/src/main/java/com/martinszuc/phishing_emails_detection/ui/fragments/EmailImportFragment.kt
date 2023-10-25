@@ -1,4 +1,4 @@
-package com.martinszuc.phising_emails_detection.ui.fragments
+package com.martinszuc.phishing_emails_detection.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,12 +10,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.martinszuc.phising_emails_detection.data.EmailRepository
-import com.martinszuc.phising_emails_detection.databinding.FragmentEmailImportBinding
-import com.martinszuc.phising_emails_detection.ui.adapters.EmailAdapter
-import com.martinszuc.phising_emails_detection.ui.viewmodels.EmailViewModel
-import com.martinszuc.phising_emails_detection.ui.viewmodels.EmailViewModelFactory
-import com.martinszuc.phising_emails_detection.ui.viewmodels.SharedViewModel
+import com.martinszuc.phishing_emails_detection.data.EmailRepository
+import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailImportBinding
+import com.martinszuc.phishing_emails_detection.ui.adapters.EmailAdapter
+import com.martinszuc.phishing_emails_detection.ui.viewmodels.EmailViewModel
+import com.martinszuc.phishing_emails_detection.ui.viewmodels.EmailViewModelFactory
+import com.martinszuc.phishing_emails_detection.ui.viewmodels.SharedViewModel
 
 class EmailImportFragment : Fragment() {
 

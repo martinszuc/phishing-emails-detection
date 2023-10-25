@@ -1,4 +1,4 @@
-package com.martinszuc.phising_emails_detection
+package com.martinszuc.phishing_emails_detection
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
