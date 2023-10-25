@@ -25,10 +25,10 @@
             android:id="@+id/action_DashboardFragment_to_EmailImportFragment"
             app:destination="@id/EmailImportFragment" />
 
-        <!-- Optional: In case you want to allow navigation back to LoginFragment -->
-        <action
-            android:id="@+id/action_DashboardFragment_to_LoginFragment"
-            app:destination="@id/LoginFragment" />
+<!--        &lt;!&ndash; Optional: In case you want to allow navigation back to LoginFragment &ndash;&gt;-->
+<!--        <action-->
+<!--            android:id="@+id/action_DashboardFragment_to_LoginFragment"-->
+<!--            app:destination="@id/LoginFragment" />-->
     </fragment>
 
     <fragment

@@ -7,15 +7,20 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.martinszuc.phishing_emails_detection.data.EmailRepository
+import com.martinszuc.phishing_emails_detection.data.models.Email
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailImportBinding
 import com.martinszuc.phishing_emails_detection.ui.adapters.EmailAdapter
 import com.martinszuc.phishing_emails_detection.ui.viewmodels.EmailViewModel
 import com.martinszuc.phishing_emails_detection.ui.viewmodels.EmailViewModelFactory
 import com.martinszuc.phishing_emails_detection.ui.viewmodels.SharedViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class EmailImportFragment : Fragment() {
 
@@ -46,13 +51,14 @@ class EmailImportFragment : Fragment() {
             val recyclerView: RecyclerView = binding.emailSelectionRecyclerView
             recyclerView.layoutManager = LinearLayoutManager(context)
 
-            // Create and set an instance of your adapter
-            val emailAdapter = EmailAdapter(emptyList(), viewModel)
+            val emailAdapter = EmailAdapter(viewModel)
             recyclerView.adapter = emailAdapter
 
-            // Observe the emails LiveData
-            viewModel.emails.observe(viewLifecycleOwner) { emails ->
-                emailAdapter.updateEmails(emails)
+            // Collect the latest paging data and submit it to the adapter
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.emails.collectLatest { pagingData: PagingData<Email> ->
+                    emailAdapter.submitData(pagingData)
+                }
             }
 
         } else {

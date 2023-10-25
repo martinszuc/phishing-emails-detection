@@ -52,6 +52,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+
 
     implementation("com.google.android.material:material:1.10.0")
     implementation("com.google.android.gms:play-services-base:18.2.0")
@@ -59,7 +61,6 @@ dependencies {
     implementation("com.google.api-client:google-api-client-android:1.31.5")
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.31.5")
     implementation("com.google.apis:google-api-services-gmail:v1-rev110-1.25.0")
-
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     testImplementation("junit:junit:4.13.2")

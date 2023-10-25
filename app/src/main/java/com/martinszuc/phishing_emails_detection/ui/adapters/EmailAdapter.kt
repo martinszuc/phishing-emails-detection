@@ -7,7 +7,10 @@ import com.martinszuc.phishing_emails_detection.data.models.Email
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSelectionBinding
 import com.martinszuc.phishing_emails_detection.ui.viewmodels.EmailViewModel
 
-class EmailAdapter(private var emails: List<Email>, private val viewModel: EmailViewModel) : RecyclerView.Adapter<EmailAdapter.EmailViewHolder>() {
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
+
+class EmailAdapter(private val viewModel: EmailViewModel) : PagingDataAdapter<Email, EmailAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
 
     // TODO fix what to do with selected emails
     inner class EmailViewHolder(val binding: ItemEmailSelectionBinding) : RecyclerView.ViewHolder(binding.root)
@@ -18,21 +21,28 @@ class EmailAdapter(private var emails: List<Email>, private val viewModel: Email
     }
 
     override fun onBindViewHolder(holder: EmailViewHolder, position: Int) {
-        val email = emails[position]
-        holder.binding.sender.text = email.from
-        holder.binding.subject.text = email.subject
-        holder.binding.checkbox.isChecked = email.isSelected
+        val email = getItem(position)
+        if (email != null) {
+            holder.binding.sender.text = email.from
+            holder.binding.subject.text = email.subject
+            holder.binding.checkbox.isChecked = email.isSelected
 
-        holder.binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
-            email.isSelected = isChecked
-            viewModel.toggleEmailSelected(email)
+            holder.binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
+                email.isSelected = isChecked
+                viewModel.toggleEmailSelected(email)
+            }
         }
     }
 
-    override fun getItemCount() = emails.size
+    companion object {
+        private val EMAIL_COMPARATOR = object : DiffUtil.ItemCallback<Email>() {
+            override fun areItemsTheSame(oldItem: Email, newItem: Email): Boolean =
+                oldItem.from == newItem.from &&
+                        oldItem.subject == newItem.subject &&
+                        oldItem.body == newItem.body
 
-    fun updateEmails(newEmails: List<Email>) {
-        emails = newEmails
-        notifyDataSetChanged()
+            override fun areContentsTheSame(oldItem: Email, newItem: Email): Boolean =
+                oldItem == newItem
+        }
     }
 }

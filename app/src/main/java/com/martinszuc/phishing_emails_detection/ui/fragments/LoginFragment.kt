@@ -73,7 +73,6 @@ class LoginFragment : Fragment() {
                 sharedViewModel.saveLoginState(true)
 
                 findNavController().apply {
-                    popBackStack()
                     navigate(R.id.action_LoginFragment_to_DashboardFragment)
                 }
 

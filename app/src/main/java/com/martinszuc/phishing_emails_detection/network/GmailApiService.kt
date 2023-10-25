@@ -16,7 +16,7 @@ class GmailApiService(private val context: Context, private val account: GoogleS
     private val transport = NetHttpTransport()
     private val jsonFactory = JacksonFactory.getDefaultInstance()
 
-    override suspend fun getEmails(): List<Email> = withContext(Dispatchers.IO) {
+    override suspend fun getEmails(page: Int, pageSize: Int): List<Email> = withContext(Dispatchers.IO) {
         val credential = GoogleAccountCredential.usingOAuth2(
             context, listOf("https://www.googleapis.com/auth/gmail.readonly")
         ).setSelectedAccount(account.account)
@@ -25,7 +25,8 @@ class GmailApiService(private val context: Context, private val account: GoogleS
             .build()
 
         val user = "me"
-        val listResponse = service.users().messages().list(user).execute()
+        // Modify the following line to fetch a specific page of emails
+        val listResponse = service.users().messages().list(user).setMaxResults(pageSize.toLong()).setPageToken(page.toString()).execute()
         val messages = listResponse.messages
 
         messages.map { message ->
@@ -42,4 +43,5 @@ class GmailApiService(private val context: Context, private val account: GoogleS
         }
     }
 }
+
 
