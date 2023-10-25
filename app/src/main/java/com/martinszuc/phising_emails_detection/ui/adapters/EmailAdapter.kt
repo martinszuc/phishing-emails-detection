@@ -9,6 +9,7 @@ import com.martinszuc.phising_emails_detection.ui.viewmodels.EmailViewModel
 
 class EmailAdapter(private var emails: List<Email>, private val viewModel: EmailViewModel) : RecyclerView.Adapter<EmailAdapter.EmailViewHolder>() {
 
+    // TODO fix what to do with selected emails
     inner class EmailViewHolder(val binding: ItemEmailSelectionBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmailViewHolder {

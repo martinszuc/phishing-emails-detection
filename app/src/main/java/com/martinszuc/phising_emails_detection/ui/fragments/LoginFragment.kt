@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -25,19 +25,19 @@ class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private lateinit var googleSignInClient: GoogleSignInClient
-
-    val sharedModel: SharedViewModel by activityViewModels()
-
+    private lateinit var sharedViewModel: SharedViewModel
 
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
-        return binding.root
 
+        sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,11 +52,10 @@ class LoginFragment : Fragment() {
 
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
-        view.findViewById<com.google.android.gms.common.SignInButton>(R.id.signInButton).setOnClickListener {
-            signIn()
+        binding.signInButton.setOnClickListener {
+        signIn()
         }
     }
-
 
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
@@ -67,10 +66,17 @@ class LoginFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
+                // Login successful
+                // Save logged in state to SharedPreferences
                 val account = task.getResult(ApiException::class.java)
-                sharedModel.account.value = account
+                sharedViewModel.account.value = account
+                sharedViewModel.saveLoginState(true)
 
-                findNavController().navigate(R.id.action_LoginFragment_to_DashboardFragment)
+                findNavController().apply {
+                    popBackStack()
+                    navigate(R.id.action_LoginFragment_to_DashboardFragment)
+                }
+
             } catch (e: ApiException) {
                 // TODO Sign in failed, handle the failure scenario
             }

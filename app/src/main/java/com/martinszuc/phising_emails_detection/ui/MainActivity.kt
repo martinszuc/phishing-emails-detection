@@ -4,21 +4,33 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.material.snackbar.Snackbar
 import com.martinszuc.phising_emails_detection.R
+import com.martinszuc.phising_emails_detection.data.UserRepository
 import com.martinszuc.phising_emails_detection.databinding.ActivityMainBinding
+import com.martinszuc.phising_emails_detection.ui.viewmodels.SharedViewModel
+import com.martinszuc.phising_emails_detection.ui.viewmodels.SharedViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Get an instance of UserRepository
+        val userRepository = UserRepository(this)
+        // Create SharedViewModel instance carrying account information.
+        val factory = SharedViewModelFactory(userRepository)
+        sharedViewModel = ViewModelProvider(this, factory)[SharedViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -29,11 +41,28 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
+        // Check if user is already logged in
+        if (sharedViewModel.getLoginState()) {
+            // Get the last signed-in account
+            val account = GoogleSignIn.getLastSignedInAccount(this)
+            // If the account is not null, update it in SharedViewModel
+            if (account != null) {
+                sharedViewModel.setAccount(account)
+                // Navigate to DashboardFragment and clear back stack
+                navController.apply {
+                    popBackStack()
+                    navigate(R.id.DashboardFragment)
+                }
+            }
+        }
+
         binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
     }
+
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
