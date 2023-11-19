@@ -23,7 +23,7 @@ import com.martinszuc.phishing_emails_detection.data.repository.EmailRepository
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailImportBinding
 import com.martinszuc.phishing_emails_detection.ui.adapter.EmailAdapter
 import com.martinszuc.phishing_emails_detection.ui.viewmodel.EmailViewModel
-import com.martinszuc.phishing_emails_detection.ui.viewmodel.SharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.viewmodel.UserAccountViewModel
 import com.martinszuc.phishing_emails_detection.ui.viewmodel.factory.EmailViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 class EmailImportFragment : Fragment() {
 
     private var _binding: FragmentEmailImportBinding? = null
-    private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var userAccountViewModel: UserAccountViewModel
     private lateinit var viewModel: EmailViewModel
     private lateinit var emailAdapter: EmailAdapter
 
@@ -46,9 +46,9 @@ class EmailImportFragment : Fragment() {
         _binding = FragmentEmailImportBinding.inflate(inflater, container, false)
 
         // Get an instance of SharedViewModel from the activity
-        sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
+        userAccountViewModel = ViewModelProvider(requireActivity())[UserAccountViewModel::class.java]
 
-        val account: GoogleSignInAccount? = sharedViewModel.account.value
+        val account: GoogleSignInAccount? = userAccountViewModel.account.value
         if (account != null) {
             Log.d("EmailImportFragment", "Account is not null")
 

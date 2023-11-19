@@ -10,12 +10,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.material.snackbar.Snackbar
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.repository.UserRepository
 import com.martinszuc.phishing_emails_detection.databinding.ActivityMainBinding
-import com.martinszuc.phishing_emails_detection.ui.viewmodel.SharedViewModel
-import com.martinszuc.phishing_emails_detection.ui.viewmodel.factory.SharedViewModelFactory
+import com.martinszuc.phishing_emails_detection.ui.viewmodel.UserAccountViewModel
+import com.martinszuc.phishing_emails_detection.ui.viewmodel.factory.UserAccountViewModelFactory
 
 // TODO add bottom navigation
 
@@ -24,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var userAccountViewModel: UserAccountViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +31,8 @@ class MainActivity : AppCompatActivity() {
         // Get an instance of UserRepository
         val userRepository = UserRepository(this)
         // Create SharedViewModel instance carrying account information.
-        val factory = SharedViewModelFactory(userRepository)
-        sharedViewModel = ViewModelProvider(this, factory)[SharedViewModel::class.java]
+        val factory = UserAccountViewModelFactory(userRepository)
+        userAccountViewModel = ViewModelProvider(this, factory)[UserAccountViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -45,12 +44,12 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         // Check if user is already logged in
-        if (sharedViewModel.getLoginState()) {
+        if (userAccountViewModel.getLoginState()) {
             // Get the last signed-in account
             val account = GoogleSignIn.getLastSignedInAccount(this)
             // If the account is not null, update it in SharedViewModel
             if (account != null) {
-                sharedViewModel.setAccount(account)
+                userAccountViewModel.setAccount(account)
                 // Navigate to DashboardFragment and clear back stack
                 navController.apply {
                     popBackStack()

@@ -12,11 +12,11 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Scope
+import com.google.android.material.snackbar.Snackbar
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentLoginBinding
-import com.martinszuc.phishing_emails_detection.ui.viewmodel.SharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.viewmodel.UserAccountViewModel
 
 // TODO should this be a login activity?
 // TODO logout and change google account
@@ -25,7 +25,7 @@ class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private lateinit var googleSignInClient: GoogleSignInClient
-    private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var userAccountViewModel: UserAccountViewModel
 
     private val binding get() = _binding!!
 
@@ -35,7 +35,8 @@ class LoginFragment : Fragment() {
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
-        sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
+        userAccountViewModel =
+            ViewModelProvider(requireActivity())[UserAccountViewModel::class.java]
 
         return binding.root
     }
@@ -43,8 +44,34 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        configureSignIn()
+        observeViewModel()
+
+    }
+
+    private fun observeViewModel() {
+        userAccountViewModel.loginState.observe(viewLifecycleOwner) { isLoggedIn ->
+            if (isLoggedIn) {
+                findNavController().apply {
+                    navigate(R.id.action_LoginFragment_to_DashboardFragment)
+                }
+            }
+        }
+
+        userAccountViewModel.error.observe(viewLifecycleOwner) {
+            userAccountViewModel.error.observe(viewLifecycleOwner) { error ->
+                error?.let {
+                    Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+                    userAccountViewModel.setError(error)
+                }
+            }
+        }
+    }
+
+    private fun configureSignIn() {
         // Configure sign-in to request the user's ID, email address, and basic profile.
-        // Add a request for Gmail scope.
+        // and a request for Gmail scope.
+
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .requestScopes(Scope("https://www.googleapis.com/auth/gmail.readonly")) // Request read-only access to Gmail
@@ -53,7 +80,7 @@ class LoginFragment : Fragment() {
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
         binding.signInButton.setOnClickListener {
-        signIn()
+            signIn()
         }
     }
 
@@ -62,25 +89,14 @@ class LoginFragment : Fragment() {
         signInLauncher.launch(signInIntent)
     }
 
-    private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            try {
-                // Login successful
-                // Save logged in state to SharedPreferences
-                val account = task.getResult(ApiException::class.java)
-                sharedViewModel.account.value = account
-                sharedViewModel.saveLoginState(true)
-
-                findNavController().apply {
-                    navigate(R.id.action_LoginFragment_to_DashboardFragment)
-                }
-
-            } catch (e: ApiException) {
-                // TODO Sign in failed, handle the failure scenario
+    private val signInLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                userAccountViewModel.handleSignInResult(task)
             }
         }
-    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
