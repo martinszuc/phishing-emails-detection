@@ -1,10 +1,10 @@
-package com.martinszuc.phishing_emails_detection.data
+package com.martinszuc.phishing_emails_detection.data.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.martinszuc.phishing_emails_detection.data.dao.EmailDao
+import com.martinszuc.phishing_emails_detection.data.db.dao.EmailDao
 import com.martinszuc.phishing_emails_detection.data.entity.Email
 
 @Database(entities = [Email::class], exportSchema = false, version = 1)

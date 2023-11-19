@@ -19,6 +19,8 @@ import com.martinszuc.phishing_emails_detection.databinding.FragmentLoginBinding
 import com.martinszuc.phishing_emails_detection.ui.viewmodel.SharedViewModel
 
 // TODO should this be a login activity?
+// TODO logout and change google account
+
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null

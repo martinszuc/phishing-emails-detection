@@ -6,11 +6,11 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.room.withTransaction
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.martinszuc.phishing_emails_detection.data.AppDatabase
+import com.martinszuc.phishing_emails_detection.data.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.entity.Email
-import com.martinszuc.phishing_emails_detection.data.repository.emailsImport.EmailPagingSource
-import com.martinszuc.phishing_emails_detection.data.repository.emailsSearch.SearchEmailPagingSource
-import com.martinszuc.phishing_emails_detection.network.GmailApiService
+import com.martinszuc.phishing_emails_detection.data.api.EmailPagingSource
+import com.martinszuc.phishing_emails_detection.data.api.SearchEmailPagingSource
+import com.martinszuc.phishing_emails_detection.data.api.GmailApiService
 import kotlinx.coroutines.flow.Flow
 
 class EmailRepository(

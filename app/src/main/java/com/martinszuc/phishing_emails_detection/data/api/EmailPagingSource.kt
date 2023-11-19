@@ -1,9 +1,9 @@
-package com.martinszuc.phishing_emails_detection.data.repository.emailsImport
+package com.martinszuc.phishing_emails_detection.data.api
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.martinszuc.phishing_emails_detection.data.entity.Email
-import com.martinszuc.phishing_emails_detection.network.GmailApiService
+
 class EmailPagingSource(
     private val apiService: GmailApiService
 ) : PagingSource<String, Email>() {

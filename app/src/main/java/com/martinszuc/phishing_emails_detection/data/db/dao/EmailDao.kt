@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.data.dao
+package com.martinszuc.phishing_emails_detection.data.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert

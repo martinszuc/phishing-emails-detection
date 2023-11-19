@@ -18,7 +18,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.martinszuc.phishing_emails_detection.data.AppDatabase
+import com.martinszuc.phishing_emails_detection.data.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.repository.EmailRepository
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailImportBinding
 import com.martinszuc.phishing_emails_detection.ui.adapter.EmailAdapter
