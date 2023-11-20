@@ -1,10 +1,19 @@
-package com.martinszuc.phishing_emails_detection.data.api
+package com.martinszuc.phishing_emails_detection.data.remote.api.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.martinszuc.phishing_emails_detection.data.entity.Email
+import com.martinszuc.phishing_emails_detection.data.local.entity.Email
+import com.martinszuc.phishing_emails_detection.data.remote.api.GmailApiService
 
-class EmailPagingSource(
+/**
+ * This is a GmailPagingSource class that extends PagingSource from the Android Paging library.
+ * It fetches emails from a Gmail API service and provides them to a Pager.
+ *
+ * @property apiService The GmailApiService instance for fetching emails.
+ *
+ * @author matoszuc@gmail.com
+ */
+class GmailPagingSource(
     private val apiService: GmailApiService
 ) : PagingSource<String, Email>() {
 

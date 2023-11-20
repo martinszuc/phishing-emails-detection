@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.view
+package com.martinszuc.phishing_emails_detection.ui.component.new_component
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,8 @@ import androidx.navigation.fragment.findNavController
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentSecondBinding
 
-// TODO implement fragment
+// TODO TO BE ANNOUNCED, NOT YET IMPLEMENTED
+
 class SecondFragment : Fragment() {
 
     private var _binding: FragmentSecondBinding? = null

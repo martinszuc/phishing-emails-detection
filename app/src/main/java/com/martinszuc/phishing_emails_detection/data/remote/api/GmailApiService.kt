@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.data.api
+package com.martinszuc.phishing_emails_detection.data.remote.api
 
 import android.content.Context
 import android.util.Log
@@ -6,15 +6,15 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.gmail.Gmail
-import com.martinszuc.phishing_emails_detection.data.entity.Email
-import com.martinszuc.phishing_emails_detection.data.repository.UserManager
+import com.martinszuc.phishing_emails_detection.data.local.entity.Email
+import com.martinszuc.phishing_emails_detection.data.remote.UserManager
+import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-private const val GMAIL_READONLY_SCOPE = "https://www.googleapis.com/auth/gmail.readonly"
-private const val APPLICATION_NAME = "Phishing emails detection"
+
 class GmailApiService @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userManager: UserManager
@@ -26,11 +26,11 @@ class GmailApiService @Inject constructor(
     private suspend fun fetchEmails(query: String?, pageToken: String?, pageSize: Int): Pair<List<Email>, String?> =
         withContext(Dispatchers.IO) {
             val credential = GoogleAccountCredential.usingOAuth2(
-                context, listOf(GMAIL_READONLY_SCOPE)
+                context, listOf(Constants.GMAIL_READONLY_SCOPE)
             ).setSelectedAccount(userManager.account.value?.account)
 
             val service = Gmail.Builder(transport, jsonFactory, credential)
-                .setApplicationName(APPLICATION_NAME)
+                .setApplicationName(Constants.APPLICATION_NAME)
                 .build()
 
             val user = "me"
@@ -39,7 +39,7 @@ class GmailApiService @Inject constructor(
                 .setPageToken(pageToken)
 
             if (query != null) {
-                listRequest.setQ("subject:$query")
+                listRequest.q = "subject:$query"
             }
 
             val listResponse = listRequest.execute()

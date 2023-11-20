@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.view
+package com.martinszuc.phishing_emails_detection.ui.component.login
 
 import android.app.Activity
 import android.os.Bundle
@@ -13,7 +13,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.martinszuc.phishing_emails_detection.databinding.FragmentLoginBinding
-import com.martinszuc.phishing_emails_detection.ui.viewmodel.UserAccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 // TODO logout and change google account

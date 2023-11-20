@@ -11,7 +11,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.ActivityMainBinding
-import com.martinszuc.phishing_emails_detection.ui.viewmodel.UserAccountViewModel
+import com.martinszuc.phishing_emails_detection.ui.component.login.UserAccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 // TODO add bottom navigation
@@ -56,7 +56,6 @@ class MainActivity : AppCompatActivity() {
     private fun navigateToDashboard() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         navController.apply {
-            popBackStack()
             navigate(R.id.DashboardFragment)
         }
     }
@@ -64,7 +63,6 @@ class MainActivity : AppCompatActivity() {
     private fun navigateToLogin() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         navController.apply {
-            popBackStack()
             navigate(R.id.LoginFragment)
         }
     }

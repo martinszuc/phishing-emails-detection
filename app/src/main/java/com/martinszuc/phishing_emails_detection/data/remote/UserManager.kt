@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.data.repository
+package com.martinszuc.phishing_emails_detection.data.remote
 
 import android.content.Context
 import android.util.Log
@@ -6,9 +6,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.martinszuc.phishing_emails_detection.data.local.repository.UserRepository
 import javax.inject.Inject
 import javax.inject.Singleton
-
+/**
+ * This is a UserManager class that handles user authentication.
+ * It provides methods for saving the user's account information and checking the user's sign-in state.
+ * It interacts with UserRepository to get and save the login state.
+ *
+ * @property userRepository The UserRepository instance for interacting with local user data.
+ * @property _account The current user's GoogleSignInAccount.
+ * @property account A LiveData of the current user's GoogleSignInAccount.
+ * @property _isUserLoggedIn The current user's login state.
+ * @property isUserLoggedIn A LiveData of the current user's login state.
+ *
+ * @author matoszuc@gmail.com
+ */
 @Singleton
 class UserManager @Inject constructor(
     private val userRepository: UserRepository

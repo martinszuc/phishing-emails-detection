@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.data.entity
+package com.martinszuc.phishing_emails_detection.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

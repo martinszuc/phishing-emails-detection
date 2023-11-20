@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.view
+package com.martinszuc.phishing_emails_detection.ui.component.dashboard
 
 import android.os.Bundle
 import android.view.LayoutInflater

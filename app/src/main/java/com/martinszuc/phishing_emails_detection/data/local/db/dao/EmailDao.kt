@@ -1,10 +1,10 @@
-package com.martinszuc.phishing_emails_detection.data.db.dao
+package com.martinszuc.phishing_emails_detection.data.local.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.martinszuc.phishing_emails_detection.data.entity.Email
+import com.martinszuc.phishing_emails_detection.data.local.entity.Email
 
 @Dao
 interface EmailDao {
@@ -20,7 +20,7 @@ interface EmailDao {
     suspend fun deleteAllEmails()
     @Query("SELECT * FROM emails ORDER BY id DESC LIMIT 1")
     suspend fun getLatestEmail(): Email?
-    //    @Query("SELECT * FROM emails WHERE subject LIKE :query")
+//    @Query("SELECT * FROM emails WHERE subject LIKE :query")      // TODO Work in progress
 //    suspend fun searchEmails(query: String): List<Email>
 
 //    @Query("SELECT * FROM emails ORDER BY rowId ASC")

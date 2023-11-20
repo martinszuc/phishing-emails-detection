@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.view
+package com.martinszuc.phishing_emails_detection.ui.component.import_emails
 
 import android.content.Context
 import android.os.Bundle
@@ -18,9 +18,8 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailImportBinding
-import com.martinszuc.phishing_emails_detection.ui.adapter.EmailAdapter
-import com.martinszuc.phishing_emails_detection.ui.viewmodel.EmailViewModel
-import com.martinszuc.phishing_emails_detection.ui.viewmodel.UserAccountViewModel
+import com.martinszuc.phishing_emails_detection.ui.component.import_emails.adapter.EmailAdapter
+import com.martinszuc.phishing_emails_detection.ui.component.login.UserAccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -98,7 +97,6 @@ class EmailImportFragment : Fragment() {
     private fun observeAccount() {
         userAccountViewModel.account.observe(viewLifecycleOwner) { account ->
             Log.d("EmailImportFragment", "Account: $account")
-            // Use the account to initialize your Gmail API service here
         }
     }
 
@@ -107,14 +105,10 @@ class EmailImportFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // This method is called when the user submits the search string.
                 query?.let {
-                    // Call searchEmails in the ViewModel with the search query.
                     emailViewModel.searchEmails(it)
                 }
 
-                // Hide the keyboard.
-                val inputManager =
-                    context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                inputManager.hideSoftInputFromWindow(binding.searchView.windowToken, 0)
+                hideKeyboard()
 
                 return true
             }
@@ -130,10 +124,16 @@ class EmailImportFragment : Fragment() {
         })
     }
 
+    private fun hideKeyboard() {
+        val inputManager =
+            context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(binding.searchView.windowToken, 0)
+    }
+    // Show a loading spinner while a refresh operation is in progress
+
     private fun initLoadingSpinner() {
         viewLifecycleOwner.lifecycleScope.launch {
             emailAdapter.loadStateFlow.collectLatest { loadStates ->
-                // Show a loading spinner while a refresh operation is in progress
                 binding.loadingSpinner.visibility =
                     if (loadStates.refresh is LoadState.Loading) View.VISIBLE else View.GONE
                 Log.d("EmailImportFragment", "Load state changed: ${loadStates.refresh}")
