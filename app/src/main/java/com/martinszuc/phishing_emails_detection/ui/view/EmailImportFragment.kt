@@ -10,30 +10,27 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.martinszuc.phishing_emails_detection.data.db.AppDatabase
-import com.martinszuc.phishing_emails_detection.data.repository.EmailRepository
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailImportBinding
 import com.martinszuc.phishing_emails_detection.ui.adapter.EmailAdapter
 import com.martinszuc.phishing_emails_detection.ui.viewmodel.EmailViewModel
 import com.martinszuc.phishing_emails_detection.ui.viewmodel.UserAccountViewModel
-import com.martinszuc.phishing_emails_detection.ui.viewmodel.factory.EmailViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 // TODO make this fragment into MyEmails fragment and add fragment pages for database, gmail, detection pages
+@AndroidEntryPoint
 class EmailImportFragment : Fragment() {
-
     private var _binding: FragmentEmailImportBinding? = null
-    private lateinit var userAccountViewModel: UserAccountViewModel
-    private lateinit var viewModel: EmailViewModel
+    private val emailViewModel: EmailViewModel by activityViewModels()
+    private val userAccountViewModel: UserAccountViewModel by activityViewModels() // Inject UserAccountViewModel
     private lateinit var emailAdapter: EmailAdapter
 
     private val binding get() = _binding!!
@@ -45,25 +42,11 @@ class EmailImportFragment : Fragment() {
         Log.d("EmailImportFragment", "onCreateView called")
         _binding = FragmentEmailImportBinding.inflate(inflater, container, false)
 
-        // Get an instance of SharedViewModel from the activity
-        userAccountViewModel = ViewModelProvider(requireActivity())[UserAccountViewModel::class.java]
+        observeAccount()
 
-        val account: GoogleSignInAccount? = userAccountViewModel.account.value
-        if (account != null) {
-            Log.d("EmailImportFragment", "Account is not null")
+        initEmailsImport()
+        initSearchView()
 
-            val database = AppDatabase.getDatabase(requireContext())
-            val emailRepository = EmailRepository(database, requireContext(), account)
-            val viewModelFactory = EmailViewModelFactory(emailRepository)
-
-            viewModel = ViewModelProvider(this, viewModelFactory).get(EmailViewModel::class.java)
-
-            initEmailsImport()
-            initSearchView()
-        } else {
-            Log.d("EmailImportFragment", "Account is null")
-            // TODO handle the case where account is null
-        }
         return binding.root
     }
 
@@ -72,6 +55,8 @@ class EmailImportFragment : Fragment() {
 
         // Observe load state changes
         initLoadingSpinner()
+
+        // Observe account changes
     }
 
     override fun onDestroyView() {
@@ -80,14 +65,13 @@ class EmailImportFragment : Fragment() {
         _binding = null
     }
 
-
     private fun initEmailsImport() {
         // Initialize RecyclerView
         val recyclerView: RecyclerView = binding.emailSelectionRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         // Initialize EmailAdapter
-        emailAdapter = EmailAdapter(viewModel)
+        emailAdapter = EmailAdapter(emailViewModel)
         recyclerView.adapter = emailAdapter
 
         // Initialize Import Emails Button
@@ -104,10 +88,17 @@ class EmailImportFragment : Fragment() {
     private fun observeEmailsFlow() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.emailsFlow.collectLatest { pagingData ->
+                emailViewModel.emailsFlow.collectLatest { pagingData ->
                     emailAdapter.submitData(pagingData)
                 }
             }
+        }
+    }
+
+    private fun observeAccount() {
+        userAccountViewModel.account.observe(viewLifecycleOwner) { account ->
+            Log.d("EmailImportFragment", "Account: $account")
+            // Use the account to initialize your Gmail API service here
         }
     }
 
@@ -117,7 +108,7 @@ class EmailImportFragment : Fragment() {
                 // This method is called when the user submits the search string.
                 query?.let {
                     // Call searchEmails in the ViewModel with the search query.
-                    viewModel.searchEmails(it)
+                    emailViewModel.searchEmails(it)
                 }
 
                 // Hide the keyboard.
@@ -132,7 +123,7 @@ class EmailImportFragment : Fragment() {
                 // This method is called when the query text is changed by the user.
                 if (newText.isNullOrEmpty()) {
                     // If the query text is empty, call getEmails to fetch all emails.
-                    viewModel.getEmails()
+                    emailViewModel.getEmails()
                 }
                 return true
             }

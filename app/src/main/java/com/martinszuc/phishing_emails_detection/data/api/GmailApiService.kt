@@ -2,18 +2,23 @@ package com.martinszuc.phishing_emails_detection.data.api
 
 import android.content.Context
 import android.util.Log
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.gmail.Gmail
 import com.martinszuc.phishing_emails_detection.data.entity.Email
+import com.martinszuc.phishing_emails_detection.data.repository.UserManager
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 private const val GMAIL_READONLY_SCOPE = "https://www.googleapis.com/auth/gmail.readonly"
 private const val APPLICATION_NAME = "Phishing emails detection"
-class GmailApiService(private val context: Context, private val account: GoogleSignInAccount) {
+class GmailApiService @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val userManager: UserManager
+) {
 
     private val transport = NetHttpTransport()
     private val jsonFactory = JacksonFactory.getDefaultInstance()
@@ -22,7 +27,7 @@ class GmailApiService(private val context: Context, private val account: GoogleS
         withContext(Dispatchers.IO) {
             val credential = GoogleAccountCredential.usingOAuth2(
                 context, listOf(GMAIL_READONLY_SCOPE)
-            ).setSelectedAccount(account.account)
+            ).setSelectedAccount(userManager.account.value?.account)
 
             val service = Gmail.Builder(transport, jsonFactory, credential)
                 .setApplicationName(APPLICATION_NAME)

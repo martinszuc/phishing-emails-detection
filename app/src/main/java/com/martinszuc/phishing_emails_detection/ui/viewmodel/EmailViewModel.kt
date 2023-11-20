@@ -1,20 +1,22 @@
 package com.martinszuc.phishing_emails_detection.ui.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.martinszuc.phishing_emails_detection.data.entity.Email
 import com.martinszuc.phishing_emails_detection.data.repository.EmailRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class EmailViewModel(private val repository: EmailRepository) : ViewModel() {
+@HiltViewModel
+class EmailViewModel @Inject constructor(
+    private val repository: EmailRepository
+) : ViewModel() {
 
     private val _emailsFlow = MutableStateFlow<PagingData<Email>>(PagingData.empty())
     val emailsFlow: Flow<PagingData<Email>> = _emailsFlow.asStateFlow()
