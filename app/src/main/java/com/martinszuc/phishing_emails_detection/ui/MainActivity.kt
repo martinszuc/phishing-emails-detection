@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
     private fun navigateToDashboard() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         navController.apply {
+            popBackStack()
             navigate(R.id.DashboardFragment)
         }
     }
@@ -63,6 +64,7 @@ class MainActivity : AppCompatActivity() {
     private fun navigateToLogin() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         navController.apply {
+            popBackStack()
             navigate(R.id.LoginFragment)
         }
     }
