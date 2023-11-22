@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setupBinding()
         setupToolbar()
-        checkLoginState()
+        observeLoginState()
     }
 
     private fun setupBinding() {
@@ -42,30 +42,22 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
-    private fun checkLoginState() {
+    private fun observeLoginState() {
         userAccountViewModel.retrieveAccount(this)
         userAccountViewModel.loginState.observe(this) { isLoggedIn ->
             if (isLoggedIn) {
-                navigateToDashboard()
+                navigate(R.id.DashboardFragment)
             } else {
-                navigateToLogin()
+                navigate(R.id.LoginFragment)
             }
         }
     }
 
-    private fun navigateToDashboard() {
+    private fun navigate(destinationId: Int) {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         navController.apply {
             popBackStack()
-            navigate(R.id.DashboardFragment)
-        }
-    }
-
-    private fun navigateToLogin() {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        navController.apply {
-            popBackStack()
-            navigate(R.id.LoginFragment)
+            navigate(destinationId)
         }
     }
 
@@ -76,11 +68,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
+            R.id.action_logout -> {
+                userAccountViewModel.logout()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

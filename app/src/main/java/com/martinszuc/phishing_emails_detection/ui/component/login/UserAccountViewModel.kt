@@ -13,7 +13,7 @@ import javax.inject.Inject
 class UserAccountViewModel @Inject constructor(
     private val userManager: UserManager
 ) : BaseViewModel() {
-    val account: LiveData<GoogleSignInAccount> get() = userManager.account
+    val account: LiveData<GoogleSignInAccount?> get() = userManager.account
     val loginState: LiveData<Boolean> get() = userManager.isUserLoggedIn
 
     fun saveAccount(account: GoogleSignInAccount) {
@@ -23,9 +23,13 @@ class UserAccountViewModel @Inject constructor(
         }
     }
 
-
     fun retrieveAccount(context: Context) {
         Log.d("UserAccountViewModel", "Retrieving account")
         userManager.checkUserSignInState(context)
+    }
+
+    fun logout() {
+        Log.d("UserAccountViewModel", "Logging out")
+        userManager.logout()
     }
 }

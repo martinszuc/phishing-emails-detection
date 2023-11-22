@@ -26,8 +26,8 @@ import javax.inject.Singleton
 class UserManager @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    private val _account = MutableLiveData<GoogleSignInAccount>()
-    val account: LiveData<GoogleSignInAccount> get() = _account
+    private val _account = MutableLiveData<GoogleSignInAccount?>()
+    val account: LiveData<GoogleSignInAccount?> get() = _account
     private val _isUserLoggedIn = MutableLiveData<Boolean>()
     val isUserLoggedIn: LiveData<Boolean> get() = _isUserLoggedIn
 
@@ -49,6 +49,13 @@ class UserManager @Inject constructor(
         } else {
             saveLoginState(false)
         }
+    }
+
+    fun logout() {
+        Log.d("UserManager", "Logging out")
+        _account.value = null
+        userRepository.logout()
+        _isUserLoggedIn.value = false
     }
 
     private fun saveLoginState(isLoggedIn: Boolean) {
