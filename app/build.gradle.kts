@@ -5,7 +5,8 @@ plugins {
     // Hilt DI
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
-
+    // Firebase
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -67,8 +68,13 @@ dependencies {
     implementation("com.google.apis:google-api-services-gmail:v1-rev110-1.25.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
+    implementation("com.google.firebase:firebase-analytics")
+
     // Hilt DI
     implementation("com.google.dagger:hilt-android:2.46")
+    implementation("com.google.firebase:firebase-auth:22.3.0")
     kapt("com.google.dagger:hilt-android-compiler:2.46")
 
     // Paging and DB

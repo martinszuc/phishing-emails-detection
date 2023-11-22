@@ -9,5 +9,6 @@ class Constants {
         const val DATABASE_NAME = "phishing-emails-detection-database"
         const val GMAIL_READONLY_SCOPE = "https://www.googleapis.com/auth/gmail.readonly"
         const val APPLICATION_NAME = "Phishing emails detection"
+
     }
 }
