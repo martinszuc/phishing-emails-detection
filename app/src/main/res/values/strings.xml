@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Phishing emails detector</string>
+    <!-- Strings used in UI -->
     <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
+    <string name="action_logout">Log out</string>
     <string name="login_fragment_label">Login fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
@@ -11,4 +12,6 @@
     <string name="subject">Subject</string>
     <string name="import_emails_from_gmail">Import emails from Gmail</string>
     <string name="save_selected_emails">Save Selected Emails</string>
+<!--    Login web client id    -->
+    <string name="login_web_client_id">628461587525-vl58bn3gfjd2bdfunllqlpamk037k06m.apps.googleusercontent.com</string>
 </resources>

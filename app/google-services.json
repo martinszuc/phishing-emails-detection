@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "628461587525",
+    "project_id": "phishing-emails-detection",
+    "storage_bucket": "phishing-emails-detection.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628461587525:android:9d88ca046f5cff9de3e72c",
+        "android_client_info": {
+          "package_name": "com.martinszuc.phishing_emails_detection"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWR3OkhtcK_Cs82A8NyFimdUWv9lBiYD0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

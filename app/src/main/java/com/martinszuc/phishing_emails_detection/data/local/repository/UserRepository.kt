@@ -22,4 +22,10 @@ class UserRepository @Inject constructor(@ApplicationContext private val context
             apply()
         }
     }
+    fun logout() {
+        with(sharedPref.edit()) {
+            putBoolean("isLoggedIn", false)
+            apply()
+        }
+    }
 }
