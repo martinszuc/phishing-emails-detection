@@ -11,6 +11,7 @@ import android.widget.Button
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class EmailImportFragment : Fragment() {
     private var _binding: FragmentEmailImportBinding? = null
-    private val emailViewModel: EmailViewModel by activityViewModels()
+    private val emailViewModel: EmailViewModel by viewModels()
     private val userAccountViewModel: UserAccountViewModel by activityViewModels() // Inject UserAccountViewModel
     private lateinit var emailAdapter: EmailAdapter
 
