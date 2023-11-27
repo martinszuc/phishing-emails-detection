@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.import_emails.adapter
+package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.data.local.entity.Email
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSelectionBinding
-import com.martinszuc.phishing_emails_detection.ui.component.import_emails.EmailViewModel
+import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.EmailViewModel
 
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 
-class EmailAdapter(private val viewModel: EmailViewModel) :
-    PagingDataAdapter<Email, EmailAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
+class EmailsImportAdapter(private val viewModel: EmailViewModel) :
+    PagingDataAdapter<Email, EmailsImportAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
 
     // TODO selected emails => store to db
     inner class EmailViewHolder(val binding: ItemEmailSelectionBinding) :

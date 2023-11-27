@@ -83,6 +83,10 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.0")
     ksp("androidx.room:room-compiler:2.6.0")
 
+    // Swipe views
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+
+
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:4.9.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")

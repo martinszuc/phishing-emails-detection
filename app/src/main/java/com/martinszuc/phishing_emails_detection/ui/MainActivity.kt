@@ -5,10 +5,12 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.ActivityMainBinding
 import com.martinszuc.phishing_emails_detection.ui.component.login.UserAccountViewModel
@@ -25,28 +27,39 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         setupBinding()
-        setupToolbar()
+        setupBottomNav()
         observeLoginState()
     }
+
+    private fun setupBottomNav() {
+        val navView: BottomNavigationView = findViewById(R.id.bottom_navigation)
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        navView.setupWithNavController(navController)
+        navView.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.EmailsParentFragment -> navController.navigate(R.id.EmailsParentFragment)
+                R.id.TrainingFragment -> navController.navigate(R.id.TrainingFragment)
+                R.id.DetectorFragment -> navController.navigate(R.id.DetectorFragment)
+                R.id.LearningFragment -> navController.navigate(R.id.LearningFragment)
+                R.id.SettingsFragment -> navController.navigate(R.id.SettingsFragment)
+            }
+            true
+        }
+    }
+
 
     private fun setupBinding() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
 
-    private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-    }
-
     private fun observeLoginState() {
         userAccountViewModel.retrieveAccount(this)
         userAccountViewModel.loginState.observe(this) { isLoggedIn ->
             if (isLoggedIn) {
-                navigate(R.id.DashboardFragment)
+                navigate(R.id.EmailsParentFragment)
             } else {
                 navigate(R.id.LoginFragment)
             }
@@ -74,6 +87,7 @@ class MainActivity : AppCompatActivity() {
                 userAccountViewModel.logout()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

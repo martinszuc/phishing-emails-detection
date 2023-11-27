@@ -4,53 +4,76 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/LoginFragment">
 
+    <!-- Login Fragment -->
     <fragment
         android:id="@+id/LoginFragment"
         android:name="com.martinszuc.phishing_emails_detection.ui.component.login.LoginFragment"
         android:label="@string/login_fragment_label"
         tools:layout="@layout/fragment_login">
-
         <action
-            android:id="@+id/action_LoginFragment_to_DashboardFragment"
-            app:destination="@id/DashboardFragment" />
+            android:id="@+id/action_LoginFragment_to_EmailsParentFragment"
+            app:destination="@id/EmailsParentFragment" />
     </fragment>
 
+    <!-- Emails Parent Fragment (Dashboard) -->
     <fragment
-        android:id="@+id/DashboardFragment"
-        android:name="com.martinszuc.phishing_emails_detection.ui.component.dashboard.DashboardFragment"
-        android:label="dashboard_fragment_label"
-        tools:layout="@layout/fragment_dashboard">
-
-        <action
-            android:id="@+id/action_DashboardFragment_to_EmailImportFragment"
-            app:destination="@id/EmailImportFragment" />
-
-<!--        &lt;!&ndash; Optional: In case you want to allow navigation back to LoginFragment &ndash;&gt;-->
-<!--        <action-->
-<!--            android:id="@+id/action_DashboardFragment_to_LoginFragment"-->
-<!--            app:destination="@id/LoginFragment" />-->
+        android:id="@+id/EmailsParentFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_parent.EmailsParentFragment"
+        android:label="emails_parent_fragment_label"
+        tools:layout="@layout/fragment_emails_parent">
     </fragment>
 
+    <!-- Emails Detector Fragment -->
     <fragment
-        android:id="@+id/EmailImportFragment"
-        android:name="com.martinszuc.phishing_emails_detection.ui.component.import_emails.EmailImportFragment"
-        android:label="email_import_fragment_label"
-        tools:layout="@layout/fragment_email_import">
+        android:id="@+id/EmailsDetectorFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detector.EmailsDetectorFragment"
+        android:label="emails_detector_fragment_label"
+        tools:layout="@layout/fragment_emails_detector"/>
 
-        <action
-            android:id="@+id/action_EmailImportFragment_to_DashboardFragment"
-            app:destination="@id/DashboardFragment" />
-    </fragment>
-
-    <!-- SecondFragment remains unchanged, but I suggest renaming it to better describe its purpose -->
+    <!-- Emails Import Fragment -->
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.martinszuc.phishing_emails_detection.ui.component.new_component.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        android:id="@+id/EmailsImportFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.EmailImportFragment"
+        android:label="emails_detector_fragment_label"
+        tools:layout="@layout/fragment_emails_import"/>
 
-        <action
-            android:id="@+id/action_SecondFragment_to_LoginFragment"
-            app:destination="@id/LoginFragment" />
+    <!-- Emails Saved Fragment -->
+    <fragment
+        android:id="@+id/EmailsSavedFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.EmailsSavedFragment"
+        android:label="emails_saved_fragment_label"
+        tools:layout="@layout/fragment_emails_saved"/>
+
+    <!-- Learning Fragment -->
+    <fragment
+        android:id="@+id/LearningFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.learning.LearningFragment"
+        android:label="learning_fragment_label"
+        tools:layout="@layout/fragment_learning"/>
+
+    <!-- Training Fragment -->
+    <fragment
+        android:id="@+id/TrainingFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.training.TrainingFragment"
+        android:label="@string/title_training"
+        tools:layout="@layout/fragment_training"/>
+
+    <!-- Detector Fragment-->
+    <fragment
+        android:id="@+id/DetectorFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detector.EmailsDetectorFragment"
+        android:label="@string/title_detector"
+        tools:layout="@layout/fragment_detector">
+        <!-- Actions to child fragments if needed -->
     </fragment>
+
+    <!-- Settings Fragment-->
+    <fragment
+        android:id="@+id/SettingsFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.settings.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/fragment_settings">
+        <!-- Actions to child fragments if needed -->
+    </fragment>
+
 </navigation>
