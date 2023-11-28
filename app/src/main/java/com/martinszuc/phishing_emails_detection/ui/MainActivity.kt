@@ -1,14 +1,18 @@
 package com.martinszuc.phishing_emails_detection.ui
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.martinszuc.phishing_emails_detection.R
@@ -29,9 +33,29 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         setupBinding()
+        setupToolbar()
         setupBottomNav()
         observeLoginState()
     }
+
+    private fun setupToolbar() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        // Center the title
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        val textView = TextView(this)
+        textView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        textView.gravity = Gravity.CENTER
+        textView.textSize = 20f
+        binding.toolbar.addView(textView)
+
+        // Set the title based on the current fragment
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            textView.text = destination.label
+        }
+    }
+
 
     private fun setupBottomNav() {
         val navView: BottomNavigationView = findViewById(R.id.bottom_navigation)
@@ -48,7 +72,6 @@ class MainActivity : AppCompatActivity() {
             true
         }
     }
-
 
     private fun setupBinding() {
         binding = ActivityMainBinding.inflate(layoutInflater)

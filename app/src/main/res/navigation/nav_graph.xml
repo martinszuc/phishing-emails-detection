@@ -15,11 +15,11 @@
             app:destination="@id/EmailsParentFragment" />
     </fragment>
 
-    <!-- Emails Parent Fragment (Dashboard) -->
+    <!-- Emails Parent Fragment -->
     <fragment
         android:id="@+id/EmailsParentFragment"
         android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_parent.EmailsParentFragment"
-        android:label="emails_parent_fragment_label"
+        android:label="@string/title_emails"
         tools:layout="@layout/fragment_emails_parent">
     </fragment>
 
@@ -27,28 +27,28 @@
     <fragment
         android:id="@+id/EmailsDetectorFragment"
         android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detector.EmailsDetectorFragment"
-        android:label="emails_detector_fragment_label"
+        android:label="@string/title_emails_detector"
         tools:layout="@layout/fragment_emails_detector"/>
 
     <!-- Emails Import Fragment -->
     <fragment
         android:id="@+id/EmailsImportFragment"
         android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.EmailImportFragment"
-        android:label="emails_import_fragment_label"
+        android:label="@string/title_emails_import"
         tools:layout="@layout/fragment_emails_import"/>
 
     <!-- Emails Saved Fragment -->
     <fragment
         android:id="@+id/EmailsSavedFragment"
         android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.EmailsSavedFragment"
-        android:label="emails_saved_fragment_label"
+        android:label="@string/title_emails_saved"
         tools:layout="@layout/fragment_emails_saved"/>
 
     <!-- Learning Fragment -->
     <fragment
         android:id="@+id/LearningFragment"
         android:name="com.martinszuc.phishing_emails_detection.ui.component.learning.LearningFragment"
-        android:label="learning_fragment_label"
+        android:label="@string/title_learn"
         tools:layout="@layout/fragment_learning"/>
 
     <!-- Training Fragment -->

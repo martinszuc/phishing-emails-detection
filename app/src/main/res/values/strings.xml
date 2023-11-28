@@ -16,11 +16,13 @@
     <string name="login_web_client_id">628461587525-vl58bn3gfjd2bdfunllqlpamk037k06m.apps.googleusercontent.com</string>
     <string name="phishing_info">Awarenes about phishing\n</string>
     <string name="title_emails">My Emails</string>
-    <string name="title_training">Training</string>
-    <string name="title_detector">Detector</string>
-    <string name="title_learning">\t\t\t</string>
-    <string name="title_learn">Learn</string>
+    <string name="title_training">Training your detector</string>
+    <string name="title_detector">Phishing detector</string>
+    <string name="title_learn">Learn about phishing</string>
     <string name="title_moremenu">More</string>
     <string name="title_settings">Settings</string>
     <string name="submit">Save</string>
+    <string name="title_emails_saved">Saved E-mails</string>
+    <string name="title_emails_import">Import E-mails</string>
+    <string name="title_emails_detector">Detected E-mails</string>
 </resources>
