@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.import_emails
+package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import
 
 import android.content.Context
 import android.os.Bundle
@@ -18,20 +18,19 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailImportBinding
-import com.martinszuc.phishing_emails_detection.ui.component.import_emails.adapter.EmailAdapter
+import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsImportBinding
+import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.adapter.EmailsImportAdapter
 import com.martinszuc.phishing_emails_detection.ui.component.login.UserAccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-// TODO make this fragment into MyEmails fragment and add fragment pages for database, gmail, detection pages
 @AndroidEntryPoint
 class EmailImportFragment : Fragment() {
-    private var _binding: FragmentEmailImportBinding? = null
+    private var _binding: FragmentEmailsImportBinding? = null
     private val emailViewModel: EmailViewModel by viewModels()
     private val userAccountViewModel: UserAccountViewModel by activityViewModels() // Inject UserAccountViewModel
-    private lateinit var emailAdapter: EmailAdapter
+    private lateinit var emailsImportAdapter: EmailsImportAdapter
 
     private val binding get() = _binding!!
 
@@ -40,7 +39,7 @@ class EmailImportFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         Log.d("EmailImportFragment", "onCreateView called")
-        _binding = FragmentEmailImportBinding.inflate(inflater, container, false)
+        _binding = FragmentEmailsImportBinding.inflate(inflater, container, false)
 
         observeAccount()
 
@@ -71,8 +70,8 @@ class EmailImportFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         // Initialize EmailAdapter
-        emailAdapter = EmailAdapter(emailViewModel)
-        recyclerView.adapter = emailAdapter
+        emailsImportAdapter = EmailsImportAdapter(emailViewModel)
+        recyclerView.adapter = emailsImportAdapter
 
         // Initialize Import Emails Button
         val importEmailsButton: Button = binding.importEmailsButton
@@ -89,7 +88,7 @@ class EmailImportFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 emailViewModel.emailsFlow.collectLatest { pagingData ->
-                    emailAdapter.submitData(pagingData)
+                    emailsImportAdapter.submitData(pagingData)
                 }
             }
         }
@@ -134,7 +133,7 @@ class EmailImportFragment : Fragment() {
 
     private fun initLoadingSpinner() {
         viewLifecycleOwner.lifecycleScope.launch {
-            emailAdapter.loadStateFlow.collectLatest { loadStates ->
+            emailsImportAdapter.loadStateFlow.collectLatest { loadStates ->
                 binding.loadingSpinner.visibility =
                     if (loadStates.refresh is LoadState.Loading) View.VISIBLE else View.GONE
                 Log.d("EmailImportFragment", "Load state changed: ${loadStates.refresh}")

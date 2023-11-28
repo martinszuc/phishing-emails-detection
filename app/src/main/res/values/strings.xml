@@ -14,4 +14,12 @@
     <string name="save_selected_emails">Save Selected Emails</string>
 <!--    Login web client id    -->
     <string name="login_web_client_id">628461587525-vl58bn3gfjd2bdfunllqlpamk037k06m.apps.googleusercontent.com</string>
+    <string name="phishing_info">Awarenes about phishing\n</string>
+    <string name="title_emails">My Emails</string>
+    <string name="title_training">Training</string>
+    <string name="title_detector">Detector</string>
+    <string name="title_learning">\t\t\t</string>
+    <string name="title_learn">Learn</string>
+    <string name="title_moremenu">More</string>
+    <string name="title_settings">Settings</string>
 </resources>

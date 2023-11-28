@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.import_emails
+package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
