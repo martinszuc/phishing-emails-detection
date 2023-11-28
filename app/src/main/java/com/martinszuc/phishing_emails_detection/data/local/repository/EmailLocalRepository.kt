@@ -20,4 +20,10 @@ class EmailLocalRepository @Inject constructor(
             emailDao.insertAll(emails)
         }
     }
+
+    suspend fun insert(email: Email) {
+        database.withTransaction {
+            emailDao.insert(email)
+        }
+    }
 }

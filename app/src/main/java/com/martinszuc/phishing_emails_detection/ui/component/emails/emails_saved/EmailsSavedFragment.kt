@@ -9,6 +9,7 @@ import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsSavedB
 /**
  * Authored by matoszuc@gmail.com
  */
+// TODO When empty refer to import fragment
 class EmailsSavedFragment : Fragment() {
 
     private var _binding: FragmentEmailsSavedBinding? = null

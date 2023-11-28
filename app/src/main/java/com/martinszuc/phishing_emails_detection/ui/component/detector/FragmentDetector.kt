@@ -1,25 +1,26 @@
-package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detector
+package com.martinszuc.phishing_emails_detection.ui.component.detector
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsDetectorBinding
+import com.martinszuc.phishing_emails_detection.databinding.FragmentDetectorBinding
+
 
 /**
  * Authored by matoszuc@gmail.com
  */
-class EmailsDetectorFragment : Fragment() {
+class FragmentDetector : Fragment() {
 
-    private var _binding: FragmentEmailsDetectorBinding? = null
+    private var _binding: FragmentDetectorBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentEmailsDetectorBinding.inflate(inflater, container, false)
+        _binding = FragmentDetectorBinding.inflate(inflater, container, false)
         return binding.root
     }
 

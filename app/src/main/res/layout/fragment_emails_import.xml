@@ -19,15 +19,15 @@
             android:id="@+id/import_emails_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/import_emails_from_gmail"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:text="@string/import_emails_from_gmail" />
 
         <ProgressBar
             android:id="@+id/loading_spinner"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/emailSelectionRecyclerView"
@@ -37,11 +37,13 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/saveButton"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/save_selected_emails"
-        android:layout_gravity="bottom|end"
-        android:visibility="gone" />
+        android:layout_gravity="end|bottom"
+        android:src="@drawable/ic_saved"
+        android:contentDescription="@string/submit"
+        android:layout_marginBottom="120dp"
+        android:layout_marginRight="16dp"/>
 </FrameLayout>

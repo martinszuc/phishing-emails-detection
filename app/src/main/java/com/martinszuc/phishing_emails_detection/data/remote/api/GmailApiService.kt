@@ -53,7 +53,6 @@ class GmailApiService @Inject constructor(
                     from = email.payload.headers.find { it.name == "From" }?.value ?: "",
                     subject = email.payload.headers.find { it.name == "Subject" }?.value ?: "",
                     body = email.snippet,
-                    isSelected = false
                 )
             }
 

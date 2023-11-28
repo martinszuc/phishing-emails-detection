@@ -34,7 +34,7 @@
     <fragment
         android:id="@+id/EmailsImportFragment"
         android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.EmailImportFragment"
-        android:label="emails_detector_fragment_label"
+        android:label="emails_import_fragment_label"
         tools:layout="@layout/fragment_emails_import"/>
 
     <!-- Emails Saved Fragment -->
@@ -61,10 +61,9 @@
     <!-- Detector Fragment-->
     <fragment
         android:id="@+id/DetectorFragment"
-        android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detector.EmailsDetectorFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.detector.FragmentDetector"
         android:label="@string/title_detector"
         tools:layout="@layout/fragment_detector">
-        <!-- Actions to child fragments if needed -->
     </fragment>
 
     <!-- Settings Fragment-->

@@ -30,14 +30,18 @@ class EmailsImportAdapter(private val viewModel: EmailViewModel) :
         if (email != null) {
             holder.binding.sender.text = email.from
             holder.binding.subject.text = email.subject
-            holder.binding.checkbox.isChecked = email.isSelected
+            holder.binding.checkbox.isChecked = false
 
             holder.binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
-                email.isSelected = isChecked
-                viewModel.toggleEmailSelected(email)
+                if (isChecked) {
+                    viewModel.toggleEmailSelected(email)
+                } else {
+                    viewModel.toggleEmailSelected(email)
+                }
             }
         }
     }
+
 
     companion object {
         private val EMAIL_COMPARATOR = object : DiffUtil.ItemCallback<Email>() {

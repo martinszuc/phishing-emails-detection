@@ -18,8 +18,8 @@ class EmailsPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> EmailsSavedFragment()
-            1 -> EmailsDetectorFragment() // Replace with actual fragment
-            2 -> EmailImportFragment() // Replace with actual fragment
+            1 -> EmailImportFragment()
+            2 -> EmailsDetectorFragment()
             else -> throw IllegalStateException("Invalid position $position")
         }
     }

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,6 +19,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsImportBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.adapter.EmailsImportAdapter
 import com.martinszuc.phishing_emails_detection.ui.component.login.UserAccountViewModel
@@ -41,8 +43,8 @@ class EmailImportFragment : Fragment() {
         Log.d("EmailImportFragment", "onCreateView called")
         _binding = FragmentEmailsImportBinding.inflate(inflater, container, false)
 
-        observeAccount()
-
+        initUserAccount()
+        initFloatingActionButton()
         initEmailsImport()
         initSearchView()
 
@@ -51,17 +53,32 @@ class EmailImportFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         // Observe load state changes
         initLoadingSpinner()
-
-        // Observe account changes
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d("EmailImportFragment", "onDestroyView called")
         _binding = null
+    }
+
+    private fun initFloatingActionButton() {
+        val fab: FloatingActionButton = binding.fab
+
+        // Set an observer on the selectedEmails LiveData
+        emailViewModel.selectedEmails.observe(viewLifecycleOwner) { emails ->
+            if (emails.isNotEmpty()) {
+                fab.show()
+            } else {
+                fab.hide()
+            }
+        }
+
+        fab.setOnClickListener {
+            emailViewModel.saveSelectedEmailsToDatabase()
+            Toast.makeText(context, "Emails successfully saved!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun initEmailsImport() {
@@ -94,7 +111,7 @@ class EmailImportFragment : Fragment() {
         }
     }
 
-    private fun observeAccount() {
+    private fun initUserAccount() {
         userAccountViewModel.account.observe(viewLifecycleOwner) { account ->
             Log.d("EmailImportFragment", "Account: $account")
         }
@@ -129,8 +146,8 @@ class EmailImportFragment : Fragment() {
             context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(binding.searchView.windowToken, 0)
     }
-    // Show a loading spinner while a refresh operation is in progress
 
+    // Show a loading spinner while a refresh operation is in progress
     private fun initLoadingSpinner() {
         viewLifecycleOwner.lifecycleScope.launch {
             emailsImportAdapter.loadStateFlow.collectLatest { loadStates ->

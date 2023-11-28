@@ -21,7 +21,11 @@ class EmailsParentFragment : Fragment() {
     private var _binding: FragmentEmailsParentBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentEmailsParentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -29,6 +33,10 @@ class EmailsParentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupViewPager()
+    }
+
+    private fun setupViewPager() {
         val viewPager: ViewPager2 = binding.viewPager
         viewPager.adapter = EmailsPagerAdapter(this)
 
@@ -36,15 +44,17 @@ class EmailsParentFragment : Fragment() {
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             when (position) {
                 0 -> {
-                    tab.text = "Imports"
-                    tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_email_plus)
-                }
-                1 -> {
                     tab.text = "Saved"
                     tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_saved)
                 }
+
+                1 -> {
+                    tab.text = "Import"
+                    tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_email_plus)
+                }
+
                 2 -> {
-                    tab.text = "Detector"
+                    tab.text = "Detected"
                     tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_email_seal)
                 }
             }
