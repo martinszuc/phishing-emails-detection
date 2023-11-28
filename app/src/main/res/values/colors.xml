@@ -2,6 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="icon_background_light">#FFFFFF</color>
+    <color name="icon_background_dark">#000000</color>
+
+    <color name="ic_launcher_ped_background">#3A3535</color>
+
     <color name="seed">#ffbf07</color>
     <color name="md_theme_light_primary">#795900</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>

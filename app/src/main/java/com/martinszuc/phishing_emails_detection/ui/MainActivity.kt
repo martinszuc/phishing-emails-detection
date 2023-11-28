@@ -11,8 +11,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.martinszuc.phishing_emails_detection.R
@@ -20,18 +18,16 @@ import com.martinszuc.phishing_emails_detection.databinding.ActivityMainBinding
 import com.martinszuc.phishing_emails_detection.ui.component.login.UserAccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-// TODO add bottom navigation
-
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val userAccountViewModel: UserAccountViewModel by viewModels()
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private var isLoggedIn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         setupBinding()
         setupToolbar()
         setupBottomNav()
@@ -40,45 +36,54 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        // Center the title
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        val textView = TextView(this)
-        textView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        textView.gravity = Gravity.CENTER
-        textView.textSize = 20f
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(false)
+            setDisplayShowTitleEnabled(false)
+        }
+        setupToolbarTitle()
+    }
+
+    private fun setupToolbarTitle() {
+        val textView = TextView(this).apply {
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            gravity = Gravity.CENTER
+            textSize = 20f
+        }
         binding.toolbar.addView(textView)
 
-        // Set the title based on the current fragment
-        // Disable on login fragment
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             textView.text = destination.label
+            updateUIBasedOnDestination(destination.id)
+        }
+    }
 
-            if (destination.id == R.id.LoginFragment) {
-                binding.bottomNavigation.visibility = View.GONE
-                binding.toolbar.menu.clear()
-            } else {
-                binding.bottomNavigation.visibility = View.VISIBLE
+    private fun updateUIBasedOnDestination(destinationId: Int) {
+        if (destinationId == R.id.LoginFragment) {
+            binding.bottomNavigation.visibility = View.GONE
+            binding.toolbar.menu.clear()
+        } else {
+            binding.bottomNavigation.visibility = View.VISIBLE
+            if (isLoggedIn) {
                 binding.toolbar.inflateMenu(R.menu.menu_main)
             }
         }
-
     }
-
 
     private fun setupBottomNav() {
         val navView: BottomNavigationView = findViewById(R.id.bottom_navigation)
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         navView.setupWithNavController(navController)
-        navView.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.EmailsParentFragment -> navController.navigate(R.id.EmailsParentFragment)
-                R.id.TrainingFragment -> navController.navigate(R.id.TrainingFragment)
-                R.id.DetectorFragment -> navController.navigate(R.id.DetectorFragment)
-                R.id.LearningFragment -> navController.navigate(R.id.LearningFragment)
-                R.id.SettingsFragment -> navController.navigate(R.id.SettingsFragment)
+        navView.setOnItemSelectedListener { item ->
+            val destinationId = when (item.itemId) {
+                R.id.EmailsParentFragment -> R.id.EmailsParentFragment
+                R.id.TrainingFragment -> R.id.TrainingFragment
+                R.id.DetectorFragment -> R.id.DetectorFragment
+                R.id.LearningFragment -> R.id.LearningFragment
+                R.id.SettingsFragment -> R.id.SettingsFragment
+                else -> return@setOnItemSelectedListener false
             }
+            navController.navigate(destinationId)
             true
         }
     }
@@ -90,44 +95,36 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeLoginState() {
         userAccountViewModel.retrieveAccount(this)
-        userAccountViewModel.loginState.observe(this) { isLoggedIn ->
-            if (isLoggedIn) {
-                navigate(R.id.EmailsParentFragment)
-            } else {
-                navigate(R.id.LoginFragment)
-            }
+        userAccountViewModel.loginState.observe(this) { loggedIn ->
+            isLoggedIn = loggedIn
+            val destinationId = if (loggedIn) R.id.EmailsParentFragment else R.id.LoginFragment
+            navigate(destinationId)
+            invalidateOptionsMenu()
         }
     }
 
     private fun navigate(destinationId: Int) {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        navController.apply {
+        findNavController(R.id.nav_host_fragment_content_main).apply {
             popBackStack()
             navigate(destinationId)
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        menu.clear()
+        if (isLoggedIn) {
+            menuInflater.inflate(R.menu.menu_main, menu)
+        }
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> true
             R.id.action_logout -> {
                 userAccountViewModel.logout(this)
                 true
             }
-
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
     }
 }

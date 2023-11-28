@@ -23,7 +23,6 @@ import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentLoginBinding
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
-// TODO make login to activity and get rid of toolbar and bottom nav
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
