@@ -1,5 +1,6 @@
 package com.martinszuc.phishing_emails_detection.data.local.db.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -20,9 +21,8 @@ interface EmailDao {
     suspend fun deleteAllEmails()
     @Query("SELECT * FROM emails ORDER BY id DESC LIMIT 1")
     suspend fun getLatestEmail(): Email?
-//    @Query("SELECT * FROM emails WHERE subject LIKE :query")      // TODO Work in progress
-//    suspend fun searchEmails(query: String): List<Email>
-
-//    @Query("SELECT * FROM emails ORDER BY rowId ASC")
-//    fun getEmails(): PagingSource<Int, Email>
+    @Query("SELECT * FROM emails ORDER BY rowId DESC")
+    fun getAllEmails(): PagingSource<Int, Email>
+    @Query("SELECT * FROM emails WHERE subject LIKE :query OR sender LIKE :query ORDER BY rowId DESC")
+    fun searchEmails(query: String): PagingSource<Int, Email>
 }

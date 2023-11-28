@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EmailViewModel @Inject constructor(
+class EmailsImportViewModel @Inject constructor(
     private val localRepository: EmailLocalRepository,
     private val remoteRepository: EmailRemoteRepository
 ) : ViewModel() {

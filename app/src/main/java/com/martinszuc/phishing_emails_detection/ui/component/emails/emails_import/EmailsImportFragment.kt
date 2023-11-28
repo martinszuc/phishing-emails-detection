@@ -28,9 +28,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class EmailImportFragment : Fragment() {
+class EmailsImportFragment : Fragment() {
     private var _binding: FragmentEmailsImportBinding? = null
-    private val emailViewModel: EmailViewModel by viewModels()
+    private val emailsImportViewModel: EmailsImportViewModel by viewModels()
     private val userAccountViewModel: UserAccountViewModel by activityViewModels() // Inject UserAccountViewModel
     private lateinit var emailsImportAdapter: EmailsImportAdapter
 
@@ -67,7 +67,7 @@ class EmailImportFragment : Fragment() {
         val fab: FloatingActionButton = binding.fab
 
         // Set an observer on the selectedEmails LiveData
-        emailViewModel.selectedEmails.observe(viewLifecycleOwner) { emails ->
+        emailsImportViewModel.selectedEmails.observe(viewLifecycleOwner) { emails ->
             if (emails.isNotEmpty()) {
                 fab.show()
             } else {
@@ -76,7 +76,7 @@ class EmailImportFragment : Fragment() {
         }
 
         fab.setOnClickListener {
-            emailViewModel.saveSelectedEmailsToDatabase()
+            emailsImportViewModel.saveSelectedEmailsToDatabase()
             Toast.makeText(context, "Emails successfully saved!", Toast.LENGTH_SHORT).show()
         }
     }
@@ -87,7 +87,7 @@ class EmailImportFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         // Initialize EmailAdapter
-        emailsImportAdapter = EmailsImportAdapter(emailViewModel)
+        emailsImportAdapter = EmailsImportAdapter(emailsImportViewModel)
         recyclerView.adapter = emailsImportAdapter
 
         // Initialize Import Emails Button
@@ -104,7 +104,7 @@ class EmailImportFragment : Fragment() {
     private fun observeEmailsFlow() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                emailViewModel.emailsFlow.collectLatest { pagingData ->
+                emailsImportViewModel.emailsFlow.collectLatest { pagingData ->
                     emailsImportAdapter.submitData(pagingData)
                 }
             }
@@ -122,7 +122,7 @@ class EmailImportFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // This method is called when the user submits the search string.
                 query?.let {
-                    emailViewModel.searchEmails(it)
+                    emailsImportViewModel.searchEmails(it)
                 }
 
                 hideKeyboard()
@@ -134,7 +134,7 @@ class EmailImportFragment : Fragment() {
                 // This method is called when the query text is changed by the user.
                 if (newText.isNullOrEmpty()) {
                     // If the query text is empty, call getEmails to fetch all emails.
-                    emailViewModel.getEmails()
+                    emailsImportViewModel.getEmails()
                 }
                 return true
             }

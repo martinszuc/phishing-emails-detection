@@ -23,7 +23,11 @@ class GmailApiService @Inject constructor(
     private val transport = NetHttpTransport()
     private val jsonFactory = JacksonFactory.getDefaultInstance()
 
-    private suspend fun fetchEmails(query: String?, pageToken: String?, pageSize: Int): Pair<List<Email>, String?> =
+    private suspend fun fetchEmails(
+        query: String?,
+        pageToken: String?,
+        pageSize: Int
+    ): Pair<List<Email>, String?> =
         withContext(Dispatchers.IO) {
             val credential = GoogleAccountCredential.usingOAuth2(
                 context, listOf(Constants.GMAIL_READONLY_SCOPE)
@@ -39,7 +43,9 @@ class GmailApiService @Inject constructor(
                 .setPageToken(pageToken)
 
             if (query != null) {
-                listRequest.q = "subject:$query"
+                listRequest.q = "in:anywhere (subject:$query OR from:$query)"
+            } else {
+                listRequest.q = "in:anywhere"
             }
 
             val listResponse = listRequest.execute()
@@ -50,9 +56,10 @@ class GmailApiService @Inject constructor(
 
                 Email(
                     id = message.id,
-                    from = email.payload.headers.find { it.name == "From" }?.value ?: "",
+                    sender = email.payload.headers.find { it.name == "From" }?.value ?: "",
                     subject = email.payload.headers.find { it.name == "Subject" }?.value ?: "",
                     body = email.snippet,
+                    timestamp = email.internalDate
                 )
             }
 
@@ -67,7 +74,11 @@ class GmailApiService @Inject constructor(
         return fetchEmails(null, pageToken, pageSize)
     }
 
-    suspend fun searchEmails(query: String, pageToken: String?, pageSize: Int): Pair<List<Email>, String?> {
+    suspend fun searchEmails(
+        query: String,
+        pageToken: String?,
+        pageSize: Int
+    ): Pair<List<Email>, String?> {
         Log.d(
             "GmailApiService",
             "Searching emails with query: $query, pageToken: $pageToken and pageSize: $pageSize"

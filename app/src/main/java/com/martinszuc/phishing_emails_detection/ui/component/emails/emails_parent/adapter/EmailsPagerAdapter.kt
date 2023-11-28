@@ -3,7 +3,7 @@ package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_pare
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detector.EmailsDetectorFragment
-import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.EmailImportFragment
+import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.EmailsImportFragment
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.EmailsSavedFragment
 
 /**
@@ -18,7 +18,7 @@ class EmailsPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> EmailsSavedFragment()
-            1 -> EmailImportFragment()
+            1 -> EmailsImportFragment()
             2 -> EmailsDetectorFragment()
             else -> throw IllegalStateException("Invalid position $position")
         }

@@ -33,7 +33,7 @@
     <!-- Emails Import Fragment -->
     <fragment
         android:id="@+id/EmailsImportFragment"
-        android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.EmailImportFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.EmailsImportFragment"
         android:label="@string/title_emails_import"
         tools:layout="@layout/fragment_emails_import"/>
 

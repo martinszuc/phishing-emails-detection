@@ -44,6 +44,6 @@
         android:layout_gravity="end|bottom"
         android:src="@drawable/ic_saved"
         android:contentDescription="@string/submit"
-        android:layout_marginBottom="120dp"
+        android:layout_marginBottom="72dp"
         android:layout_marginRight="16dp"/>
 </FrameLayout>
