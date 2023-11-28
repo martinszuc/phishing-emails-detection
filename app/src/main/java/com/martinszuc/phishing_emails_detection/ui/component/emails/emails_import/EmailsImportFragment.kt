@@ -90,16 +90,12 @@ class EmailsImportFragment : Fragment() {
         emailsImportAdapter = EmailsImportAdapter(emailsImportViewModel)
         recyclerView.adapter = emailsImportAdapter
 
-        // Initialize Import Emails Button
-        val importEmailsButton: Button = binding.importEmailsButton
-        importEmailsButton.setOnClickListener {
-            importEmailsButton.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
-            binding.searchView.visibility = View.VISIBLE
+        recyclerView.visibility = View.VISIBLE
+        binding.searchView.visibility = View.VISIBLE
 
-            // Start observing the emails once button is pressed
-            observeEmailsFlow()
-        }
+        // Start observing the emails once button is pressed
+        observeEmailsFlow()
+
     }
 
     private fun observeEmailsFlow() {

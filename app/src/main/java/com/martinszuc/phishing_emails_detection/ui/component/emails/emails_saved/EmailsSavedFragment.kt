@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -16,6 +18,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsSavedBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.adapter.EmailsSavedAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,9 +47,36 @@ class EmailsSavedFragment : Fragment() {
 
         initEmailsSaved()
         initSearchView()
+        initEmptyTextAndButton()
         observeEmailsFlow()
+
         return binding.root
     }
+
+    private fun initEmptyTextAndButton() {
+        val viewPager: ViewPager2? = parentFragment?.view?.findViewById(R.id.view_pager)
+
+        emailsSavedAdapter.addLoadStateListener { loadState ->
+            // Check if the current load state is empty.
+            if (loadState.refresh is LoadState.NotLoading && emailsSavedAdapter.itemCount == 0) {
+                // If the emails flow is empty, show the TextView and Button
+                binding.emptySavedTextview.visibility = View.VISIBLE
+                binding.gotoSavedEmailsButton.visibility = View.VISIBLE
+                binding.searchView.visibility = View.GONE
+
+                binding.gotoSavedEmailsButton.setOnClickListener {
+                    // Navigate to the emails import fragment
+                    viewPager?.currentItem = 1
+                }
+            } else {
+                // If the emails flow is not empty, hide the TextView and Button and show SearchView
+                binding.emptySavedTextview.visibility = View.GONE
+                binding.gotoSavedEmailsButton.visibility = View.GONE
+                binding.searchView.visibility = View.VISIBLE
+            }
+        }
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,13 +105,14 @@ class EmailsSavedFragment : Fragment() {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 emailsSavedViewModel.emailsFlow.collectLatest { pagingData ->
                     emailsSavedAdapter.submitData(pagingData)
-                    binding.emailSelectionRecyclerView.layoutManager?.scrollToPosition(0)  // Add this line
+                    binding.emailSelectionRecyclerView.layoutManager?.scrollToPosition(0)
                 }
             }
         }
     }
 
     private fun initSearchView() {
+        binding.searchView.visibility = View.GONE
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // This method is called when the user submits the search string.
@@ -102,6 +134,7 @@ class EmailsSavedFragment : Fragment() {
             }
         })
     }
+
     private fun hideKeyboard() {
         val inputManager =
             context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

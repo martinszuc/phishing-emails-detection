@@ -13,7 +13,27 @@
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="Search by subject" />
+            android:queryHint="Search by subject"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/empty_saved_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="72dp"
+            android:text="@string/empty_saved_label"
+            style="@style/AppTheme"
+            android:visibility="gone"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:visibility="gone"
+            android:id="@+id/goto_saved_emails_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center"
+            android:text="@string/goto_saved_emails_label" />
 
         <ProgressBar
             android:id="@+id/loading_spinner"

@@ -26,4 +26,8 @@
     <string name="title_emails_import">Import E-mails</string>
     <string name="title_emails_detector">Detected E-mails</string>
     <string name="timestamp">time</string>
+    <string name="goto_saved_emails_label">Import e-mails from your Gmail account</string>
+    <string name="empty_saved_label">You have no saved e-mails</string>
+    <string name="title_tablayout">Tab layout</string>
+    <string name="title_appbarlayout">App bar layout</string>
 </resources>
