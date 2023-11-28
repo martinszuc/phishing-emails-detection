@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.martinszuc.phishing_emails_detection.data.local.repository.UserRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -51,12 +52,23 @@ class UserManager @Inject constructor(
         }
     }
 
-    fun logout() {
+    fun logout(context: Context) {
         Log.d("UserManager", "Logging out")
-        _account.value = null
-        userRepository.logout()
-        _isUserLoggedIn.value = false
+
+        // Get a GoogleSignInClient instance
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
+        val googleSignInClient = GoogleSignIn.getClient(context, gso)
+
+        // Sign out the currently signed in user
+        googleSignInClient.signOut().addOnCompleteListener {
+            _account.value = null
+            userRepository.logout()
+            _isUserLoggedIn.value = false
+        }
     }
+
 
     private fun saveLoginState(isLoggedIn: Boolean) {
         Log.d("UserManager", "Saving login state: $isLoggedIn")

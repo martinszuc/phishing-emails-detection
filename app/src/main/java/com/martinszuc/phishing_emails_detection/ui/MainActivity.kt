@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -12,7 +13,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.martinszuc.phishing_emails_detection.R
@@ -51,9 +51,19 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.addView(textView)
 
         // Set the title based on the current fragment
+        // Disable on login fragment
         navController.addOnDestinationChangedListener { _, destination, _ ->
             textView.text = destination.label
+
+            if (destination.id == R.id.LoginFragment) {
+                binding.bottomNavigation.visibility = View.GONE
+                binding.toolbar.menu.clear()
+            } else {
+                binding.bottomNavigation.visibility = View.VISIBLE
+                binding.toolbar.inflateMenu(R.menu.menu_main)
+            }
         }
+
     }
 
 
@@ -107,7 +117,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_settings -> true
             R.id.action_logout -> {
-                userAccountViewModel.logout()
+                userAccountViewModel.logout(this)
                 true
             }
 

@@ -28,8 +28,8 @@ class UserAccountViewModel @Inject constructor(
         userManager.checkUserSignInState(context)
     }
 
-    fun logout() {
+    fun logout(context: Context) {
         Log.d("UserAccountViewModel", "Logging out")
-        userManager.logout()
+        userManager.logout(context)
     }
 }
