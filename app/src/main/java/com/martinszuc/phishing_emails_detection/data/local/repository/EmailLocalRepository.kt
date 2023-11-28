@@ -19,29 +19,29 @@ import javax.inject.Inject
 class EmailLocalRepository @Inject constructor(
     private val database: AppDatabase
 ) {
-    private val emailDao = database.emailDao()
+    private val emailsImportDao = database.emailsImportDao()
 
     suspend fun insertAll(emails: List<Email>) {
         database.withTransaction {
-            emailDao.insertAll(emails)
+            emailsImportDao.insertAll(emails)
         }
     }
 
     suspend fun insert(email: Email) {
         database.withTransaction {
-            emailDao.insert(email)
+            emailsImportDao.insert(email)
         }
     }
 
     fun getAllEmails(): Flow<PagingData<Email>> {
         return Pager(PagingConfig(pageSize = 10)) {
-            emailDao.getAllEmails()
+            emailsImportDao.getAllEmails()
         }.flow
     }
 
     fun searchEmails(query: String): Flow<PagingData<Email>> {
         return Pager(PagingConfig(pageSize = 10)) {
-            emailDao.searchEmails("%$query%")
+            emailsImportDao.searchEmails("%$query%")
         }.flow
     }
 }

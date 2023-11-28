@@ -8,7 +8,7 @@ import androidx.room.Query
 import com.martinszuc.phishing_emails_detection.data.local.entity.Email
 
 @Dao
-interface EmailDao {
+interface EmailsImportDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(emails: List<Email>)
     @Insert(onConflict = OnConflictStrategy.REPLACE)

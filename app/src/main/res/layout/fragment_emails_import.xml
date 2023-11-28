@@ -13,12 +13,14 @@
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="Search by subject" />
+            android:queryHint="Search by subject"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/import_emails_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:layout_gravity="center"
             android:text="@string/import_emails_from_gmail" />
 

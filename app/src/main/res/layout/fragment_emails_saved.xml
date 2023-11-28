@@ -38,5 +38,6 @@
         android:src="@drawable/ic_saved"
         android:contentDescription="@string/submit"
         android:layout_marginBottom="72dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"/>
 </FrameLayout>

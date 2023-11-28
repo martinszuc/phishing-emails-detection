@@ -95,6 +95,7 @@ class EmailsImportFragment : Fragment() {
         importEmailsButton.setOnClickListener {
             importEmailsButton.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
+            binding.searchView.visibility = View.VISIBLE
 
             // Start observing the emails once button is pressed
             observeEmailsFlow()
