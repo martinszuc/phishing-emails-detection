@@ -19,7 +19,7 @@ class GmailApiService @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userManager: UserManager
 ) {
-
+    // TODO import full format of the email when downloading to db.
     private val transport = NetHttpTransport()
     private val jsonFactory = JacksonFactory.getDefaultInstance()
 

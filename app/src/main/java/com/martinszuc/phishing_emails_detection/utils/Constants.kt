@@ -12,5 +12,8 @@ class Constants {
         const val GMAIL_READONLY_SCOPE = "https://www.googleapis.com/auth/gmail.readonly"
         const val APPLICATION_NAME = "Phishing emails detection"
 
+        const val PHISHING_QUIZ_LINK = "https://phishingquiz.withgoogle.com/"
+        const val PHISHING_INFO_LINK = "https://consumer.ftc.gov/articles/how-recognize-and-avoid-phishing-scams"
+
     }
 }

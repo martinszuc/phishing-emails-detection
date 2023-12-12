@@ -29,7 +29,6 @@ import kotlinx.coroutines.launch
 /**
  * Authored by matoszuc@gmail.com
  */
-// TODO When empty refer to import fragment
 @AndroidEntryPoint
 class EmailsSavedFragment : Fragment() {
     private var _binding: FragmentEmailsSavedBinding? = null
