@@ -2,7 +2,7 @@ package com.martinszuc.phishing_emails_detection.data.remote.api.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.martinszuc.phishing_emails_detection.data.local.entity.Email
+import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.remote.api.GmailApiService
 /**
  * This is a SearchGmailPagingSource class that extends PagingSource from the Android Paging library.
@@ -16,11 +16,11 @@ import com.martinszuc.phishing_emails_detection.data.remote.api.GmailApiService
 class SearchGmailPagingSource(
     private val apiService: GmailApiService,
     private val query: String
-) : PagingSource<String, Email>() {
+) : PagingSource<String, EmailMinimal>() {
 
-    override suspend fun load(params: LoadParams<String>): LoadResult<String, Email> {
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, EmailMinimal> {
         return try {
-            val response = apiService.searchEmails(query, params.key, params.loadSize)
+            val response = apiService.searchEmailsMinimal(query, params.key, params.loadSize)
             LoadResult.Page(
                 data = response.first,
                 prevKey = null, // Gmail API only supports forward pagination.
@@ -31,7 +31,7 @@ class SearchGmailPagingSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<String, Email>): String? {
+    override fun getRefreshKey(state: PagingState<String, EmailMinimal>): String? {
         return null
     }
 }

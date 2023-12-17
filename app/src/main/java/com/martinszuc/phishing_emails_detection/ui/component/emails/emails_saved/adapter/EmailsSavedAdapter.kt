@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.martinszuc.phishing_emails_detection.data.local.entity.Email
+import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSelectionBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.EmailsSavedViewModel
 import java.text.SimpleDateFormat
@@ -17,7 +17,7 @@ import java.util.Locale
  * Authored by matoszuc@gmail.com
  */
 class EmailsSavedAdapter(private val viewModel: EmailsSavedViewModel) :
-    PagingDataAdapter<Email, EmailsSavedAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
+    PagingDataAdapter<EmailMinimal, EmailsSavedAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
 
     inner class EmailViewHolder(val binding: ItemEmailSelectionBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -43,11 +43,11 @@ class EmailsSavedAdapter(private val viewModel: EmailsSavedViewModel) :
     }
 
     companion object {
-        private val EMAIL_COMPARATOR = object : DiffUtil.ItemCallback<Email>() {
-            override fun areItemsTheSame(oldItem: Email, newItem: Email): Boolean =
+        private val EMAIL_COMPARATOR = object : DiffUtil.ItemCallback<EmailMinimal>() {
+            override fun areItemsTheSame(oldItem: EmailMinimal, newItem: EmailMinimal): Boolean =
                 oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: Email, newItem: Email): Boolean =
+            override fun areContentsTheSame(oldItem: EmailMinimal, newItem: EmailMinimal): Boolean =
                 oldItem == newItem
         }
     }

@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.room.withTransaction
 import com.martinszuc.phishing_emails_detection.data.local.db.AppDatabase
-import com.martinszuc.phishing_emails_detection.data.local.entity.Email
+import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -16,32 +16,32 @@ import javax.inject.Inject
  *
  * @author matoszuc@gmail.com
  */
-class EmailLocalRepository @Inject constructor(
+class EmailMinimalLocalRepository@Inject constructor(
     private val database: AppDatabase
 ) {
-    private val emailsImportDao = database.emailsImportDao()
+    private val emailMinimalDao = database.emailMinimalDao()
 
-    suspend fun insertAll(emails: List<Email>) {
+    suspend fun insertAll(emails: List<EmailMinimal>) {
         database.withTransaction {
-            emailsImportDao.insertAll(emails)
+            emailMinimalDao.insertAll(emails)
         }
     }
 
-    suspend fun insert(email: Email) {
+    suspend fun insert(email: EmailMinimal) {
         database.withTransaction {
-            emailsImportDao.insert(email)
+            emailMinimalDao.insert(email)
         }
     }
 
-    fun getAllEmails(): Flow<PagingData<Email>> {
+    fun getAllEmails(): Flow<PagingData<EmailMinimal>> {
         return Pager(PagingConfig(pageSize = 10)) {
-            emailsImportDao.getAllEmails()
+            emailMinimalDao.getAllEmails()
         }.flow
     }
 
-    fun searchEmails(query: String): Flow<PagingData<Email>> {
+    fun searchEmails(query: String): Flow<PagingData<EmailMinimal>> {
         return Pager(PagingConfig(pageSize = 10)) {
-            emailsImportDao.searchEmails("%$query%")
+            emailMinimalDao.searchEmails("%$query%")
         }.flow
     }
 }

@@ -14,7 +14,7 @@
     <string name="save_selected_emails">Save</string>
 <!--    Login web client id    -->
     <string name="login_web_client_id">628461587525-vl58bn3gfjd2bdfunllqlpamk037k06m.apps.googleusercontent.com</string>
-    <string name="phishing_info_text">Scammers use email or text messages to trick you into giving them your personal and financial information. But there are several ways to protect yourself:</string>
+    <string name="phishing_info_text">Scammers use email or text messages to trick you into giving them your personal and financial information. But there are several ways to protect yourself!</string>
     <string name="phishing_info_link"><a href="https://consumer.ftc.gov/articles/how-recognize-and-avoid-phishing-scams">How to Recognize and Avoid Phishing Scams</a></string>
     <string name="title_emails">My Emails</string>
     <string name="title_training">Training your detector</string>

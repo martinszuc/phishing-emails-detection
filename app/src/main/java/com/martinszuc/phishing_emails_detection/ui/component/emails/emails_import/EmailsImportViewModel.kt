@@ -4,9 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import com.martinszuc.phishing_emails_detection.data.local.entity.Email
-import com.martinszuc.phishing_emails_detection.data.local.repository.EmailLocalRepository
-import com.martinszuc.phishing_emails_detection.data.remote.repository.EmailRemoteRepository
+import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
+import com.martinszuc.phishing_emails_detection.data.local.repository.EmailMinimalLocalRepository
+import com.martinszuc.phishing_emails_detection.data.remote.repository.EmailMinimalRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -18,13 +18,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EmailsImportViewModel @Inject constructor(
-    private val localRepository: EmailLocalRepository,
-    private val remoteRepository: EmailRemoteRepository
+    private val localRepository: EmailMinimalLocalRepository,
+    private val remoteRepository: EmailMinimalRemoteRepository
 ) : ViewModel() {
 
-    private val _emailsFlow = MutableStateFlow<PagingData<Email>>(PagingData.empty())
-    val emailsFlow: Flow<PagingData<Email>> = _emailsFlow.asStateFlow()
-    val selectedEmails = MutableLiveData<List<Email>>(emptyList())
+    private val _emailsFlow = MutableStateFlow<PagingData<EmailMinimal>>(PagingData.empty())
+    val emailsFlow: Flow<PagingData<EmailMinimal>> = _emailsFlow.asStateFlow()
+    val selectedEmails = MutableLiveData<List<EmailMinimal>>(emptyList())
 
 
 
@@ -46,7 +46,7 @@ class EmailsImportViewModel @Inject constructor(
         }
     }
 
-    fun toggleEmailSelected(email: Email) {
+    fun toggleEmailSelected(email: EmailMinimal) {
         val currentSelectedEmails = selectedEmails.value ?: emptyList()
         if (email in currentSelectedEmails) {
             selectedEmails.value = currentSelectedEmails - email

@@ -4,10 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.martinszuc.phishing_emails_detection.data.local.entity.Email
-import com.martinszuc.phishing_emails_detection.data.local.repository.EmailLocalRepository
+import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
+import com.martinszuc.phishing_emails_detection.data.local.repository.EmailMinimalLocalRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,11 +19,11 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class EmailsSavedViewModel @Inject constructor(
-    private val localRepository: EmailLocalRepository
+    private val localRepository: EmailMinimalLocalRepository
 ) : ViewModel() {
 
-    private val _emailsFlow = MutableStateFlow<PagingData<Email>>(PagingData.empty())
-    val emailsFlow: Flow<PagingData<Email>> = _emailsFlow.asStateFlow()
+    private val _emailsFlow = MutableStateFlow<PagingData<EmailMinimal>>(PagingData.empty())
+    val emailsFlow: Flow<PagingData<EmailMinimal>> = _emailsFlow.asStateFlow()
 
     init {
         getEmails()
