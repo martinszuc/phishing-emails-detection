@@ -106,50 +106,55 @@ class GmailApiService @Inject constructor(
 
             val user = "me"
 
-            val emails = emailIds.map { emailId ->
+            val emails = emailIds.mapNotNull { emailId ->
                 val email =
                     service.users().messages().get(user, emailId).setFormat("full").execute()
-
-                val headers = email.payload.headers.map { header ->
-                    Header(name = header.name, value = header.value)
-                }
-
-                val parts = email.payload.parts.map { part ->
-                    val partHeaders = part.headers.map { header ->
+                if (email?.payload != null) {
+                    val headers = email.payload.headers?.map { header ->
                         Header(name = header.name, value = header.value)
-                    }
-                    val partBody = Body(data = part.body.data, size = part.body.size)
-                    Part(
-                        partId = part.partId,
-                        mimeType = part.mimeType,
-                        filename = part.filename,
-                        headers = partHeaders,
-                        body = partBody
+                    } ?: emptyList()
+
+                    val parts = email.payload.parts?.map { part ->
+                        val partHeaders = part.headers?.map { header ->
+                            Header(name = header.name, value = header.value)
+                        } ?: emptyList()
+                        val partBody = part.body.let { Body(data = it.data, size = it.size) }
+                        Part(
+                            partId = part.partId,
+                            mimeType = part.mimeType,
+                            filename = part.filename,
+                            headers = partHeaders,
+                            body = partBody
+                        )
+                    } ?: emptyList()
+
+                    val payloadBody =
+                        email.payload.body?.let { Body(data = it.data ?: "", size = it.size) }
+                    val payload = Payload(
+                        partId = email.payload.partId,
+                        mimeType = email.payload.mimeType,
+                        filename = email.payload.filename,
+                        headers = headers,
+                        body = payloadBody ?: Body(data = "", size = 0),  // Use a default Body when payloadBody is null
+                        parts = parts
                     )
+
+                    EmailFull(
+                        id = email.id,
+                        threadId = email.threadId,
+                        labelIds = email.labelIds,
+                        snippet = email.snippet,
+                        historyId = email.historyId.toLong(),
+                        internalDate = email.internalDate,
+                        payload = payload
+                    )
+                } else {
+                    Log.d("fetchEmailFullByIds", "Email with ID $emailId has null payload")
+                    null
                 }
-
-                val payloadBody =
-                    Body(data = email.payload.body.data, size = email.payload.body.size)
-                val payload = Payload(
-                    partId = email.payload.partId,
-                    mimeType = email.payload.mimeType,
-                    filename = email.payload.filename,
-                    headers = headers,
-                    body = payloadBody,
-                    parts = parts
-                )
-
-                EmailFull(
-                    id = email.id,
-                    threadId = email.threadId,
-                    labelIds = email.labelIds,
-                    snippet = email.snippet,
-                    historyId = email.historyId.toLong(),
-                    internalDate = email.internalDate,
-                    payload = payload
-                )
             }
 
+            Log.d("fetchEmailFullByIds", "Fetched ${emails.size} full emails")
             emails
         }
 }

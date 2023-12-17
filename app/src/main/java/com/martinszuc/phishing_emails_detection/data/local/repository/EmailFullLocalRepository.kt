@@ -1,8 +1,12 @@
 package com.martinszuc.phishing_emails_detection.data.local.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.room.withTransaction
 import com.martinszuc.phishing_emails_detection.data.local.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.local.entity.EmailFull
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 /**
@@ -15,7 +19,13 @@ class EmailFullLocalRepository@Inject constructor(
 
     suspend fun insertEmailFull(emailFull: EmailFull) {
         database.withTransaction {
-            emailFullDao.insertEmailFull(emailFull)
+            emailFullDao.insert(emailFull)
+        }
+    }
+
+    suspend fun insertAllEmailsFull(emails: List<EmailFull>) {
+        database.withTransaction {
+            emailFullDao.insertAll(emails)
         }
     }
 
@@ -23,8 +33,11 @@ class EmailFullLocalRepository@Inject constructor(
         return emailFullDao.getEmailFullById(id)
     }
 
-    suspend fun getAllEmailsFull(): List<EmailFull> {
-        return emailFullDao.getAllEmailsFull()
+    fun getAllEmailsFull(): Flow<PagingData<EmailFull>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            pagingSourceFactory = { emailFullDao.getAll() }
+        ).flow
     }
 
     suspend fun deleteEmailFullById(id: String) {

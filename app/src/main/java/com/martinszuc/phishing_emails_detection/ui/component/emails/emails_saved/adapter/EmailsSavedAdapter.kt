@@ -2,29 +2,29 @@ package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_save
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
-import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSelectionBinding
+import com.martinszuc.phishing_emails_detection.data.local.entity.EmailFull
+import com.martinszuc.phishing_emails_detection.databinding.ItemEmailFullBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.EmailsSavedViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
 /**
  * Authored by matoszuc@gmail.com
  */
 class EmailsSavedAdapter(private val viewModel: EmailsSavedViewModel) :
-    PagingDataAdapter<EmailMinimal, EmailsSavedAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
+    PagingDataAdapter<EmailFull, EmailsSavedAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
 
-    inner class EmailViewHolder(val binding: ItemEmailSelectionBinding) :
+    inner class EmailViewHolder(val binding: ItemEmailFullBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmailViewHolder {
         val binding =
-            ItemEmailSelectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemEmailFullBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return EmailViewHolder(binding)
     }
 
@@ -34,20 +34,29 @@ class EmailsSavedAdapter(private val viewModel: EmailsSavedViewModel) :
         if (email != null) {
             // Convert the timestamp to a human-readable format
             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-            val date = Date(email.timestamp)
+            val date = Date(email.internalDate)
 
-            holder.binding.sender.text = email.sender
-            holder.binding.subject.text = email.subject
+            holder.binding.sender.text = email.payload.headers.find { it.name == "From" }?.value
+            holder.binding.subject.text = email.payload.headers.find { it.name == "Subject" }?.value
             holder.binding.timestamp.text = sdf.format(date)
+
+            // Check if parts is not null or empty
+            if (!email.payload.parts.isNullOrEmpty()) {
+                holder.binding.attachments.text = email.payload.parts.size.toString()
+                holder.binding.attachments.visibility = View.VISIBLE
+            } else {
+                holder.binding.attachments.visibility = View.GONE
+            }
         }
     }
 
+
     companion object {
-        private val EMAIL_COMPARATOR = object : DiffUtil.ItemCallback<EmailMinimal>() {
-            override fun areItemsTheSame(oldItem: EmailMinimal, newItem: EmailMinimal): Boolean =
+        private val EMAIL_COMPARATOR = object : DiffUtil.ItemCallback<EmailFull>() {
+            override fun areItemsTheSame(oldItem: EmailFull, newItem: EmailFull): Boolean =
                 oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: EmailMinimal, newItem: EmailMinimal): Boolean =
+            override fun areContentsTheSame(oldItem: EmailFull, newItem: EmailFull): Boolean =
                 oldItem == newItem
         }
     }

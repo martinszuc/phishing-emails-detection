@@ -4,8 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.martinszuc.phishing_emails_detection.data.local.entity.EmailFull
 import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
-import com.martinszuc.phishing_emails_detection.data.local.repository.EmailMinimalLocalRepository
+import com.martinszuc.phishing_emails_detection.data.local.repository.EmailFullLocalRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,11 +20,11 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class EmailsSavedViewModel @Inject constructor(
-    private val localRepository: EmailMinimalLocalRepository
+    private val emailFullLocalRepository: EmailFullLocalRepository
 ) : ViewModel() {
 
-    private val _emailsFlow = MutableStateFlow<PagingData<EmailMinimal>>(PagingData.empty())
-    val emailsFlow: Flow<PagingData<EmailMinimal>> = _emailsFlow.asStateFlow()
+    private val _emailsFlow = MutableStateFlow<PagingData<EmailFull>>(PagingData.empty())
+    val emailsFlow: Flow<PagingData<EmailFull>> = _emailsFlow.asStateFlow()
 
     init {
         getEmails()
@@ -31,17 +32,17 @@ class EmailsSavedViewModel @Inject constructor(
 
     fun getEmails() {
         viewModelScope.launch {
-            localRepository.getAllEmails().cachedIn(viewModelScope).collectLatest { pagingData ->
+            emailFullLocalRepository.getAllEmailsFull().cachedIn(viewModelScope).collectLatest { pagingData ->
                 _emailsFlow.value = pagingData
             }
         }
     }
 
     fun searchEmails(query: String) {
-        viewModelScope.launch {
-            localRepository.searchEmails(query).cachedIn(viewModelScope).collectLatest { pagingData ->
-                _emailsFlow.value = pagingData
-            }
-        }
+//        viewModelScope.launch {
+//            emailFullLocalRepository.searchEmails(query).cachedIn(viewModelScope).collectLatest { pagingData ->
+//                _emailsFlow.value = pagingData
+//            }
+//        }
     }
 }

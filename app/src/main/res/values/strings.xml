@@ -34,4 +34,6 @@
     <string name="take_a_phishing_quiz">Take a Phishing quiz</string>
     <string name="learn_more_about_phishing">Learn more about phishing:</string>
     <string name="learn_more_about_phishing_prevention">Learn more about phishing prevention</string>
+    <string name="snippet">snippet\n</string>
+    <string name="attachments">attachments</string>
 </resources>

@@ -10,10 +10,10 @@ import com.martinszuc.phishing_emails_detection.utils.Converters
  */
 data class Part(
     @ColumnInfo(name = "part_id")
-    val partId: String,
+    val partId: String?,
     @ColumnInfo(name = "mime_type")
     val mimeType: String,
-    val filename: String,
+    val filename: String?,
     @TypeConverters(Converters::class)
     val headers: List<Header>,
     @Embedded

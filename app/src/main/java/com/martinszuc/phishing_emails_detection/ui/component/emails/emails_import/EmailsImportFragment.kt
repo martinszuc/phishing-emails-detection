@@ -76,7 +76,7 @@ class EmailsImportFragment : Fragment() {
         }
 
         fab.setOnClickListener {
-            emailsImportViewModel.saveSelectedEmailsToDatabase()
+            emailsImportViewModel.importSelectedEmails()
             Toast.makeText(context, "Emails successfully saved!", Toast.LENGTH_SHORT).show()
         }
     }
