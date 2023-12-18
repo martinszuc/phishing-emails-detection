@@ -2,9 +2,11 @@ package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_deta
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.Payload
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailDetailsPayloadBinding
 
@@ -31,16 +33,19 @@ class PayloadAdapter : RecyclerView.Adapter<PayloadAdapter.PayloadViewHolder>() 
             binding.partsRecyclerView.adapter = partAdapter
             binding.partsRecyclerView.layoutManager = LinearLayoutManager(parent.context)
             val partsDivider = DividerItemDecoration(parent.context, LinearLayoutManager.VERTICAL)
+            partsDivider.setDrawable(ContextCompat.getDrawable(parent.context, R.drawable.divider_3)!!)
             binding.partsRecyclerView.addItemDecoration(partsDivider)
 
             binding.headersRecyclerView.adapter = headerAdapter
             binding.headersRecyclerView.layoutManager = LinearLayoutManager(parent.context)
             val headersDivider = DividerItemDecoration(parent.context, LinearLayoutManager.VERTICAL)
+            headersDivider.setDrawable(ContextCompat.getDrawable(parent.context, R.drawable.divider_1)!!)
             binding.headersRecyclerView.addItemDecoration(headersDivider)
 
             binding.bodiesRecyclerView.adapter = bodyAdapter
             binding.bodiesRecyclerView.layoutManager = LinearLayoutManager(parent.context)
             val bodiesDivider = DividerItemDecoration(parent.context, LinearLayoutManager.VERTICAL)
+            bodiesDivider.setDrawable(ContextCompat.getDrawable(parent.context, R.drawable.divider_1)!!)
             binding.bodiesRecyclerView.addItemDecoration(bodiesDivider)
         }
     }
@@ -48,9 +53,9 @@ class PayloadAdapter : RecyclerView.Adapter<PayloadAdapter.PayloadViewHolder>() 
 
     override fun onBindViewHolder(holder: PayloadViewHolder, position: Int) {
         val payload = payloads[position]
-        holder.binding.partId.text = "Part ID: ${payload.partId}"
-        holder.binding.mimeType.text = "Mime Type: ${payload.mimeType}"
-        holder.binding.filename.text = "Filename: ${payload.filename}"
+        holder.binding.partIdValue.text = payload.partId
+        holder.binding.mimeTypeValue.text = payload.mimeType
+        holder.binding.filenameValue.text = payload.filename
 
         holder.partAdapter.parts = payload.parts ?: listOf()  // Use an empty list if parts is null
         holder.partAdapter.notifyDataSetChanged()

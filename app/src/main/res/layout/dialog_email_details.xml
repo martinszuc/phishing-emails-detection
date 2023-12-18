@@ -4,6 +4,17 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <TextView
+        android:id="@+id/body_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/details"
+        android:layout_gravity="center"
+        android:textColor="@color/md_theme_dark_primary"
+        android:textStyle="bold" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/emailsDetailsRecyclerView"
         android:layout_width="match_parent"

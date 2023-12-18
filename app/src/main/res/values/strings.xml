@@ -36,4 +36,22 @@
     <string name="learn_more_about_phishing_prevention">Learn more about phishing prevention</string>
     <string name="snippet">snippet\n</string>
     <string name="attachments">attachments</string>
+    <string name="internal_date">"Internal Date: "</string>
+    <string name="history_id">"History ID: "</string>
+    <string name="snippet_label">"Snippet: "</string>
+    <string name="label_ids">"Label IDs: "</string>
+    <string name="thread_id">"Thread ID: "</string>
+    <string name="id">"ID: "</string>
+    <string name="part_id">"Part ID: "</string>
+    <string name="mime_type">"Mime Type: "</string>
+    <string name="filename">"Filename: "</string>
+    <string name="parts">PARTS:</string>
+    <string name="body">BODY:</string>
+    <string name="headers">HEADERS:</string>
+    <string name="value">"Value: "</string>
+    <string name="size">"Size: "</string>
+    <string name="part_body">"Part body: "</string>
+    <string name="part_headers">Part headers:</string>
+    <string name="payload">PAYLOAD:</string>
+    <string name="details">Details</string>
 </resources>

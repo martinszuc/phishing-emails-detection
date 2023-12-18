@@ -38,6 +38,5 @@ class EmailsDetailsDialog(private val context: Context, private val email: Email
 
         dialog.show()
     }
-
 }
 

@@ -1,5 +1,6 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.adapter
 
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -21,8 +22,9 @@ class BodyAdapter : RecyclerView.Adapter<BodyAdapter.BodyViewHolder>() {
 
     override fun onBindViewHolder(holder: BodyViewHolder, position: Int) {
         val body = bodies[position]
-        holder.binding.data.text = "Data: ${body.data}"
-        holder.binding.size.text = "Size: ${body.size}"
+        val decodedData = String(Base64.decode(body.data.replace('-', '+').replace('_', '/'), Base64.DEFAULT)) // TODO Maybe the decoded data should be in the database itself
+        holder.binding.dataValue.text = decodedData
+        holder.binding.sizeValue.text = body.size.toString()
     }
 
     override fun getItemCount() = bodies.size

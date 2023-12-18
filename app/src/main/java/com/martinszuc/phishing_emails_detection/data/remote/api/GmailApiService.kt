@@ -6,6 +6,8 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.gmail.Gmail
+import com.google.api.services.gmail.model.MessagePart
+import com.google.api.services.gmail.model.MessagePartHeader
 import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.Body
@@ -25,9 +27,55 @@ class GmailApiService @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userManager: UserManager
 ) {
-    // TODO import full format of the email when downloading to db.
     private val transport = NetHttpTransport()
     private val jsonFactory = JacksonFactory.getDefaultInstance()
+
+    suspend fun getEmailsMinimal(
+        pageToken: String?,
+        pageSize: Int
+    ): Pair<List<EmailMinimal>, String?> {
+        Log.d(
+            "GmailApiService",
+            "Fetching emails with pageToken: $pageToken and pageSize: $pageSize"
+        )
+        return fetchEmailMinimal(null, pageToken, pageSize)
+    }
+
+    suspend fun searchEmailsMinimal(
+        query: String,
+        pageToken: String?,
+        pageSize: Int
+    ): Pair<List<EmailMinimal>, String?> {
+        Log.d(
+            "GmailApiService",
+            "Searching emails with query: $query, pageToken: $pageToken and pageSize: $pageSize"
+        )
+        return fetchEmailMinimal(query, pageToken, pageSize)
+    }
+
+    suspend fun fetchEmailFullByIds(emailIds: List<String>): List<EmailFull> = withContext(Dispatchers.IO) {
+        val account = userManager.account.value?.account
+        if (account == null) {
+            Log.d("fetchEmailFullByIds", "Account is null")
+            return@withContext emptyList<EmailFull>()
+        }
+
+        val credential = GoogleAccountCredential.usingOAuth2(
+            context, listOf(Constants.GMAIL_READONLY_SCOPE)
+        ).setSelectedAccount(account)
+
+        val service = Gmail.Builder(transport, jsonFactory, credential)
+            .setApplicationName(Constants.APPLICATION_NAME)
+            .build()
+
+        val user = "me"
+
+        emailIds.mapNotNull { emailId ->
+            fetchEmail(service, user, emailId)
+        }.also { emails ->
+            Log.d("fetchEmailFullByIds", "Fetched ${emails.size} full emails")
+        }
+    }
 
     private suspend fun fetchEmailMinimal(
         query: String?,
@@ -72,107 +120,65 @@ class GmailApiService @Inject constructor(
             Pair(emails, listResponse.nextPageToken)
         }
 
-    suspend fun getEmailsMinimal(
-        pageToken: String?,
-        pageSize: Int
-    ): Pair<List<EmailMinimal>, String?> {
-        Log.d(
-            "GmailApiService",
-            "Fetching emails with pageToken: $pageToken and pageSize: $pageSize"
-        )
-        return fetchEmailMinimal(null, pageToken, pageSize)
-    }
-
-    suspend fun searchEmailsMinimal(
-        query: String,
-        pageToken: String?,
-        pageSize: Int
-    ): Pair<List<EmailMinimal>, String?> {
-        Log.d(
-            "GmailApiService",
-            "Searching emails with query: $query, pageToken: $pageToken and pageSize: $pageSize"
-        )
-        return fetchEmailMinimal(query, pageToken, pageSize)
-    }
-
-    suspend fun fetchEmailFullByIds(emailIds: List<String>): List<EmailFull> =
-        withContext(Dispatchers.IO) {
-            val account = userManager.account.value?.account
-            if (account == null) {
-                Log.d("fetchEmailFullByIds", "Account is null")
-                return@withContext emptyList<EmailFull>()
-            }
-
-            val credential = GoogleAccountCredential.usingOAuth2(
-                context, listOf(Constants.GMAIL_READONLY_SCOPE)
-            ).setSelectedAccount(account)
-
-            val service = Gmail.Builder(transport, jsonFactory, credential)
-                .setApplicationName(Constants.APPLICATION_NAME)
-                .build()
-
-            val user = "me"
-
-            val emails = emailIds.mapNotNull { emailId ->
-                val email =
-                    service.users().messages().get(user, emailId).setFormat("full").execute()
-                val payload = email?.payload
-                if (payload != null) {
-                    val headers = payload.headers?.map { header ->
-                        Header(name = header.name, value = header.value)
-                    } ?: emptyList()
-
-                    val parts = payload.parts?.mapNotNull { part ->
-                        val partHeaders = part.headers?.map { header ->
-                            Header(name = header.name, value = header.value)
-                        } ?: emptyList()
-                        val partBody = part.body?.let { Body(data = it.data ?: "", size = it.size ?: 0) }
-                        if (partBody != null) {
-                            Part(
-                                partId = part.partId,
-                                mimeType = part.mimeType,
-                                filename = part.filename,
-                                headers = partHeaders,
-                                body = partBody
-                            )
-                        } else {
-                            null
-                        }
-                    } ?: emptyList()
-
-                    val payloadBody =
-                        payload.body?.let { Body(data = it.data ?: "", size = it.size) }
-                    if (payloadBody != null) {
-                        val newPayload = Payload(
-                            partId = payload.partId,
-                            mimeType = payload.mimeType,
-                            filename = payload.filename,
-                            headers = headers,
-                            body = payloadBody,
-                            parts = parts
-                        )
-
-                        EmailFull(
-                            id = email.id,
-                            threadId = email.threadId,
-                            labelIds = email.labelIds,
-                            snippet = email.snippet,
-                            historyId = email.historyId.toLong(),
-                            internalDate = email.internalDate,
-                            payload = newPayload
-                        )
-                    } else {
-                        Log.d("fetchEmailFullByIds", "Email with ID $emailId has null payload body")
-                        null
-                    }
-                } else {
-                    Log.d("fetchEmailFullByIds", "Email with ID $emailId has null payload")
-                    null
-                }
-            }
-            Log.d("fetchEmailFullByIds", "Fetched ${emails.size} full emails")
-            emails
+    private fun fetchEmail(service: Gmail, user: String, emailId: String): EmailFull? {
+        val email = service.users().messages().get(user, emailId).setFormat("full").execute()
+        val payload = email?.payload ?: run {
+            Log.d("fetchEmail", "Email with ID $emailId has null payload")
+            return null
         }
+
+        val headers = createHeaders(payload.headers)
+        val parts = createParts(payload.parts)
+        val payloadBody = payload.body?.let { Body(data = it.data ?: "", size = it.size) } ?: run {
+            Log.d("fetchEmail", "Email with ID $emailId has null payload body")
+            return null
+        }
+
+        val newPayload = Payload(
+            partId = payload.partId,
+            mimeType = payload.mimeType,
+            filename = payload.filename,
+            headers = headers,
+            body = payloadBody,
+            parts = parts
+        )
+
+        return EmailFull(
+            id = email.id,
+            threadId = email.threadId,
+            labelIds = email.labelIds,
+            snippet = email.snippet,
+            historyId = email.historyId.toLong(),
+            internalDate = email.internalDate,
+            payload = newPayload
+        )
+    }
+
+    private fun createHeaders(headers: List<MessagePartHeader>?): List<Header> {
+        return headers?.map { header ->
+            Header(name = header.name, value = header.value)
+        } ?: emptyList()
+    }
+
+    private fun createParts(parts: List<MessagePart>?): List<Part> {
+        return parts?.mapNotNull { part ->
+            val partHeaders = createHeaders(part.headers)
+            val partBody = part.body?.let { Body(data = it.data ?: "", size = it.size ?: 0) }
+            if (partBody != null) {
+                Part(
+                    partId = part.partId,
+                    mimeType = part.mimeType,
+                    filename = part.filename,
+                    headers = partHeaders,
+                    body = partBody
+                )
+            } else {
+                null
+            }
+        } ?: emptyList()
+    }
+
+
     suspend fun fetchRawEmail(emailId: String): ByteArray? {
         val account = userManager.account.value?.account
         if (account == null) {

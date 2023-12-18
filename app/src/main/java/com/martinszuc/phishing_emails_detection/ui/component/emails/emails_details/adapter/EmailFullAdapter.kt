@@ -6,6 +6,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailDetailsFullBinding
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.TimeZone
 
 
 /**
@@ -30,12 +33,20 @@ class EmailFullAdapter : RecyclerView.Adapter<EmailFullAdapter.EmailViewHolder>(
 
     override fun onBindViewHolder(holder: EmailViewHolder, position: Int) {
         val email = emails[position]
-        holder.binding.id.text = "ID: ${email.id}"
-        holder.binding.threadId.text = "Thread ID: ${email.threadId}"
-        holder.binding.snippet.text = "Snippet: ${email.snippet}"
-        holder.binding.historyId.text = "History ID: ${email.historyId}"
-        holder.binding.internalDate.text = "Internal Date: ${email.internalDate}"
-        holder.binding.labelIds.text = "Label IDs: ${email.labelIds.joinToString(", ")}"
+        holder.binding.idValue.text = email.id
+        holder.binding.threadIdValue.text = email.threadId
+        holder.binding.snippetValue.text = email.snippet
+        // Format the historyId
+        holder.binding.historyIdValue.text = String.format(Locale.getDefault(), "%,d", email.historyId)
+
+        // Format the internalDate
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        sdf.timeZone = TimeZone.getDefault()  // Set your desired timezone here
+        val formattedDate = sdf.format(email.internalDate)
+        holder.binding.internalDateValue.text = formattedDate
+
+        holder.binding.labelIdsValue.text = email.labelIds.joinToString(", ")
+        holder.binding.labelIdsValue.text = email.labelIds.joinToString(", ")
 
         holder.payloadAdapter.payloads = listOf(email.payload)
         holder.payloadAdapter.notifyDataSetChanged()
