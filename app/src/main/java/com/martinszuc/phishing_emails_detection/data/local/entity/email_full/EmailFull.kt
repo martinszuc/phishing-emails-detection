@@ -1,5 +1,6 @@
-package com.martinszuc.phishing_emails_detection.data.local.entity
+package com.martinszuc.phishing_emails_detection.data.local.entity.email_full
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
@@ -7,10 +8,12 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.Payload
 import com.martinszuc.phishing_emails_detection.utils.Converters
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Authored by matoszuc@gmail.com
  */
+@Parcelize
 @Entity(tableName = "email_full")
 data class EmailFull(
     @PrimaryKey
@@ -27,7 +30,7 @@ data class EmailFull(
     val internalDate: Long,
     @Embedded
     val payload: Payload
-)
+) : Parcelable
 
 
 

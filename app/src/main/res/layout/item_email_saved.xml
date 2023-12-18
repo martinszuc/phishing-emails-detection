@@ -53,5 +53,10 @@
             android:textSize="12sp"
             android:text="@string/snippet"
             android:textColor="?attr/colorOnSurface"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/payloadsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </LinearLayout>

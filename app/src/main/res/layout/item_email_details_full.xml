@@ -1,0 +1,47 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ID:" />
+
+    <TextView
+        android:id="@+id/threadId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thread ID:" />
+
+    <TextView
+        android:id="@+id/labelIds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Label IDs:" />
+
+    <TextView
+        android:id="@+id/snippet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Snippet:" />
+
+    <TextView
+        android:id="@+id/historyId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="History ID:" />
+
+    <TextView
+        android:id="@+id/internalDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Internal Date:" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/payloadRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

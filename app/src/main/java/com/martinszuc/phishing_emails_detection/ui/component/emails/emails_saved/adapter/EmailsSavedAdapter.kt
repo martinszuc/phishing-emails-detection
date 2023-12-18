@@ -7,24 +7,26 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.martinszuc.phishing_emails_detection.data.local.entity.EmailFull
-import com.martinszuc.phishing_emails_detection.databinding.ItemEmailFullBinding
+import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.EmailFull
+import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSavedBinding
+import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.EmailsDetailsDialog
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.EmailsSavedViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
 /**
  * Authored by matoszuc@gmail.com
  */
 class EmailsSavedAdapter(private val viewModel: EmailsSavedViewModel) :
     PagingDataAdapter<EmailFull, EmailsSavedAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
 
-    inner class EmailViewHolder(val binding: ItemEmailFullBinding) :
+    inner class EmailViewHolder(val binding: ItemEmailSavedBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmailViewHolder {
         val binding =
-            ItemEmailFullBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemEmailSavedBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return EmailViewHolder(binding)
     }
 
@@ -39,6 +41,7 @@ class EmailsSavedAdapter(private val viewModel: EmailsSavedViewModel) :
             holder.binding.sender.text = email.payload.headers.find { it.name == "From" }?.value
             holder.binding.subject.text = email.payload.headers.find { it.name == "Subject" }?.value
             holder.binding.timestamp.text = sdf.format(date)
+            holder.binding.snippet.text = email.snippet
 
             // Check if parts is not null or empty
             if (!email.payload.parts.isNullOrEmpty()) {
@@ -46,6 +49,10 @@ class EmailsSavedAdapter(private val viewModel: EmailsSavedViewModel) :
                 holder.binding.attachments.visibility = View.VISIBLE
             } else {
                 holder.binding.attachments.visibility = View.GONE
+            }
+
+            holder.itemView.setOnClickListener {
+                EmailsDetailsDialog(it.context, email).show()
             }
         }
     }

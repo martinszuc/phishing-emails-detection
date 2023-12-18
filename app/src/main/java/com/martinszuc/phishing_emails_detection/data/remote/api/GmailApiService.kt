@@ -6,7 +6,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.gmail.Gmail
-import com.martinszuc.phishing_emails_detection.data.local.entity.EmailFull
+import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.Body
 import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.Header
@@ -17,6 +17,7 @@ import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.apache.commons.codec.binary.Base64
 import javax.inject.Inject
 
 
@@ -96,9 +97,15 @@ class GmailApiService @Inject constructor(
 
     suspend fun fetchEmailFullByIds(emailIds: List<String>): List<EmailFull> =
         withContext(Dispatchers.IO) {
+            val account = userManager.account.value?.account
+            if (account == null) {
+                Log.d("fetchEmailFullByIds", "Account is null")
+                return@withContext emptyList<EmailFull>()
+            }
+
             val credential = GoogleAccountCredential.usingOAuth2(
                 context, listOf(Constants.GMAIL_READONLY_SCOPE)
-            ).setSelectedAccount(userManager.account.value?.account)
+            ).setSelectedAccount(account)
 
             val service = Gmail.Builder(transport, jsonFactory, credential)
                 .setApplicationName(Constants.APPLICATION_NAME)
@@ -109,52 +116,80 @@ class GmailApiService @Inject constructor(
             val emails = emailIds.mapNotNull { emailId ->
                 val email =
                     service.users().messages().get(user, emailId).setFormat("full").execute()
-                if (email?.payload != null) {
-                    val headers = email.payload.headers?.map { header ->
+                val payload = email?.payload
+                if (payload != null) {
+                    val headers = payload.headers?.map { header ->
                         Header(name = header.name, value = header.value)
                     } ?: emptyList()
 
-                    val parts = email.payload.parts?.map { part ->
+                    val parts = payload.parts?.mapNotNull { part ->
                         val partHeaders = part.headers?.map { header ->
                             Header(name = header.name, value = header.value)
                         } ?: emptyList()
-                        val partBody = part.body.let { Body(data = it.data, size = it.size) }
-                        Part(
-                            partId = part.partId,
-                            mimeType = part.mimeType,
-                            filename = part.filename,
-                            headers = partHeaders,
-                            body = partBody
-                        )
+                        val partBody = part.body?.let { Body(data = it.data ?: "", size = it.size ?: 0) }
+                        if (partBody != null) {
+                            Part(
+                                partId = part.partId,
+                                mimeType = part.mimeType,
+                                filename = part.filename,
+                                headers = partHeaders,
+                                body = partBody
+                            )
+                        } else {
+                            null
+                        }
                     } ?: emptyList()
 
                     val payloadBody =
-                        email.payload.body?.let { Body(data = it.data ?: "", size = it.size) }
-                    val payload = Payload(
-                        partId = email.payload.partId,
-                        mimeType = email.payload.mimeType,
-                        filename = email.payload.filename,
-                        headers = headers,
-                        body = payloadBody ?: Body(data = "", size = 0),  // Use a default Body when payloadBody is null
-                        parts = parts
-                    )
+                        payload.body?.let { Body(data = it.data ?: "", size = it.size) }
+                    if (payloadBody != null) {
+                        val newPayload = Payload(
+                            partId = payload.partId,
+                            mimeType = payload.mimeType,
+                            filename = payload.filename,
+                            headers = headers,
+                            body = payloadBody,
+                            parts = parts
+                        )
 
-                    EmailFull(
-                        id = email.id,
-                        threadId = email.threadId,
-                        labelIds = email.labelIds,
-                        snippet = email.snippet,
-                        historyId = email.historyId.toLong(),
-                        internalDate = email.internalDate,
-                        payload = payload
-                    )
+                        EmailFull(
+                            id = email.id,
+                            threadId = email.threadId,
+                            labelIds = email.labelIds,
+                            snippet = email.snippet,
+                            historyId = email.historyId.toLong(),
+                            internalDate = email.internalDate,
+                            payload = newPayload
+                        )
+                    } else {
+                        Log.d("fetchEmailFullByIds", "Email with ID $emailId has null payload body")
+                        null
+                    }
                 } else {
                     Log.d("fetchEmailFullByIds", "Email with ID $emailId has null payload")
                     null
                 }
             }
-
             Log.d("fetchEmailFullByIds", "Fetched ${emails.size} full emails")
             emails
         }
+    suspend fun fetchRawEmail(emailId: String): ByteArray? {
+        val account = userManager.account.value?.account
+        if (account == null) {
+            Log.d("fetchRawEmail", "Account is null")
+            return null
+        }
+
+        val credential = GoogleAccountCredential.usingOAuth2(
+            context, listOf(Constants.GMAIL_READONLY_SCOPE)
+        ).setSelectedAccount(account)
+
+        val service = Gmail.Builder(transport, jsonFactory, credential)
+            .setApplicationName(Constants.APPLICATION_NAME)
+            .build()
+
+        val user = "me"
+
+        val rawEmail = service.users().messages().get("me", emailId).setFormat("raw").execute()
+        return rawEmail?.raw?.let { Base64.decodeBase64(it) }    }
 }

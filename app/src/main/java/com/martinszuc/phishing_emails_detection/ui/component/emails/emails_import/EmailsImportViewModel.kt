@@ -70,6 +70,6 @@ class EmailsImportViewModel @Inject constructor(
                 emailFullLocalRepository.insertAllEmailsFull(fullEmails)
             }
         }
-
+        selectedEmails.value = emptyList()
     }
 }

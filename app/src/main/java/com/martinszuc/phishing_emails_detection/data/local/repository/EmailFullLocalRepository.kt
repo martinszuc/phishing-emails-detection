@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.room.withTransaction
 import com.martinszuc.phishing_emails_detection.data.local.db.AppDatabase
-import com.martinszuc.phishing_emails_detection.data.local.entity.EmailFull
+import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.EmailFull
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

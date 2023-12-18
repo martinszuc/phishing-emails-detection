@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.martinszuc.phishing_emails_detection.data.local.entity.EmailFull
+import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.EmailFull
 
 @Dao
 interface EmailFullDao {
@@ -22,4 +22,6 @@ interface EmailFullDao {
 
     @Query("DELETE FROM email_full WHERE id = :id")
     suspend fun deleteEmailFullById(id: String)
+//    @Query("SELECT * FROM email_full WHERE payload.headers LIKE :query")  // TODO fix search
+//    fun searchBySubject(query: String): Flow<List<EmailFull>>
 }

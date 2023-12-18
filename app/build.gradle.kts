@@ -7,6 +7,8 @@ plugins {
     id("com.google.dagger.hilt.android")
     // Firebase
     id("com.google.gms.google-services")
+    // Parcelize
+    id("kotlin-parcelize")
 }
 
 android {
