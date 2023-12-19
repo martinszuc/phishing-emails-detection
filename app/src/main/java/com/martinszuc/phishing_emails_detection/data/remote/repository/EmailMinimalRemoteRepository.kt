@@ -5,7 +5,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.martinszuc.phishing_emails_detection.utils.Constants
-import com.martinszuc.phishing_emails_detection.data.local.entity.Email
+import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.remote.api.datasource.GmailPagingSource
 import com.martinszuc.phishing_emails_detection.data.remote.api.datasource.SearchGmailPagingSource
 import com.martinszuc.phishing_emails_detection.data.remote.api.GmailApiService
@@ -18,10 +18,10 @@ import javax.inject.Inject
  *
  * @author matoszuc@gmail.com
  */
-class EmailRemoteRepository @Inject constructor(
+class EmailMinimalRemoteRepository @Inject constructor(
     private val apiService: GmailApiService
 ) {
-    fun getEmails(): Flow<PagingData<Email>> {
+    fun getEmails(): Flow<PagingData<EmailMinimal>> {
         return Pager(
             config = PagingConfig(
                 pageSize = Constants.GMAIL_PAGER_PAGE,
@@ -33,7 +33,8 @@ class EmailRemoteRepository @Inject constructor(
         ).flow
     }
 
-    fun searchEmails(query: String): Flow<PagingData<Email>> {
+
+    fun searchEmails(query: String): Flow<PagingData<EmailMinimal>> {
         return Pager(
             config = PagingConfig(
                 pageSize = Constants.GMAIL_PAGER_PAGE,

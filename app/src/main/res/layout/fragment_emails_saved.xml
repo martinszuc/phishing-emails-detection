@@ -13,8 +13,7 @@
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="Search by subject"
-            android:visibility="gone"/>
+            android:queryHint="Search by subject" />
 
         <TextView
             android:id="@+id/empty_saved_textview"

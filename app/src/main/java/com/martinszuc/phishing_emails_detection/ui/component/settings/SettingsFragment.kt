@@ -11,7 +11,7 @@ import com.martinszuc.phishing_emails_detection.databinding.FragmentSettingsBind
  * Authored by matoszuc@gmail.com
  */
 class SettingsFragment : Fragment() {
-
+// TODO thisssss
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
 

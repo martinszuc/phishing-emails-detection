@@ -1,13 +1,14 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.martinszuc.phishing_emails_detection.data.local.entity.Email
-import com.martinszuc.phishing_emails_detection.data.local.repository.EmailLocalRepository
+import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.EmailFull
+import com.martinszuc.phishing_emails_detection.data.local.repository.EmailFullLocalRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,11 +21,11 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class EmailsSavedViewModel @Inject constructor(
-    private val localRepository: EmailLocalRepository
+    private val emailFullLocalRepository: EmailFullLocalRepository
 ) : ViewModel() {
 
-    private val _emailsFlow = MutableStateFlow<PagingData<Email>>(PagingData.empty())
-    val emailsFlow: Flow<PagingData<Email>> = _emailsFlow.asStateFlow()
+    private val _emailsFlow = MutableStateFlow<PagingData<EmailFull>>(PagingData.empty())
+    val emailsFlow: Flow<PagingData<EmailFull>> = _emailsFlow.asStateFlow()
 
     init {
         getEmails()
@@ -32,7 +33,7 @@ class EmailsSavedViewModel @Inject constructor(
 
     fun getEmails() {
         viewModelScope.launch {
-            localRepository.getAllEmails().cachedIn(viewModelScope).collectLatest { pagingData ->
+            emailFullLocalRepository.getAllEmailsFull().cachedIn(viewModelScope).collectLatest { pagingData ->
                 _emailsFlow.value = pagingData
             }
         }
@@ -40,9 +41,10 @@ class EmailsSavedViewModel @Inject constructor(
 
     fun searchEmails(query: String) {
         viewModelScope.launch {
-            localRepository.searchEmails(query).cachedIn(viewModelScope).collectLatest { pagingData ->
+            emailFullLocalRepository.searchEmails(query).cachedIn(viewModelScope).collectLatest { pagingData ->
                 _emailsFlow.value = pagingData
             }
         }
     }
 }
+

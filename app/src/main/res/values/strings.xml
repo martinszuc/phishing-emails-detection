@@ -8,13 +8,13 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="sign_in_to_your_email_account">Please, sign in to your Gmail account:</string>
-    <string name="sender">Sender</string>
+    <string name="sender">Sender: </string>
     <string name="subject">Subject</string>
     <string name="import_emails_from_gmail">Import emails from Gmail</string>
     <string name="save_selected_emails">Save</string>
 <!--    Login web client id    -->
     <string name="login_web_client_id">628461587525-vl58bn3gfjd2bdfunllqlpamk037k06m.apps.googleusercontent.com</string>
-    <string name="phishing_info_text">Scammers use email or text messages to trick you into giving them your personal and financial information. But there are several ways to protect yourself:</string>
+    <string name="phishing_info_text">Scammers use email or text messages to trick you into giving them your personal and financial information. But there are several ways to protect yourself!</string>
     <string name="phishing_info_link"><a href="https://consumer.ftc.gov/articles/how-recognize-and-avoid-phishing-scams">How to Recognize and Avoid Phishing Scams</a></string>
     <string name="title_emails">My Emails</string>
     <string name="title_training">Training your detector</string>
@@ -27,11 +27,34 @@
     <string name="title_emails_import">Import E-mails</string>
     <string name="title_emails_detector">Detected E-mails</string>
     <string name="timestamp">time</string>
-    <string name="goto_saved_emails_label">Import e-mails from your Gmail account</string>
-    <string name="empty_saved_label">You have no saved e-mails</string>
+    <string name="goto_saved_emails_label">Import more e-mails</string>
+    <string name="empty_saved_label">Nothing here</string>
     <string name="title_tablayout">Tab layout</string>
     <string name="title_appbarlayout">App bar layout</string>
     <string name="take_a_phishing_quiz">Take a Phishing quiz</string>
     <string name="learn_more_about_phishing">Learn more about phishing:</string>
     <string name="learn_more_about_phishing_prevention">Learn more about phishing prevention</string>
+    <string name="snippet">snippet\n</string>
+    <string name="attachments">attachments</string>
+    <string name="internal_date">"Internal Date: "</string>
+    <string name="history_id">"History ID: "</string>
+    <string name="snippet_label">"Snippet: "</string>
+    <string name="label_ids">"Label IDs: "</string>
+    <string name="thread_id">"Thread ID: "</string>
+    <string name="id">"ID: "</string>
+    <string name="part_id">"Part ID: "</string>
+    <string name="mime_type">"Mime Type: "</string>
+    <string name="filename">"Filename: "</string>
+    <string name="parts">PARTS:</string>
+    <string name="body">BODY:</string>
+    <string name="headers">HEADERS:</string>
+    <string name="value">"Value: "</string>
+    <string name="size">"Size: "</string>
+    <string name="part_body">"Part body: "</string>
+    <string name="part_headers">Part headers:</string>
+    <string name="payload">PAYLOAD:</string>
+    <string name="details">Details</string>
+    <string name="sender_label">"From: "</string>
+    <string name="sender_value">value</string>
+    <string name="attachments_label">"Number of parts: "</string>
 </resources>
