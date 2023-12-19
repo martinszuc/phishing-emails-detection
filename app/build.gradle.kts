@@ -77,6 +77,7 @@ dependencies {
     // Hilt DI
     implementation("com.google.dagger:hilt-android:2.46")
     implementation("com.google.firebase:firebase-auth:22.3.0")
+    implementation("androidx.preference:preference:1.2.1")
     kapt("com.google.dagger:hilt-android-compiler:2.46")
 
     // Paging and DB
@@ -87,6 +88,9 @@ dependencies {
 
     // Swipe views
     implementation("androidx.viewpager2:viewpager2:1.0.0")
+
+    // Settings fragment preferences
+    implementation("androidx.preference:preference-ktx:1.2.1")
 
 
     testImplementation("junit:junit:4.13.2")

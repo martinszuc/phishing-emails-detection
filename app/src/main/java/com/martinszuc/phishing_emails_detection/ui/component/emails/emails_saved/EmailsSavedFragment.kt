@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class EmailsSavedFragment : Fragment() {
     private var _binding: FragmentEmailsSavedBinding? = null
-    private val emailsSavedViewModel: EmailsSavedViewModel by viewModels()
+    private val emailsSavedViewModel: EmailsSavedViewModel by activityViewModels()
     private lateinit var emailsSavedAdapter: EmailsSavedAdapter
 
     private val binding get() = _binding!!

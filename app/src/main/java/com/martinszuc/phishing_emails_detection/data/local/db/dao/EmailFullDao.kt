@@ -14,12 +14,12 @@ interface EmailFullDao {
     suspend fun insert(emailFull: EmailFull)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(emails: List<EmailFull>)
-
     @Query("SELECT * FROM email_full")
     fun getAll(): PagingSource<Int, EmailFull>
-
     @Query("DELETE FROM email_full WHERE id = :id")
     suspend fun deleteEmailFullById(id: String)
     @Query("SELECT * FROM email_full WHERE id IN (:emailIds)")
     fun getEmailsByIds(emailIds: List<String>): PagingSource<Int, EmailFull>
+    @Query("DELETE FROM email_full")
+    suspend fun clearAll()
 }

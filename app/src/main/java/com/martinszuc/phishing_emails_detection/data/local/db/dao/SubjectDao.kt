@@ -14,4 +14,6 @@ interface SubjectDao {
     @Query("SELECT email_id FROM subject WHERE value LIKE '%' || :query || '%'")
     suspend fun searchIdsBySubject(query: String): List<String>
 
+    @Query("DELETE FROM subject")
+    suspend fun clearAll()
 }

@@ -111,20 +111,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        // Clear the menu but do not inflate a new one
         menu.clear()
-        if (isLoggedIn) {
-            menuInflater.inflate(R.menu.menu_main, menu)
-        }
         return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_logout -> {
-                userAccountViewModel.logout(this)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 }
