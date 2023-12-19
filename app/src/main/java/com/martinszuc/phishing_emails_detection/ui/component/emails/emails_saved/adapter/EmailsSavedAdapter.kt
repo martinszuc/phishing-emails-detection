@@ -34,21 +34,24 @@ class EmailsSavedAdapter(private val viewModel: EmailsSavedViewModel) :
         val email = getItem(position)
         Log.d("EmailsSavedAdapter", "Binding email at position $position")
         if (email != null) {
-            // Convert the timestamp to a human-readable format
+            // Convert the timestamp
             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
             val date = Date(email.internalDate)
 
-            holder.binding.sender.text = email.payload.headers.find { it.name == "From" }?.value
+            holder.binding.senderValue.text = email.payload.headers.find { it.name == "From" }?.value
             holder.binding.subject.text = email.payload.headers.find { it.name == "Subject" }?.value
             holder.binding.timestamp.text = sdf.format(date)
             holder.binding.snippet.text = email.snippet
 
-            // Check if parts is not null or empty
             if (!email.payload.parts.isNullOrEmpty()) {
-                holder.binding.attachments.text = email.payload.parts.size.toString()
-                holder.binding.attachments.visibility = View.VISIBLE
+                holder.binding.attachmentsValue.text = email.payload.parts.size.toString()
+                holder.binding.attachmentsValue.visibility = View.VISIBLE
+                holder.binding.attachmentsLabel.visibility = View.VISIBLE
+
             } else {
-                holder.binding.attachments.visibility = View.GONE
+                holder.binding.attachmentsLabel.visibility = View.GONE
+                holder.binding.attachmentsValue.visibility = View.GONE
+
             }
 
             holder.itemView.setOnClickListener {

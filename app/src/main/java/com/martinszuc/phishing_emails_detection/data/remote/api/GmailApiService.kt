@@ -53,29 +53,30 @@ class GmailApiService @Inject constructor(
         return fetchEmailMinimal(query, pageToken, pageSize)
     }
 
-    suspend fun fetchEmailFullByIds(emailIds: List<String>): List<EmailFull> = withContext(Dispatchers.IO) {
-        val account = userManager.account.value?.account
-        if (account == null) {
-            Log.d("fetchEmailFullByIds", "Account is null")
-            return@withContext emptyList<EmailFull>()
+    suspend fun fetchEmailFullByIds(emailIds: List<String>): List<EmailFull> =
+        withContext(Dispatchers.IO) {
+            val account = userManager.account.value?.account
+            if (account == null) {
+                Log.d("fetchEmailFullByIds", "Account is null")
+                return@withContext emptyList<EmailFull>()
+            }
+
+            val credential = GoogleAccountCredential.usingOAuth2(
+                context, listOf(Constants.GMAIL_READONLY_SCOPE)
+            ).setSelectedAccount(account)
+
+            val service = Gmail.Builder(transport, jsonFactory, credential)
+                .setApplicationName(Constants.APPLICATION_NAME)
+                .build()
+
+            val user = "me"
+
+            emailIds.mapNotNull { emailId ->
+                fetchEmail(service, user, emailId)
+            }.also { emails ->
+                Log.d("fetchEmailFullByIds", "Fetched ${emails.size} full emails")
+            }
         }
-
-        val credential = GoogleAccountCredential.usingOAuth2(
-            context, listOf(Constants.GMAIL_READONLY_SCOPE)
-        ).setSelectedAccount(account)
-
-        val service = Gmail.Builder(transport, jsonFactory, credential)
-            .setApplicationName(Constants.APPLICATION_NAME)
-            .build()
-
-        val user = "me"
-
-        emailIds.mapNotNull { emailId ->
-            fetchEmail(service, user, emailId)
-        }.also { emails ->
-            Log.d("fetchEmailFullByIds", "Fetched ${emails.size} full emails")
-        }
-    }
 
     private suspend fun fetchEmailMinimal(
         query: String?,
@@ -197,5 +198,6 @@ class GmailApiService @Inject constructor(
         val user = "me"
 
         val rawEmail = service.users().messages().get("me", emailId).setFormat("raw").execute()
-        return rawEmail?.raw?.let { Base64.decodeBase64(it) }    }
+        return rawEmail?.raw?.let { Base64.decodeBase64(it) }
+    }
 }

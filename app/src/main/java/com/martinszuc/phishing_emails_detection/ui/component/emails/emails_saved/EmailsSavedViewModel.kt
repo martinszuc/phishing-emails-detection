@@ -40,10 +40,11 @@ class EmailsSavedViewModel @Inject constructor(
     }
 
     fun searchEmails(query: String) {
-//        viewModelScope.launch {
-//            emailFullLocalRepository.searchEmails(query).cachedIn(viewModelScope).collectLatest { pagingData ->
-//                _emailsFlow.value = pagingData
-//            }
-//        }
+        viewModelScope.launch {
+            emailFullLocalRepository.searchEmails(query).cachedIn(viewModelScope).collectLatest { pagingData ->
+                _emailsFlow.value = pagingData
+            }
+        }
     }
 }
+

@@ -8,7 +8,7 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="sign_in_to_your_email_account">Please, sign in to your Gmail account:</string>
-    <string name="sender">Sender</string>
+    <string name="sender">Sender: </string>
     <string name="subject">Subject</string>
     <string name="import_emails_from_gmail">Import emails from Gmail</string>
     <string name="save_selected_emails">Save</string>
@@ -27,8 +27,8 @@
     <string name="title_emails_import">Import E-mails</string>
     <string name="title_emails_detector">Detected E-mails</string>
     <string name="timestamp">time</string>
-    <string name="goto_saved_emails_label">Import e-mails from your Gmail account</string>
-    <string name="empty_saved_label">You have no saved e-mails</string>
+    <string name="goto_saved_emails_label">Import more e-mails</string>
+    <string name="empty_saved_label">Nothing here</string>
     <string name="title_tablayout">Tab layout</string>
     <string name="title_appbarlayout">App bar layout</string>
     <string name="take_a_phishing_quiz">Take a Phishing quiz</string>
@@ -54,4 +54,7 @@
     <string name="part_headers">Part headers:</string>
     <string name="payload">PAYLOAD:</string>
     <string name="details">Details</string>
+    <string name="sender_label">"From: "</string>
+    <string name="sender_value">value</string>
+    <string name="attachments_label">"Number of parts: "</string>
 </resources>

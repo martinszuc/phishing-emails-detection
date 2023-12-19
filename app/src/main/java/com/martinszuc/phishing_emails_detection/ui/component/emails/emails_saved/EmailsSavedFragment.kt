@@ -52,6 +52,7 @@ class EmailsSavedFragment : Fragment() {
 
     private fun initEmptyTextAndButton() {
         val viewPager: ViewPager2? = parentFragment?.view?.findViewById(R.id.view_pager)
+        binding.searchView.visibility = View.VISIBLE
 
         emailsSavedAdapter.addLoadStateListener { loadState ->
             // Check if the current load state is empty.
@@ -59,8 +60,6 @@ class EmailsSavedFragment : Fragment() {
                 // If the emails flow is empty, show the TextView and Button
                 binding.emptySavedTextview.visibility = View.VISIBLE
                 binding.gotoSavedEmailsButton.visibility = View.VISIBLE
-                binding.searchView.visibility = View.GONE
-
                 binding.gotoSavedEmailsButton.setOnClickListener {
                     // Navigate to the emails import fragment
                     viewPager?.currentItem = 1
@@ -69,7 +68,6 @@ class EmailsSavedFragment : Fragment() {
                 // If the emails flow is not empty, hide the TextView and Button and show SearchView
                 binding.emptySavedTextview.visibility = View.GONE
                 binding.gotoSavedEmailsButton.visibility = View.GONE
-                binding.searchView.visibility = View.VISIBLE
             }
         }
     }

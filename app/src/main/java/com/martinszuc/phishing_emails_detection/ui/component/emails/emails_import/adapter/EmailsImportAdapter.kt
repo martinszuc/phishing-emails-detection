@@ -33,7 +33,7 @@ class EmailsImportAdapter(private val viewModel: EmailsImportViewModel) :
             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
             val date = Date(email.timestamp)
 
-            holder.binding.sender.text = email.sender
+            holder.binding.senderValue.text = email.sender
             holder.binding.subject.text = email.subject
             holder.binding.timestamp.text = sdf.format(date)
 
