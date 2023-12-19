@@ -44,6 +44,14 @@ class EmailFullLocalRepository @Inject constructor(
         }
     }
 
+    suspend fun clearAll() {
+        database.withTransaction {
+            emailFullDao.clearAll()
+            subjectDao.clearAll()
+        }
+    }
+
+
     fun getAllEmailsFull(): Flow<PagingData<EmailFull>> {
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),

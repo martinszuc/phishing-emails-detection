@@ -46,5 +46,10 @@ class EmailsSavedViewModel @Inject constructor(
             }
         }
     }
+    fun clearDatabase() {
+        viewModelScope.launch {
+            emailFullLocalRepository.clearAll()
+        }
+    }
 }
 
