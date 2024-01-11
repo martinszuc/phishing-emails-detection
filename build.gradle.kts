@@ -10,4 +10,5 @@ plugins {
     id("com.google.devtools.ksp") version "1.9.10-1.0.13"
     id("com.google.dagger.hilt.android") version "2.46" apply false
     id("com.google.gms.google-services") version "4.4.0" apply false
+    id("com.chaquo.python") version "15.0.1" apply false
 }
