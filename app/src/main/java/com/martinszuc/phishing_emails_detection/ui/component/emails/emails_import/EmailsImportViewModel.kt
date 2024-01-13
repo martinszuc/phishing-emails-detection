@@ -58,18 +58,17 @@ class EmailsImportViewModel @Inject constructor(
     }
 
     fun importSelectedEmails() {
-        // Get the IDs of the selected emails
-        val selectedEmailIds = selectedEmails.value?.map { it.id }
+        viewModelScope.launch(Dispatchers.IO) {
+            val selectedEmailsList = selectedEmails.value ?: return@launch
 
-        if (selectedEmailIds != null) {
-            viewModelScope.launch {
-                // Fetch the full format of the selected emails
-                val fullEmails = emailFullRemoteRepository.getEmailsFullByIds(selectedEmailIds)
+            // Fetch the full format of the selected emails
+            val fullEmails = emailFullRemoteRepository.getEmailsFullByIds(selectedEmailsList.map { it.id })
+            emailFullLocalRepository.insertAllEmailsFull(fullEmails)
 
-                // Save the full emails to the database
-                emailFullLocalRepository.insertAllEmailsFull(fullEmails)
-            }
+            // Also save the minimal emails to the local database
+            emailMinimalLocalRepository.insertAll(selectedEmailsList)
+
+            selectedEmails.postValue(emptyList())
         }
-        selectedEmails.value = emptyList()
     }
 }

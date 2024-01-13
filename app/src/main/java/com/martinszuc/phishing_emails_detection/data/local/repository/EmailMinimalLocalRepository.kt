@@ -34,9 +34,9 @@ class EmailMinimalLocalRepository@Inject constructor(
     }
 
     fun getAllEmails(): Flow<PagingData<EmailMinimal>> {
-        return Pager(PagingConfig(pageSize = 10)) {
-            emailMinimalDao.getAllEmails()
-        }.flow
+        return Pager(
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            pagingSourceFactory = { emailMinimalDao.getAllEmails() }).flow
     }
 
     fun searchEmails(query: String): Flow<PagingData<EmailMinimal>> {
