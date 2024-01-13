@@ -9,6 +9,7 @@ plugins {
     id("com.google.gms.google-services")
     // Parcelize
     id("kotlin-parcelize")
+    id("com.chaquo.python")
 }
 
 android {
@@ -29,6 +30,12 @@ android {
         versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Chaquopy
+        ndk {
+            // On Apple silicon, you can omit x86_64.
+            abiFilters += listOf("arm64-v8a", "x86_64")
+        }
     }
 
     buildTypes {
@@ -50,6 +57,17 @@ android {
     buildFeatures {
         viewBinding = true
     }
+}
+
+chaquopy {
+    defaultConfig {
+        version = "3.8"
+        pip {
+            install ("scikit-learn")
+        }
+    }
+    productFlavors { }
+    sourceSets { }
 }
 
 dependencies {
@@ -91,6 +109,14 @@ dependencies {
 
     // Settings fragment preferences
     implementation("androidx.preference:preference-ktx:1.2.1")
+
+    // TensorFlow
+    implementation("org.tensorflow:tensorflow-lite-task-vision-play-services:0.4.2")
+    implementation("com.google.android.gms:play-services-tflite-gpu:16.2.0")
+    implementation("org.tensorflow:tensorflow-lite:2.14.0")
+    implementation("org.apache.lucene:lucene-analyzers-common:8.11.1")
+    implementation("org.apache.lucene:lucene-core:8.11.1")
+
 
 
     testImplementation("junit:junit:4.13.2")

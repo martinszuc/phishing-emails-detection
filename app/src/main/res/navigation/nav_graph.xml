@@ -61,7 +61,7 @@
     <!-- Detector Fragment-->
     <fragment
         android:id="@+id/DetectorFragment"
-        android:name="com.martinszuc.phishing_emails_detection.ui.component.detector.FragmentDetector"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.detector.DetectorFragment"
         android:label="@string/title_detector"
         tools:layout="@layout/fragment_detector">
     </fragment>

@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.EmailFull
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface EmailFullDao {
@@ -22,4 +21,7 @@ interface EmailFullDao {
     fun getEmailsByIds(emailIds: List<String>): PagingSource<Int, EmailFull>
     @Query("DELETE FROM email_full")
     suspend fun clearAll()
+    @Query("SELECT * FROM email_full WHERE id = :emailId")
+    suspend fun getEmailById(emailId: String): EmailFull?
+
 }
