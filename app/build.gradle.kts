@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    // Python
+    id("com.chaquo.python")
     id("com.google.devtools.ksp")
     // Hilt DI
     kotlin("kapt")
@@ -9,11 +11,11 @@ plugins {
     id("com.google.gms.google-services")
     // Parcelize
     id("kotlin-parcelize")
-    id("com.chaquo.python")
 }
 
 android {
     namespace = "com.martinszuc.phishing_emails_detection"
+
     compileSdk = 34
 
     packaging {
@@ -62,8 +64,12 @@ android {
 chaquopy {
     defaultConfig {
         version = "3.8"
+        buildPython("/home/mszuc/.pyenv/versions/3.8.18/bin/python3.8")
         pip {
+            install ("numpy")
+            install ("scipy")
             install ("scikit-learn")
+            install ("joblib")
         }
     }
     productFlavors { }

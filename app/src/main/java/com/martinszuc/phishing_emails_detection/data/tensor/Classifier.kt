@@ -1,48 +1,43 @@
 package com.martinszuc.phishing_emails_detection.data.tensor
 
-import android.app.Activity
 import android.content.Context
 import android.util.Log
 import com.chaquo.python.PyObject
 import com.chaquo.python.Python
-import com.chaquo.python.android.AndroidPlatform
-import org.apache.lucene.analysis.standard.StandardAnalyzer
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute
 import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
-import java.io.StringReader
 import java.nio.channels.FileChannel
+import java.util.Locale
 
 /**
  * Classifier class for phishing email detection.
  * This class uses a TensorFlow Lite model for classification and a Python script for text preprocessing.
  * @author matoszuc@gmail.com
  */
-class Classifier(context: Context) {
+class Classifier(private val context: Context) {
     private var tflite: Interpreter? = null  // TensorFlow Lite interpreter
     private var py: Python? = null  // Python instance
     private var pyModule: PyObject? = null  // Python module
 
     init {
-        // Load TensorFlow Lite model
-//        val assetManager = context.assets
-//        val modelPath = "phishing_model.tflite"
-//        val fileDescriptor = assetManager.openFd(modelPath)
-//        val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
-//        val fileChannel = inputStream.channel
-//        val startOffset = fileDescriptor.startOffset
-//        val declaredLength = fileDescriptor.declaredLength
-//        val fileBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
-//        tflite = Interpreter(fileBuffer)
-    }
-
-    fun initializePython(activity: Activity) {         // Initialize Python instance and load Python module
-        if (!Python.isStarted()) {
-            Python.start(AndroidPlatform(activity))
-        }
+        // Initialize Python instance and load Python module
         py = Python.getInstance()
         pyModule = py?.getModule("tfidf_vectorizer")
     }
+
+    fun loadModel() {
+        // Load TensorFlow Lite model
+        val assetManager = context.assets
+        val modelPath = "phishing_model.tflite"
+        val fileDescriptor = assetManager.openFd(modelPath)
+        val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
+        val fileChannel = inputStream.channel
+        val startOffset = fileDescriptor.startOffset
+        val declaredLength = fileDescriptor.declaredLength
+        val fileBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
+        tflite = Interpreter(fileBuffer)
+    }
+
 
     /**
      * Classify an email text.
@@ -50,20 +45,11 @@ class Classifier(context: Context) {
      * @return The classification result.
      */
     fun classify(emailText: String): Float {
-
         Log.d("Classifier", "Classifying email with body: ${emailText.take(100)}...")
-        Log.d("Classifier", "Wait starts")
-        Thread.sleep(5000)
-        Log.d("Classifier", "Wait ends")
-
-
-
-//        val inputVal = preprocess(emailText)
-//        val outputVal = Array(1) { FloatArray(1) }
-//        tflite?.run(inputVal, outputVal)
-//        return outputVal[0][0]
-
-        return 0.2f
+        val inputVal = preprocess(emailText)
+        val outputVal = Array(1) { FloatArray(1) }
+        tflite?.run(inputVal, outputVal)
+        return outputVal[0][0]
     }
 
     /**
@@ -73,19 +59,13 @@ class Classifier(context: Context) {
      * @return The TF-IDF vector.
      */
     private fun preprocess(emailText: String): Array<FloatArray> {
-        val analyzer = StandardAnalyzer()
-        val stream = analyzer.tokenStream(null, StringReader(emailText))
-        val term = stream.addAttribute(CharTermAttribute::class.java)
+        // Basic preprocessing in Kotlin
+        val processedText = emailText.lowercase(Locale.getDefault())
+            .replace("[^a-zA-Z0-9\\s]".toRegex(), "").split("\\s+".toRegex())
 
-        stream.reset()
-        val tokens = mutableListOf<String>()
-        while (stream.incrementToken()) {
-            tokens.add(term.toString())
-        }
-        stream.end()
-        stream.close()
-
-        val tfidfVector = pyModule?.callAttr("transform_text", tokens.joinToString(" "))?.asList()?.map { it.toFloat() }?.toFloatArray()
+        // Further processing and TF-IDF transformation using Python
+        val tfidfVector = pyModule?.callAttr("transform_text", processedText.joinToString(" "))?.asList()?.map { it.toFloat() }?.toFloatArray()
         return arrayOf(tfidfVector ?: FloatArray(0))
     }
+
 }

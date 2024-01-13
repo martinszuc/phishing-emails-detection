@@ -3,7 +3,6 @@ package com.martinszuc.phishing_emails_detection.ui
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -14,31 +13,35 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.tensor.Classifier
 import com.martinszuc.phishing_emails_detection.databinding.ActivityMainBinding
+import com.martinszuc.phishing_emails_detection.ui.component.detector.DetectorViewModel
 import com.martinszuc.phishing_emails_detection.ui.component.login.UserAccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
-    @Inject
-    lateinit var classifier: Classifier
-
+class MainActivity : AppCompatActivity() {                                                      // TODO little bar with status of processes
     private val userAccountViewModel: UserAccountViewModel by viewModels()
+    private val detectorViewModel: DetectorViewModel by viewModels()
+
     private lateinit var binding: ActivityMainBinding
     private var isLoggedIn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-
-//        classifier.initializePython(this) // TODO fix this
-
+        setupTfLite()
+        setupPermaNightMode()
         setupBinding()
         setupToolbar()
         setupBottomNav()
         observeLoginState()
+    }
+
+    private fun setupTfLite() {
+        detectorViewModel.loadModel()
+    }
+
+    private fun setupPermaNightMode() {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
     private fun setupToolbar() {
@@ -52,7 +55,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupToolbarTitle() {
         val textView = TextView(this).apply {
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
             gravity = Gravity.CENTER
             textSize = 20f
         }
@@ -80,20 +86,25 @@ class MainActivity : AppCompatActivity() {
     private fun setupBottomNav() {
         val navView: BottomNavigationView = findViewById(R.id.bottom_navigation)
         val navController = findNavController(R.id.nav_host_fragment_content_main)
+
         navView.setupWithNavController(navController)
         navView.setOnItemSelectedListener { item ->
-            val destinationId = when (item.itemId) {
-                R.id.EmailsParentFragment -> R.id.EmailsParentFragment
-                R.id.TrainingFragment -> R.id.TrainingFragment
-                R.id.DetectorFragment -> R.id.DetectorFragment
-                R.id.LearningFragment -> R.id.LearningFragment
-                R.id.SettingsFragment -> R.id.SettingsFragment
-                else -> return@setOnItemSelectedListener false
+            // Check if the current destination matches the item clicked
+            if (navController.currentDestination?.id != item.itemId) {
+                val destinationId = when (item.itemId) {
+                    R.id.EmailsParentFragment -> R.id.EmailsParentFragment
+                    R.id.TrainingFragment -> R.id.TrainingFragment
+                    R.id.DetectorFragment -> R.id.DetectorFragment
+                    R.id.LearningFragment -> R.id.LearningFragment
+                    R.id.SettingsFragment -> R.id.SettingsFragment
+                    else -> return@setOnItemSelectedListener false
+                }
+                navController.navigate(destinationId)
             }
-            navController.navigate(destinationId)
-            true
+            true  // Return true to indicate the event was handled
         }
     }
+
 
     private fun setupBinding() {
         binding = ActivityMainBinding.inflate(layoutInflater)

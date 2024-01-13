@@ -15,11 +15,13 @@ import com.martinszuc.phishing_emails_detection.data.local.repository.EmailFullL
 import com.martinszuc.phishing_emails_detection.data.local.repository.EmailMinimalLocalRepository
 import com.martinszuc.phishing_emails_detection.data.tensor.Classifier
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,21 +40,22 @@ class DetectorViewModel @Inject constructor(
     private val _emailsFlow = MutableStateFlow<PagingData<EmailMinimal>>(PagingData.empty())
     val emailsFlow: Flow<PagingData<EmailMinimal>> = _emailsFlow.asStateFlow()
 
-    private val _isLoading = MutableLiveData<Boolean>(false)
+    private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _isFinished = MutableLiveData<Boolean>(false)
+    private val _isFinished = MutableLiveData(false)
     val isFinished: LiveData<Boolean> = _isFinished
 
     init {
         Log.d("DetectorViewModel", "Initializing ViewModel")
         getEmails()
+        loadModel()
     }
 
-    fun getEmails() {
+    private fun getEmails() {
         viewModelScope.launch {
             Log.d("DetectorViewModel", "Fetching emails")
-            val flow = emailMinimalLocalRepository.getAllEmails().cachedIn(viewModelScope)
+            val flow = emailMinimalLocalRepository.getAllEmailsForDetector().cachedIn(viewModelScope)
             _emailsFlow.emitAll(flow)
             Log.d("DetectorViewModel", "Emails fetched")
         }
@@ -79,7 +82,7 @@ class DetectorViewModel @Inject constructor(
                 return@launch
             }
             Log.d("DetectorViewModel", "Classifying email")                   // TODO select which part of the email we want to actually analyze
-            val result = classifier.classify(fullEmail.payload.body.data)
+            val result = classifier.classify(fullEmail.snippet)
             _classificationResult.value = result
 
             _isLoading.value = false
@@ -88,5 +91,17 @@ class DetectorViewModel @Inject constructor(
         }
     }
 
+    fun loadModel() {
+        viewModelScope.launch(Dispatchers.Main) {
+            _isLoading.value = true
 
+            // Switch to IO thread for loading model
+            withContext(Dispatchers.IO) {
+                classifier.loadModel()
+            }
+
+            // Switch back to Main thread to update LiveData
+            _isLoading.value = false
+        }
+    }
 }
