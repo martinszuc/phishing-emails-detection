@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,6 +38,12 @@ class DetectorViewModel @Inject constructor(
     private val _emailsFlow = MutableStateFlow<PagingData<EmailMinimal>>(PagingData.empty())
     val emailsFlow: Flow<PagingData<EmailMinimal>> = _emailsFlow.asStateFlow()
 
+    private val _isLoading = MutableLiveData<Boolean>(false)
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _isFinished = MutableLiveData<Boolean>(false)
+    val isFinished: LiveData<Boolean> = _isFinished
+
     init {
         Log.d("DetectorViewModel", "Initializing ViewModel")
         getEmails()
@@ -53,13 +58,12 @@ class DetectorViewModel @Inject constructor(
         }
     }
 
-
     fun toggleEmailSelected(email: EmailMinimal) {
         Log.d("DetectorViewModel", "Toggling email selection: ${email.id}")
         _selectedEmailId.value = if (_selectedEmailId.value == email.id) null else email.id
     }
 
-    fun processEmailForDetection() {
+    fun classifySelectedEmail() {
         val emailId = _selectedEmailId.value
         Log.d("DetectorViewModel", "Processing email for detection: $emailId")
         if (emailId == null) {
@@ -67,16 +71,22 @@ class DetectorViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
+            _isLoading.value = true
             Log.d("DetectorViewModel", "Fetching full email")
             val fullEmail = emailFullLocalRepository.getEmailById(emailId)
             if (fullEmail == null) {
                 Log.d("DetectorViewModel", "Full email is null")
                 return@launch
             }
-            Log.d("DetectorViewModel", "Classifying email")
+            Log.d("DetectorViewModel", "Classifying email")                   // TODO select which part of the email we want to actually analyze
             val result = classifier.classify(fullEmail.payload.body.data)
             _classificationResult.value = result
+
+            _isLoading.value = false
+            _isFinished.value = true
             Log.d("DetectorViewModel", "Classification result: $result")
         }
     }
+
+
 }

@@ -2,6 +2,7 @@ package com.martinszuc.phishing_emails_detection.data.tensor
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import com.chaquo.python.PyObject
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
@@ -17,22 +18,22 @@ import java.nio.channels.FileChannel
  * This class uses a TensorFlow Lite model for classification and a Python script for text preprocessing.
  * @author matoszuc@gmail.com
  */
-class Classifier(private val context: Context) {
+class Classifier(context: Context) {
     private var tflite: Interpreter? = null  // TensorFlow Lite interpreter
     private var py: Python? = null  // Python instance
     private var pyModule: PyObject? = null  // Python module
 
     init {
         // Load TensorFlow Lite model
-        val assetManager = context.assets
-        val modelPath = "phishing_model.tflite"
-        val fileDescriptor = assetManager.openFd(modelPath)
-        val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
-        val fileChannel = inputStream.channel
-        val startOffset = fileDescriptor.startOffset
-        val declaredLength = fileDescriptor.declaredLength
-        val fileBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
-        tflite = Interpreter(fileBuffer)
+//        val assetManager = context.assets
+//        val modelPath = "phishing_model.tflite"
+//        val fileDescriptor = assetManager.openFd(modelPath)
+//        val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
+//        val fileChannel = inputStream.channel
+//        val startOffset = fileDescriptor.startOffset
+//        val declaredLength = fileDescriptor.declaredLength
+//        val fileBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
+//        tflite = Interpreter(fileBuffer)
     }
 
     fun initializePython(activity: Activity) {         // Initialize Python instance and load Python module
@@ -49,10 +50,20 @@ class Classifier(private val context: Context) {
      * @return The classification result.
      */
     fun classify(emailText: String): Float {
-        val inputVal = preprocess(emailText)
-        val outputVal = Array(1) { FloatArray(1) }
-        tflite?.run(inputVal, outputVal)
-        return outputVal[0][0]
+
+        Log.d("Classifier", "Classifying email with body: ${emailText.take(100)}...")
+        Log.d("Classifier", "Wait starts")
+        Thread.sleep(5000)
+        Log.d("Classifier", "Wait ends")
+
+
+
+//        val inputVal = preprocess(emailText)
+//        val outputVal = Array(1) { FloatArray(1) }
+//        tflite?.run(inputVal, outputVal)
+//        return outputVal[0][0]
+
+        return 0.2f
     }
 
     /**

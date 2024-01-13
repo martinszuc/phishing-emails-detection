@@ -14,9 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.databinding.FragmentDetectorBinding
-import com.martinszuc.phishing_emails_detection.ui.component.detector.adapter.DetectorAdapter
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.EmailsImportViewModel
-import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.EmailsSavedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -41,6 +39,45 @@ class DetectorFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Observe selectedEmailId
+        detectorViewModel.selectedEmailId.observe(viewLifecycleOwner) { emailId ->
+            // TODO
+        }
+
+        // Observe isFinished
+        detectorViewModel.isFinished.observe(viewLifecycleOwner) { isFinished ->
+            if (isFinished) {
+             binding.textResult.visibility = View.VISIBLE
+            }
+        }
+
+        // Observe isLoading
+        detectorViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                // Show ProgressBar and hide TextView
+                binding.loadingBar.visibility = View.VISIBLE
+                binding.textResult.visibility = View.GONE
+            } else {
+                // Hide ProgressBar and show TextView
+                binding.loadingBar.visibility = View.GONE
+                binding.textResult.visibility = View.VISIBLE
+            }
+        }
+
+        // Observe classificationResult
+        detectorViewModel.classificationResult.observe(viewLifecycleOwner) { result ->
+            // Display the classification result in the TextView
+            binding.textResult.text = result.toString()
+        }
+
+        binding.detectButton.setOnClickListener {
+            detectorViewModel.classifySelectedEmail()
+        }
+    }
+
     private fun initEmailsSaved() {
         Log.d("DetectorFragment", "initEmailsSaved")
         val recyclerView: RecyclerView = binding.emailList
@@ -48,6 +85,7 @@ class DetectorFragment : Fragment() {
 
         detectorAdapter = DetectorAdapter(detectorViewModel)
         recyclerView.adapter = detectorAdapter
+        recyclerView.setHasFixedSize(true)
     }
 
     private fun observeEmailsFlow() {
