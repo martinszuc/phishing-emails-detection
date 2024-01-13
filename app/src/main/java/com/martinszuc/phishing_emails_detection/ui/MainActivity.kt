@@ -14,12 +14,16 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.martinszuc.phishing_emails_detection.R
+import com.martinszuc.phishing_emails_detection.data.tensor.Classifier
 import com.martinszuc.phishing_emails_detection.databinding.ActivityMainBinding
 import com.martinszuc.phishing_emails_detection.ui.component.login.UserAccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    @Inject
+    lateinit var classifier: Classifier
 
     private val userAccountViewModel: UserAccountViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
@@ -28,6 +32,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
+//        classifier.initializePython(this) // TODO fix this
+
         setupBinding()
         setupToolbar()
         setupBottomNav()

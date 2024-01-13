@@ -51,6 +51,9 @@ class EmailFullLocalRepository @Inject constructor(
         }
     }
 
+    suspend fun getEmailById(emailId: String): EmailFull? {
+        return emailFullDao.getEmailById(emailId)
+    }
 
     fun getAllEmailsFull(): Flow<PagingData<EmailFull>> {
         return Pager(
