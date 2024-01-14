@@ -54,7 +54,7 @@ class DetectorEmailSelectionDialog : BottomSheetDialogFragment() {
 
         // Set up your FloatingActionButton click listener
         binding.fabSubmit.setOnClickListener {
-            detectorViewModel.classifySelectedEmail()
+            detectorViewModel.classifySelectedMinimalEmail()
             dismiss()
         }
     }

@@ -48,8 +48,18 @@ class DetectorViewModel @Inject constructor(
 
     init {
         Log.d("DetectorViewModel", "Initializing ViewModel")
+        viewModelScope.launch {
+            val latestEmail = getLatestEmailId()
+            _selectedEmailId.value = latestEmail
+        }
         getEmails()
         loadModel()
+    }
+
+    private suspend fun getLatestEmailId(): String? {
+        return withContext(Dispatchers.IO) {
+            emailMinimalLocalRepository.getLatestEmailId()
+        }
     }
 
     private fun getEmails() {
@@ -61,8 +71,8 @@ class DetectorViewModel @Inject constructor(
         }
     }
 
-    fun setSelectedEmailId(emailId: String?) {
-        _selectedEmailId.value = emailId
+    suspend fun getMinimalEmailById(emailId: String): EmailMinimal? {
+        return emailMinimalLocalRepository.getEmailById(emailId)
     }
 
     fun toggleEmailSelected(emailId: String) {
@@ -75,7 +85,7 @@ class DetectorViewModel @Inject constructor(
         _selectedEmailId.value = null
     }
 
-    fun classifySelectedEmail() {
+    fun classifySelectedMinimalEmail() {
         val emailId = _selectedEmailId.value
         Log.d("DetectorViewModel", "Processing email for detection: $emailId")
         if (emailId == null) {
@@ -83,15 +93,16 @@ class DetectorViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-            _isLoading.value = true
             Log.d("DetectorViewModel", "Fetching full email")
-            val fullEmail = emailFullLocalRepository.getEmailById(emailId)
+            _isLoading.value = true
+            val fullEmail = emailMinimalLocalRepository.getEmailById(emailId)
             if (fullEmail == null) {
                 Log.d("DetectorViewModel", "Full email is null")
                 return@launch
             }
+
             Log.d("DetectorViewModel", "Classifying email")
-            val result = classifier.classify(fullEmail.snippet)
+            val result = classifier.classify(fullEmail.body)
             _classificationResult.value = result
 
             _isLoading.value = false

@@ -6,7 +6,9 @@ import androidx.paging.PagingData
 import androidx.room.withTransaction
 import com.martinszuc.phishing_emails_detection.data.local.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -48,6 +50,15 @@ class EmailMinimalLocalRepository@Inject constructor(
         return Pager(PagingConfig(pageSize = 10)) {
             emailMinimalDao.searchEmails("%$query%")
         }.flow
+    }
+    suspend fun getEmailById(emailId: String): EmailMinimal? {
+        return emailMinimalDao.getEmailById(emailId)
+    }
+
+    suspend fun getLatestEmailId(): String? {
+        return withContext(Dispatchers.IO) {
+            emailMinimalDao.getLatestEmail()?.id
+        }
     }
 }
 
