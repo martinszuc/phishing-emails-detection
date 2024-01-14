@@ -1,29 +1,26 @@
-package com.martinszuc.phishing_emails_detection.ui.component.detector
+package com.martinszuc.phishing_emails_detection.ui.component.detector.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
-import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSelectionBinding
+import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSelectionDetectorBinding
 import com.martinszuc.phishing_emails_detection.ui.component.detector.DetectorViewModel
-import java.text.SimpleDateFormat
-import java.util.*
 
-class DetectorAdapter(private val viewModel: DetectorViewModel) :
-    PagingDataAdapter<EmailMinimal, DetectorAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
+class EmailsSelectionDetectorAdapter(private val viewModel: DetectorViewModel) :
+    PagingDataAdapter<EmailMinimal, EmailsSelectionDetectorAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
 
-    private var selectedEmailId: String? = null
-
-    inner class EmailViewHolder(val binding: ItemEmailSelectionBinding) :
+    inner class EmailViewHolder(val binding: ItemEmailSelectionDetectorBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmailViewHolder {
         Log.d("DetectorAdapter", "onCreateViewHolder")
         val binding =
-            ItemEmailSelectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemEmailSelectionDetectorBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return EmailViewHolder(binding)
     }
 
@@ -34,18 +31,19 @@ class DetectorAdapter(private val viewModel: DetectorViewModel) :
             email?.let {
                 senderValue.text = email.sender
                 subject.text = email.subject
-                timestamp.text = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date(email.timestamp))
+                bodyText.text = email.body
 
-                checkbox.isChecked = email.id == selectedEmailId
-                checkbox.setOnCheckedChangeListener { _, isChecked ->
-                    Log.d("DetectorAdapter", "Checkbox changed - Email ID: ${email.id}, Checked: $isChecked")
-                    if (isChecked) {
-                        selectedEmailId = email.id
-                        viewModel.toggleEmailSelected(email)
-                        notifyDataSetChanged()  // Refresh to ensure only one checkbox is selected
-                    } else if (selectedEmailId == email.id) {
-                        selectedEmailId = null
-                        viewModel.toggleEmailSelected(email)
+                checkbox.setOnCheckedChangeListener(null)
+
+                val adapterPosition = holder.adapterPosition
+                val isSelected = email.id == viewModel.selectedEmailId.value
+
+                checkbox.isChecked = isSelected
+
+                checkbox.setOnClickListener {
+                    if (!isSelected) {
+                        viewModel.toggleEmailSelected(email.id)
+                        notifyItemChanged(adapterPosition) // To refresh the entire list and update checkboxes
                     }
                 }
             }

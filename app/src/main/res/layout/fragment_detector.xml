@@ -4,23 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/email_list"
+    <include
+        android:id="@+id/selected_email_frame"
+        layout="@layout/item_email_selection_detector_button"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_marginStart="6dp"
-        android:layout_marginEnd="6dp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/detect_button"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"/>
 
+    <Button
+        android:id="@+id/emailSelectionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_email"
+        app:layout_constraintTop_toBottomOf="@id/selected_email_frame"
+        android:layout_marginTop="12dp"/>
 
     <Button
         android:id="@+id/detect_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/detect_phishing"
-        app:layout_constraintTop_toBottomOf="@+id/email_list" />
+        app:layout_constraintTop_toBottomOf="@id/emailSelectionButton"
+        android:layout_marginTop="12dp"/>
 
     <ProgressBar
         android:id="@+id/loading_bar"
@@ -36,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/classification_result"
-        app:layout_constraintTop_toBottomOf="@+id/email_list"
+        app:layout_constraintTop_toBottomOf="@+id/emailSelectionButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="12dp"
@@ -47,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/result_string"
-        app:layout_constraintTop_toBottomOf="@+id/email_list"
+        app:layout_constraintTop_toBottomOf="@+id/emailSelectionButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="12dp"

@@ -59,4 +59,7 @@
     <string name="result_string">result</string>
     <string name="detect_phishing">Detect phishing</string>
     <string name="classification_result">Classification Result:</string>
+    <string name="body_string">Body:</string>
+    <string name="select_email">Select email</string>
+    <string name="submit_button_string_fab">submit fab</string>
 </resources>

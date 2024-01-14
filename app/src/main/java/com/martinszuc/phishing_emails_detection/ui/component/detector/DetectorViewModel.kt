@@ -61,9 +61,18 @@ class DetectorViewModel @Inject constructor(
         }
     }
 
-    fun toggleEmailSelected(email: EmailMinimal) {
-        Log.d("DetectorViewModel", "Toggling email selection: ${email.id}")
-        _selectedEmailId.value = if (_selectedEmailId.value == email.id) null else email.id
+    fun setSelectedEmailId(emailId: String?) {
+        _selectedEmailId.value = emailId
+    }
+
+    fun toggleEmailSelected(emailId: String) {
+        Log.d("DetectorViewModel", "Toggling email selection: $emailId")
+        _selectedEmailId.value = if (_selectedEmailId.value == emailId) null else emailId
+    }
+
+    fun clearSelectedEmail() {
+        Log.d("DetectorViewModel", "Deselecting all emails")
+        _selectedEmailId.value = null
     }
 
     fun classifySelectedEmail() {
@@ -81,7 +90,7 @@ class DetectorViewModel @Inject constructor(
                 Log.d("DetectorViewModel", "Full email is null")
                 return@launch
             }
-            Log.d("DetectorViewModel", "Classifying email")                   // TODO select which part of the email we want to actually analyze
+            Log.d("DetectorViewModel", "Classifying email")
             val result = classifier.classify(fullEmail.snippet)
             _classificationResult.value = result
 
