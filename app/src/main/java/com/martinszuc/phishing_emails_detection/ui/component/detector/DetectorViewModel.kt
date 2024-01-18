@@ -11,7 +11,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
-import com.martinszuc.phishing_emails_detection.data.local.repository.EmailFullLocalRepository
 import com.martinszuc.phishing_emails_detection.data.local.repository.EmailMinimalLocalRepository
 import com.martinszuc.phishing_emails_detection.data.tensor.Classifier
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +26,6 @@ import javax.inject.Inject
 @HiltViewModel
 class DetectorViewModel @Inject constructor(
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
-    private val emailFullLocalRepository: EmailFullLocalRepository,
     private val classifier: Classifier
 ) : ViewModel() {
 
@@ -76,7 +74,7 @@ class DetectorViewModel @Inject constructor(
     }
 
     fun toggleEmailSelected(emailId: String) {
-        Log.d("DetectorViewModel", "Toggling email selection: $emailId")
+        // Set the new email ID, or deselect if it's the same ID
         _selectedEmailId.value = if (_selectedEmailId.value == emailId) null else emailId
     }
 
@@ -84,6 +82,7 @@ class DetectorViewModel @Inject constructor(
         Log.d("DetectorViewModel", "Deselecting all emails")
         _selectedEmailId.value = null
     }
+
 
     fun classifySelectedMinimalEmail() {
         val emailId = _selectedEmailId.value

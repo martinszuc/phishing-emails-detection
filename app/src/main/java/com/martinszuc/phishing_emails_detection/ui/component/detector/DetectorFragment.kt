@@ -35,7 +35,7 @@ class DetectorFragment : Fragment() {
         _binding = FragmentDetectorBinding.inflate(inflater, container, false)
 
         // Initialize detectorAdapter
-        emailsSelectionDetectorAdapter = EmailsSelectionDetectorAdapter(detectorViewModel)
+        emailsSelectionDetectorAdapter = EmailsSelectionDetectorAdapter(detectorViewModel, viewLifecycleOwner)
         observeEmailsFlow()
 
         return binding.root

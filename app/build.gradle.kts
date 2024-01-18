@@ -26,7 +26,7 @@ android {
 
     defaultConfig {
         applicationId = "com.martinszuc.phishing_emails_detection"
-        minSdk = 33
+        minSdk = 30
         targetSdk = 34
         versionCode = 1
         versionName = "2.0"

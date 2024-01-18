@@ -30,7 +30,7 @@ class DetectorEmailSelectionDialog : BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = DialogDetectorEmailSelectionBinding.inflate(inflater, container, false)
-        detectorAdapter = EmailsSelectionDetectorAdapter(detectorViewModel)
+        detectorAdapter = EmailsSelectionDetectorAdapter(detectorViewModel, viewLifecycleOwner)
 
         return binding.root
     }
