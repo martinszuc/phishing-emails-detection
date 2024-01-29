@@ -12,5 +12,9 @@ data class EmailBlob(
     @PrimaryKey
     val id: String,
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    val blob: ByteArray
+    val blob: ByteArray,
+    @ColumnInfo(name = "sender_email")
+    val senderEmail: String,
+    @ColumnInfo(name = "timestamp")
+    val timestamp: Long
 )

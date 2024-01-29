@@ -12,7 +12,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.local.repository.EmailMinimalLocalRepository
-import com.martinszuc.phishing_emails_detection.data.tensor.Classifier
+import com.martinszuc.phishing_emails_detection.data.model.Classifier
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

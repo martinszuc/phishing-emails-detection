@@ -72,7 +72,7 @@ class GmailApiService @Inject constructor(
             val user = "me"
 
             emailIds.mapNotNull { emailId ->
-                fetchEmail(service, user, emailId)
+                fetchFullEmail(service, user, emailId)
             }.also { emails ->
                 Log.d("fetchEmailFullByIds", "Fetched ${emails.size} full emails")
             }
@@ -121,7 +121,7 @@ class GmailApiService @Inject constructor(
             Pair(emails, listResponse.nextPageToken)
         }
 
-    private fun fetchEmail(service: Gmail, user: String, emailId: String): EmailFull? {
+    private fun fetchFullEmail(service: Gmail, user: String, emailId: String): EmailFull? {
         val email = service.users().messages().get(user, emailId).setFormat("full").execute()
         val payload = email?.payload ?: run {
             Log.d("fetchEmail", "Email with ID $emailId has null payload")
@@ -180,7 +180,7 @@ class GmailApiService @Inject constructor(
     }
 
 
-    suspend fun fetchRawEmail(emailId: String): ByteArray? {
+    suspend fun fetchRawEmail(emailId: String): Triple<ByteArray?, String, Long>? {
         val account = userManager.account.value?.account
         if (account == null) {
             Log.d("fetchRawEmail", "Account is null")
@@ -197,7 +197,28 @@ class GmailApiService @Inject constructor(
 
         val user = "me"
 
-        val rawEmail = service.users().messages().get("me", emailId).setFormat("raw").execute()
-        return rawEmail?.raw?.let { Base64.decodeBase64(it) }
+        val email = service.users().messages().get(user, emailId).setFormat("raw").execute()
+        val rawEmail = email?.raw?.let { Base64.decodeBase64(it) }
+        if (rawEmail != null) {
+            // Convert the raw email from ByteArray to String
+            val emailContent = String(rawEmail, Charsets.UTF_8)
+            // Parse the headers from the email content string
+            val senderEmail = parseHeader(emailContent, "From") ?: "unknown@sender.com"
+            val timestamp = email.internalDate ?: 0L
+            return Triple(rawEmail, senderEmail, timestamp)
+        } else {
+            Log.d("fetchRawEmail", "Raw email content is null for ID: $emailId")
+            return null
+        }
+    }
+
+    private fun parseHeader(emailContent: String, headerName: String): String? {
+        val lines = emailContent.split("\r\n")
+        for (line in lines) {
+            if (line.startsWith(headerName)) {
+                return line.substringAfter(": ").trim()
+            }
+        }
+        return null
     }
 }

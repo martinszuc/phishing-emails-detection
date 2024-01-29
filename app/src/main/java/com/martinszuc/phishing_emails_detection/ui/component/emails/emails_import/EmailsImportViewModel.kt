@@ -65,9 +65,15 @@ class EmailsImportViewModel @Inject constructor(
             val fullEmails = emailFullRemoteRepository.getEmailsFullByIds(selectedEmailsList.map { it.id })
             emailFullLocalRepository.insertAllEmailsFull(fullEmails)
 
+            // Fetch and save the raw format of the selected emails
+            selectedEmailsList.forEach { email ->
+                emailFullRemoteRepository.fetchAndSaveRawEmail(email.id)
+            }
+
             // Also save the minimal emails to the local database
             emailMinimalLocalRepository.insertAll(selectedEmailsList)
 
+            // Clear the selected emails
             selectedEmails.postValue(emptyList())
         }
     }

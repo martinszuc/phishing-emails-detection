@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.data.tensor
+package com.martinszuc.phishing_emails_detection.data.model
 
 import android.content.Context
 import android.util.Log

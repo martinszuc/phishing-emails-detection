@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.data.local.db.AppDatabase
-import com.martinszuc.phishing_emails_detection.data.tensor.Classifier
+import com.martinszuc.phishing_emails_detection.data.model.Classifier
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

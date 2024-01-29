@@ -3,6 +3,7 @@ package com.martinszuc.phishing_emails_detection.data.local.repository
 import androidx.room.withTransaction
 import com.martinszuc.phishing_emails_detection.data.local.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.local.entity.EmailBlob
+import com.martinszuc.phishing_emails_detection.utils.emails.EmailUtils
 import javax.inject.Inject
 
 /**
@@ -19,13 +20,15 @@ class EmailBlobLocalRepository@Inject constructor(
             }
         }
 
-        suspend fun getEmailBlob(id: String): EmailBlob {
-            return emailBlobDao.getEmailBlob(id)
-        }
+    suspend fun getMboxById(id: String): String {
+        val emailBlob = emailBlobDao.getEmailBlob(id)
+        return EmailUtils.formatToMbox(emailBlob)
+    }
 
         suspend fun deleteEmailBlob(id: String) {
             database.withTransaction {
                 emailBlobDao.deleteEmailBlob(id)
             }
         }
+
     }
