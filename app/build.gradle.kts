@@ -70,6 +70,7 @@ chaquopy {
             install ("scipy")
             install ("scikit-learn")
             install ("joblib")
+            install ("beautifulsoup4==4.10.0")
         }
     }
     productFlavors { }
