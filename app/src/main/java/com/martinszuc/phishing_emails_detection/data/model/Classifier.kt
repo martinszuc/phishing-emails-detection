@@ -1,13 +1,11 @@
 package com.martinszuc.phishing_emails_detection.data.model
 
 import android.content.Context
-import android.util.Log
 import com.chaquo.python.PyObject
 import com.chaquo.python.Python
 import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
 import java.nio.channels.FileChannel
-import java.util.Locale
 
 /**
  * Classifier class for phishing email detection.
@@ -22,9 +20,10 @@ class Classifier(private val context: Context) {
     init {
         // Initialize Python instance and load Python module
         py = Python.getInstance()
-        pyModule = py?.getModule("tfidf_vectorizer")
+        pyModule = py?.getModule("classifier")
     }
 
+    // Will be used for federated learning implementation
     fun loadModel() {
         // Load TensorFlow Lite model
         val assetManager = context.assets
@@ -38,34 +37,16 @@ class Classifier(private val context: Context) {
         tflite = Interpreter(fileBuffer)
     }
 
-
     /**
      * Classify an email text.
      * @param emailText The email text to classify.
      * @return The classification result.
      */
-    fun classify(emailText: String): Float {
-        Log.d("Classifier", "Classifying email with body: ${emailText.take(100)}...")
-        val inputVal = preprocess(emailText)
-        val outputVal = Array(1) { FloatArray(1) }
-        tflite?.run(inputVal, outputVal)
-        return outputVal[0][0]
+    fun classify(mboxString: String): Boolean {
+        // Call the predict_email function and get the result
+        val prediction = pyModule?.callAttr("predict_email", mboxString).toString()
+
+        // Assuming the Python function returns "Phishing" or "Safe"
+        return prediction == "Phishing"
     }
-
-    /**
-     * Preprocess an email text.
-     * Tokenize the text and convert it to a TF-IDF vector using a Python script.
-     * @param emailText The email text to preprocess.
-     * @return The TF-IDF vector.
-     */
-    private fun preprocess(emailText: String): Array<FloatArray> {
-        // Basic preprocessing in Kotlin
-        val processedText = emailText.lowercase(Locale.getDefault())
-            .replace("[^a-zA-Z0-9\\s]".toRegex(), "").split("\\s+".toRegex())
-
-        // Further processing and TF-IDF transformation using Python
-        val tfidfVector = pyModule?.callAttr("transform_text", processedText.joinToString(" "))?.asList()?.map { it.toFloat() }?.toFloatArray()
-        return arrayOf(tfidfVector ?: FloatArray(0))
-    }
-
 }

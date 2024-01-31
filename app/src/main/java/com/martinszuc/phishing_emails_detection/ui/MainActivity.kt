@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {                                      
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupTfLite()
+//        setupTfLite() // commented out until federated learning implementation
         setupPermaNightMode()
         setupBinding()
         setupToolbar()

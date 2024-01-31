@@ -102,10 +102,10 @@ class DetectorFragment : Fragment() {
     }
 
     private fun observeResult() {
-        detectorViewModel.classificationResult.observe(viewLifecycleOwner) { result ->
-            // Display the classification result in the TextView
-            val percentageString = "%.2f%%".format(result * 100)
-            binding.textResult.text = percentageString
+        detectorViewModel.classificationResult.observe(viewLifecycleOwner) { isPhishing ->
+            // Determine the text to display based on the classification result
+            val resultText = if (isPhishing) "Phishing" else "Safe"
+            binding.textResult.text = resultText
         }
     }
 

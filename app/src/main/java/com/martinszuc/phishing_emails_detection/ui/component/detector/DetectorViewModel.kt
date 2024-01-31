@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
+import com.martinszuc.phishing_emails_detection.data.local.repository.EmailBlobLocalRepository
 import com.martinszuc.phishing_emails_detection.data.local.repository.EmailMinimalLocalRepository
 import com.martinszuc.phishing_emails_detection.data.model.Classifier
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,14 +27,15 @@ import javax.inject.Inject
 @HiltViewModel
 class DetectorViewModel @Inject constructor(
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
+    private val emailBlobLocalRepository: EmailBlobLocalRepository,
     private val classifier: Classifier
 ) : ViewModel() {
 
     private val _selectedEmailId = MutableLiveData<String?>(null)
     val selectedEmailId: LiveData<String?> = _selectedEmailId
 
-    private val _classificationResult = MutableLiveData<Float>()
-    val classificationResult: LiveData<Float> = _classificationResult
+    private val _classificationResult = MutableLiveData<Boolean>()
+    val classificationResult: LiveData<Boolean> = _classificationResult
 
     private val _emailsFlow = MutableStateFlow<PagingData<EmailMinimal>>(PagingData.empty())
     val emailsFlow: Flow<PagingData<EmailMinimal>> = _emailsFlow.asStateFlow()
@@ -101,7 +103,7 @@ class DetectorViewModel @Inject constructor(
             }
 
             Log.d("DetectorViewModel", "Classifying email")
-            val result = classifier.classify(fullEmail.body)
+            val result = classifier.classify(emailBlobLocalRepository.getMboxById(emailId))
             _classificationResult.value = result
 
             _isLoading.value = false
