@@ -43,7 +43,6 @@ class DetectorViewModel @Inject constructor(
             val latestEmail = getLatestEmailId()
             _selectedEmailId.value = latestEmail
         }
-        loadModel()
     }
 
     private suspend fun getLatestEmailId(): String? {
@@ -90,20 +89,6 @@ class DetectorViewModel @Inject constructor(
             _isLoading.value = false
             _isFinished.value = true
             Log.d("DetectorViewModel", "Classification result: $result")
-        }
-    }
-
-    fun loadModel() {
-        viewModelScope.launch(Dispatchers.Main) {
-            _isLoading.value = true
-
-            // Switch to IO thread for loading model
-            withContext(Dispatchers.IO) {
-                classifier.loadModel()
-            }
-
-            // Switch back to Main thread to update LiveData
-            _isLoading.value = false
         }
     }
 }

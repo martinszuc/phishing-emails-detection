@@ -9,26 +9,30 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.martinszuc.phishing_emails_detection.R
+import com.martinszuc.phishing_emails_detection.data.model.Classifier
 import com.martinszuc.phishing_emails_detection.databinding.ActivityMainBinding
-import com.martinszuc.phishing_emails_detection.ui.component.detector.DetectorViewModel
 import com.martinszuc.phishing_emails_detection.ui.component.login.UserAccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {                                                      // TODO little bar with status of processes
+    @Inject
+    lateinit var classifier: Classifier
     private val userAccountViewModel: UserAccountViewModel by viewModels()
-    private val detectorViewModel: DetectorViewModel by viewModels()
 
     private lateinit var binding: ActivityMainBinding
     private var isLoggedIn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setupTfLite() // commented out until federated learning implementation
+        setupClassifier()
         setupPermaNightMode()
         setupBinding()
         setupToolbar()
@@ -36,8 +40,12 @@ class MainActivity : AppCompatActivity() {                                      
         observeLoginState()
     }
 
-    private fun setupTfLite() {
-        detectorViewModel.loadModel()
+    private fun setupClassifier() {
+        // Initialize Classifier in the background
+        lifecycleScope.launch {
+            classifier.initializePython()
+//            classifier.loadModel() // commented out until federated learning implementation
+        }
     }
 
     private fun setupPermaNightMode() {
