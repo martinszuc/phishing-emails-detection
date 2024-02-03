@@ -15,6 +15,7 @@ import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentDetectorBinding
 import com.martinszuc.phishing_emails_detection.ui.component.detector.adapter.EmailsSelectionDetectorAdapter
 import com.martinszuc.phishing_emails_detection.ui.component.detector.email_selection_dialog.DetectorEmailSelectionDialog
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailMinimalSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -26,6 +27,7 @@ class DetectorFragment : Fragment() {
     private var _binding: FragmentDetectorBinding? = null
     private val binding get() = _binding!!
     private val detectorViewModel: DetectorViewModel by activityViewModels()
+    private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()
     private lateinit var emailsSelectionDetectorAdapter: EmailsSelectionDetectorAdapter
 
     override fun onCreateView(
@@ -133,7 +135,7 @@ class DetectorFragment : Fragment() {
         Log.d("DetectorFragment", "observeEmailsFlow")
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                detectorViewModel.emailsFlow.collectLatest { pagingData ->
+                emailMinimalSharedViewModel.emailsFlow.collectLatest { pagingData ->
                     Log.d("DetectorFragment", "New PagingData received")
                     emailsSelectionDetectorAdapter.submitData(pagingData)
                 }

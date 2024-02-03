@@ -26,6 +26,8 @@ interface EmailMinimalDao {
     fun searchEmails(query: String): PagingSource<Int, EmailMinimal>
     @Query("UPDATE email_minimal SET sender = :sender, subject = :subject, body = :body, timestamp = :timestamp, isPhishing = :isPhishing WHERE id = :id")
     suspend fun updateEmail(id: String, sender: String, subject: String, body: String, timestamp: Long, isPhishing: Boolean?)
+    @Query("DELETE FROM email_minimal")
+    suspend fun clearAll()
 
     @Transaction
     suspend fun upsert(email: EmailMinimal) {

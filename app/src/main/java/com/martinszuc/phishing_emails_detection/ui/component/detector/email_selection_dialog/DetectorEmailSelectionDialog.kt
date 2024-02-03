@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.martinszuc.phishing_emails_detection.databinding.DialogDetectorEmailSelectionBinding
 import com.martinszuc.phishing_emails_detection.ui.component.detector.DetectorViewModel
 import com.martinszuc.phishing_emails_detection.ui.component.detector.adapter.EmailsSelectionDetectorAdapter
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailMinimalSharedViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -24,6 +25,7 @@ class DetectorEmailSelectionDialog : BottomSheetDialogFragment() {
     private var _binding: DialogDetectorEmailSelectionBinding? = null
     private val binding get() = _binding!!
     private val detectorViewModel: DetectorViewModel by activityViewModels()
+    private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()
     private lateinit var detectorAdapter: EmailsSelectionDetectorAdapter
 
     override fun onCreateView(
@@ -45,7 +47,7 @@ class DetectorEmailSelectionDialog : BottomSheetDialogFragment() {
         // Observe the emailsFlow from the ViewModel
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                detectorViewModel.emailsFlow.collectLatest { pagingData ->
+                emailMinimalSharedViewModel.emailsFlow.collectLatest { pagingData ->
                     Log.d("EmailListBottomSheetFragment", "New PagingData received")
                     detectorAdapter.submitData(pagingData)
                 }

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -101,7 +100,7 @@ class EmailsImportFragment : Fragment() {
     private fun observeEmailsFlow() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                emailsImportViewModel.emailsFlow.collectLatest { pagingData ->
+                emailsImportViewModel.remoteEmailsFlow.collectLatest { pagingData ->
                     emailsImportAdapter.submitData(pagingData)
                 }
             }

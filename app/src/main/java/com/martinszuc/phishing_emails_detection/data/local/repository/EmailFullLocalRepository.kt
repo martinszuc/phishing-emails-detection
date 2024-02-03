@@ -48,6 +48,8 @@ class EmailFullLocalRepository @Inject constructor(
         database.withTransaction {
             emailFullDao.clearAll()
             subjectDao.clearAll()
+            database.emailMinimalDao().clearAll()
+            database.emailBlobDao().clearAll()
         }
     }
 

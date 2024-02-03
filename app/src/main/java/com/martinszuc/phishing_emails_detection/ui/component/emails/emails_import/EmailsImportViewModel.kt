@@ -26,8 +26,8 @@ class EmailsImportViewModel @Inject constructor(
     private val emailFullRemoteRepository: EmailFullRemoteRepository
 ) : ViewModel() {
 
-    private val _emailsFlow = MutableStateFlow<PagingData<EmailMinimal>>(PagingData.empty())
-    val emailsFlow: Flow<PagingData<EmailMinimal>> = _emailsFlow.asStateFlow()
+    private val _remoteEmailsFlow = MutableStateFlow<PagingData<EmailMinimal>>(PagingData.empty())
+    val remoteEmailsFlow: Flow<PagingData<EmailMinimal>> = _remoteEmailsFlow.asStateFlow()
     val selectedEmails = MutableLiveData<List<EmailMinimal>>(emptyList())
 
     init {
@@ -37,14 +37,14 @@ class EmailsImportViewModel @Inject constructor(
     fun getEmails() {
         viewModelScope.launch {
             val pagingData = emailMinimalRemoteRepository.getEmails().first()
-            _emailsFlow.value = pagingData
+            _remoteEmailsFlow.value = pagingData
         }
     }
 
     fun searchEmails(query: String) {
         viewModelScope.launch {
             val pagingData = emailMinimalRemoteRepository.searchEmails(query).first()
-            _emailsFlow.value = pagingData
+            _remoteEmailsFlow.value = pagingData
         }
     }
 

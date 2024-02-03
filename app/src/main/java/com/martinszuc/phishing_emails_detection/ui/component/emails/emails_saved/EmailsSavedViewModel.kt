@@ -24,28 +24,6 @@ class EmailsSavedViewModel @Inject constructor(
     private val emailFullLocalRepository: EmailFullLocalRepository
 ) : ViewModel() {
 
-    private val _emailsFlow = MutableStateFlow<PagingData<EmailFull>>(PagingData.empty())
-    val emailsFlow: Flow<PagingData<EmailFull>> = _emailsFlow.asStateFlow()
-
-    init {
-        getEmails()
-    }
-
-    fun getEmails() {
-        viewModelScope.launch {
-            emailFullLocalRepository.getAllEmailsFull().cachedIn(viewModelScope).collectLatest { pagingData ->
-                _emailsFlow.value = pagingData
-            }
-        }
-    }
-
-    fun searchEmails(query: String) {
-        viewModelScope.launch {
-            emailFullLocalRepository.searchEmails(query).cachedIn(viewModelScope).collectLatest { pagingData ->
-                _emailsFlow.value = pagingData
-            }
-        }
-    }
     fun clearDatabase() {
         viewModelScope.launch {
             emailFullLocalRepository.clearAll()

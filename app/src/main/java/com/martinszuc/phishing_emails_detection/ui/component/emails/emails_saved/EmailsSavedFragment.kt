@@ -21,6 +21,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsSavedBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.adapter.EmailsSavedAdapter
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailFullSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -32,6 +33,7 @@ import kotlinx.coroutines.launch
 class EmailsSavedFragment : Fragment() {
     private var _binding: FragmentEmailsSavedBinding? = null
     private val emailsSavedViewModel: EmailsSavedViewModel by activityViewModels()
+    private val emailFullSharedViewModel: EmailFullSharedViewModel by activityViewModels()
     private lateinit var emailsSavedAdapter: EmailsSavedAdapter
 
     private val binding get() = _binding!!
@@ -99,7 +101,7 @@ class EmailsSavedFragment : Fragment() {
     private fun observeEmailsFlow() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                emailsSavedViewModel.emailsFlow.collectLatest { pagingData ->
+                emailFullSharedViewModel.localEmailsFlow.collectLatest { pagingData ->
                     emailsSavedAdapter.submitData(pagingData)
                     binding.emailSelectionRecyclerView.layoutManager?.scrollToPosition(0)
                 }
@@ -113,7 +115,7 @@ class EmailsSavedFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // This method is called when the user submits the search string.
                 query?.let {
-                    emailsSavedViewModel.searchEmails(query)
+                    emailFullSharedViewModel.searchEmails(query)
                 }
 
                 hideKeyboard()
@@ -124,7 +126,7 @@ class EmailsSavedFragment : Fragment() {
                 // This method is called when the query text is changed by the user.
                 if (newText.isNullOrEmpty()) {
                     // If the query text is empty, call getEmails to fetch all emails.
-                    emailsSavedViewModel.getEmails()
+                    emailFullSharedViewModel.getEmails()
                 }
                 return true
             }
