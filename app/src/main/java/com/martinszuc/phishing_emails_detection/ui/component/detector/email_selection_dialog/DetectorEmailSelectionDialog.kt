@@ -41,7 +41,7 @@ class DetectorEmailSelectionDialog : BottomSheetDialogFragment(), EmailSelection
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Set up your RecyclerView (adapter, layout manager, etc.)
+        // Set up RecyclerView (adapter, layout manager, etc.)
         binding.emailList.adapter = detectorAdapter
         binding.emailList.layoutManager = LinearLayoutManager(context)
 

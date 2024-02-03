@@ -1,5 +1,9 @@
 package com.martinszuc.phishing_emails_detection.utils
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 class Constants {
     companion object {
         const val GMAIL_PAGER_PREFETCH = 7

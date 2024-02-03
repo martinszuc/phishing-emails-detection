@@ -21,6 +21,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {                                                      // TODO little bar with status of processes
     @Inject

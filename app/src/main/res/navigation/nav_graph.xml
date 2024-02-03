@@ -70,8 +70,7 @@
     <fragment
         android:id="@+id/SettingsFragment"
         android:name="com.martinszuc.phishing_emails_detection.ui.component.settings.SettingsFragment"
-        android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings">
+        android:label="@string/title_settings">
         <!-- Actions to child fragments if needed -->
     </fragment>
 
