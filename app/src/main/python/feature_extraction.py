@@ -147,51 +147,6 @@ class AlexaRankFinder(FeatureFinder):
                 ranks.append(rank)
         return ranks if ranks else ['No Rank']
 
-def processFile(filepath, encoding, phishy=True, limit=500): # TODO this needs to be changed to work with the app, process one mbox string and return
-    print(f"Processing file: {filepath}")                   # TODO      a list of dictionaries with the features and values? or save to file? and read later?
-    try:
-        mbox = mailbox.mbox(filepath)
-    except Exception as e:
-        print(f"Error opening file {filepath}: {e}")
-        return
-
-    data = []
-    email_index = []
-    finders = [HTMLFormFinder(), AttachmentFinder(), FlashFinder(),
-               IFrameFinder(), HTMLContentFinder(), URLsFinder(),
-               ExternalResourcesFinder(), JavascriptFinder(),
-               CssFinder(), IPsInURLs(), AtInURLs(), EncodingFinder()]
-
-    for i, message in enumerate(mbox, start=1):
-        email_data = {}
-        payload = utils.getpayload_dict(message)
-        totalsize = sum(len(re.sub(r'\s+', '', part["payload"])) for part in payload)
-
-        if totalsize < 1:
-            continue
-
-        for finder in finders:
-            email_data[finder.getFeatureTitle()] = finder.getFeature(message)
-
-        email_data["Phishy"] = phishy
-        data.append(email_data)
-
-        try:
-            email_raw = message.as_bytes().decode(encoding, errors='replace')
-            email_fields = {"id": i, "message": utils.getpayload(message), "raw": email_raw}
-            email_index.append(email_fields)
-        except (UnicodeEncodeError, AttributeError):
-            continue
-
-        if limit and i >= limit:
-            break
-
-    df = pd.DataFrame(data)
-    df.to_csv(filepath + "-export.csv", quoting=csv.QUOTE_ALL)
-
-    emails_df = pd.DataFrame(email_index)
-    emails_df.to_csv(filepath + "-export-index.csv", quoting=csv.QUOTE_ALL)
-
 def process_mbox_message(mbox_string):
     # Parse the mbox string
     message = mailbox.mboxMessage(mbox_string)
