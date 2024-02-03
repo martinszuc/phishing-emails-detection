@@ -5,7 +5,8 @@
 
         <Preference
             app:key="logout"
-            app:title="Log Out" />
+            app:title="Log Out"
+            app:layout="@layout/preference_layout" />
 
     </PreferenceCategory>
 
@@ -13,7 +14,8 @@
 
         <Preference
             app:key="clear_database"
-            app:title="Clear Database" />
+            app:title="Clear Database"
+            app:layout="@layout/preference_layout" />
 
     </PreferenceCategory>
 

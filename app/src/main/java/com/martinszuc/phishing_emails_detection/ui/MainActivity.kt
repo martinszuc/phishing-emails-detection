@@ -77,9 +77,6 @@ class MainActivity : AppCompatActivity() {                                      
             binding.toolbar.menu.clear()
         } else {
             binding.bottomNavigation.visibility = View.VISIBLE
-            if (isLoggedIn) {
-                binding.toolbar.inflateMenu(R.menu.menu_main)
-            }
         }
     }
 

@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 private const val BODY_SIZE = 195
 
 @AndroidEntryPoint
-class DetectorFragment : Fragment() {
+class DetectorFragment : Fragment() {               // TODO this fragment lags UI when loading
     private var _binding: FragmentDetectorBinding? = null
     private val binding get() = _binding!!
     private val detectorViewModel: DetectorViewModel by activityViewModels()
