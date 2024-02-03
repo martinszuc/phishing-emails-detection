@@ -13,13 +13,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentDetectorBinding
+import com.martinszuc.phishing_emails_detection.ui.component.detector.adapter.EmailSelectionDetectorItemListener
 import com.martinszuc.phishing_emails_detection.ui.component.detector.adapter.EmailsSelectionDetectorAdapter
 import com.martinszuc.phishing_emails_detection.ui.component.detector.email_selection_dialog.DetectorEmailSelectionDialog
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailMinimalSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
+/**
+ * Authored by matoszuc@gmail.com
+ */
 private const val BODY_SIZE = 195
 
 @AndroidEntryPoint
@@ -27,18 +30,12 @@ class DetectorFragment : Fragment() {               // TODO this fragment lags U
     private var _binding: FragmentDetectorBinding? = null
     private val binding get() = _binding!!
     private val detectorViewModel: DetectorViewModel by activityViewModels()
-    private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()
-    private lateinit var emailsSelectionDetectorAdapter: EmailsSelectionDetectorAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         Log.d("DetectorFragment", "onCreateView")
         _binding = FragmentDetectorBinding.inflate(inflater, container, false)
-
-        // Initialize detectorAdapter
-        emailsSelectionDetectorAdapter = EmailsSelectionDetectorAdapter(detectorViewModel, viewLifecycleOwner)
-        observeEmailsFlow()
 
         return binding.root
     }
@@ -127,18 +124,6 @@ class DetectorFragment : Fragment() {               // TODO this fragment lags U
         detectorViewModel.isFinished.observe(viewLifecycleOwner) { isFinished ->
             if (isFinished) {
                 binding.textResult.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    private fun observeEmailsFlow() {
-        Log.d("DetectorFragment", "observeEmailsFlow")
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                emailMinimalSharedViewModel.emailsFlow.collectLatest { pagingData ->
-                    Log.d("DetectorFragment", "New PagingData received")
-                    emailsSelectionDetectorAdapter.submitData(pagingData)
-                }
             }
         }
     }

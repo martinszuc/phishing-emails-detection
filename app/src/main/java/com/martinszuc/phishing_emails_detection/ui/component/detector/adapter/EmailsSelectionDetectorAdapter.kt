@@ -10,10 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSelectionDetectorBinding
 import com.martinszuc.phishing_emails_detection.ui.component.detector.DetectorViewModel
-
+/**
+ * Authored by matoszuc@gmail.com
+ */
 class EmailsSelectionDetectorAdapter(
     private val viewModel: DetectorViewModel,
-    lifecycleOwner: LifecycleOwner
+    lifecycleOwner: LifecycleOwner,
+    private val emailSelectionDetectorItemListener: EmailSelectionDetectorItemListener
 ) : PagingDataAdapter<EmailMinimal, EmailsSelectionDetectorAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
 
     private var currentlySelectedId: String? = null
@@ -66,6 +69,11 @@ class EmailsSelectionDetectorAdapter(
                 checkbox.setOnClickListener {
                     handleSelection(holder, email, isSelected)
                 }
+            }
+        }
+        holder.binding.root.setOnClickListener {
+            email?.let { emailItem ->
+                emailSelectionDetectorItemListener.onEmailClicked(emailItem.id)
             }
         }
     }

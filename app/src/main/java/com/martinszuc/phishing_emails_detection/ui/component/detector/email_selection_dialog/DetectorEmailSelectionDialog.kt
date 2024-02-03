@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.martinszuc.phishing_emails_detection.databinding.DialogDetectorEmailSelectionBinding
 import com.martinszuc.phishing_emails_detection.ui.component.detector.DetectorViewModel
+import com.martinszuc.phishing_emails_detection.ui.component.detector.adapter.EmailSelectionDetectorItemListener
 import com.martinszuc.phishing_emails_detection.ui.component.detector.adapter.EmailsSelectionDetectorAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailMinimalSharedViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 /**
  * Authored by matoszuc@gmail.com
  */
-class DetectorEmailSelectionDialog : BottomSheetDialogFragment() {
+class DetectorEmailSelectionDialog : BottomSheetDialogFragment(), EmailSelectionDetectorItemListener {
     private var _binding: DialogDetectorEmailSelectionBinding? = null
     private val binding get() = _binding!!
     private val detectorViewModel: DetectorViewModel by activityViewModels()
@@ -32,7 +33,7 @@ class DetectorEmailSelectionDialog : BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = DialogDetectorEmailSelectionBinding.inflate(inflater, container, false)
-        detectorAdapter = EmailsSelectionDetectorAdapter(detectorViewModel, viewLifecycleOwner)
+        detectorAdapter = EmailsSelectionDetectorAdapter(detectorViewModel, viewLifecycleOwner, this)
 
         return binding.root
     }
@@ -60,6 +61,13 @@ class DetectorEmailSelectionDialog : BottomSheetDialogFragment() {
             dismiss()
         }
     }
+
+    override fun onEmailClicked(emailId: String) {
+        detectorViewModel.toggleEmailSelected(emailId)
+        detectorViewModel.classifySelectedMinimalEmail()
+        dismiss()
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
