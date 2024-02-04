@@ -56,6 +56,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
             "load_model" -> {
                 openDirectoryPicker()
             }
+            "load_model_h5" -> {
+                openFilePicker()
+            }
         }
         return super.onPreferenceTreeClick(preference)
     }
@@ -91,6 +94,39 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 FileOutputStream(newFile).use { output ->
                     input?.copyTo(output)
                 }
+            }
+        }
+    }
+
+    private fun openFilePicker() {
+        // Launch the file picker
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.type = "*/*" // Specify the MIME type of H5 files here
+        filePickerLauncher.launch(intent)
+    }
+
+    private val filePickerLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.data?.also { uri ->
+                    // Check if the selected file is the desired H5 model file
+                    val selectedFile = DocumentFile.fromSingleUri(requireContext(), uri)
+//                    if (selectedFile != null && selectedFile.name == "classifier_tf_model.h5") {
+                    if (selectedFile != null) {
+                        copyH5ModelFile(selectedFile, requireContext().filesDir)
+                        Toast.makeText(context, "Model copied successfully", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "Invalid file selected", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
+    private fun copyH5ModelFile(file: DocumentFile, destinationDir: File) {
+        val newFile = File(destinationDir, "classifier_tf_model.h5")
+        requireContext().contentResolver.openInputStream(file.uri).use { input ->
+            FileOutputStream(newFile).use { output ->
+                input?.copyTo(output)
             }
         }
     }

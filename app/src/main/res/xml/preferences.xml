@@ -2,31 +2,37 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory app:title="User Settings">
+    <PreferenceCategory app:title="User settings">
 
         <Preference
             app:key="logout"
-            app:title="Log Out"
+            app:title="Log out"
             app:layout="@layout/preference_layout" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Database Settings">
+    <PreferenceCategory app:title="Database settings">
 
         <Preference
             app:key="clear_database"
-            app:title="Clear Database"
+            app:title="Clear database"
             app:layout="@layout/preference_layout" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Model Settings">
+    <PreferenceCategory app:title="Model settings">
 
         <Preference
             app:key="load_model"
-            app:title="Load Model"
+            app:title="Load model"
             app:layout="@layout/preference_layout"
             android:summary="Select a folder containing the model"/>
+
+        <Preference
+            app:key="load_model_h5"
+            app:title="Load .h5 model"
+            app:layout="@layout/preference_layout"
+            android:summary="Select a file containing the model"/>
 
     </PreferenceCategory>
 
