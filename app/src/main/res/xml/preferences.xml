@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="User Settings">
 
@@ -16,6 +17,16 @@
             app:key="clear_database"
             app:title="Clear Database"
             app:layout="@layout/preference_layout" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Model Settings">
+
+        <Preference
+            app:key="load_model"
+            app:title="Load Model"
+            app:layout="@layout/preference_layout"
+            android:summary="Select a folder containing the model"/>
 
     </PreferenceCategory>
 
