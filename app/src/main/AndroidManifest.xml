@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
     <application
         android:name=".ui.App"
         android:allowBackup="true"
@@ -14,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="31"
-        android:enableOnBackInvokedCallback="true">
+        android:enableOnBackInvokedCallback="true"
+        android:requestLegacyExternalStorage="true">              <!-- If you're targeting Android 10 (API level 29) or above and want to opt-out of scoped storage for some reason. will not be supported in future Android versions. -->
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"

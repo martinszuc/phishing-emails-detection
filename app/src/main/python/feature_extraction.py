@@ -5,8 +5,12 @@ import csv
 import os
 import utils
 import config
+import joblib
+import numpy
+import tensorflow as tf
 from bs4 import BeautifulSoup
 from abc import ABC, abstractmethod
+
 
 class FeatureFinder(ABC):
 
@@ -18,6 +22,7 @@ class FeatureFinder(ABC):
     def getFeature(self, message):
         pass
 
+
 class HTMLFormFinder(FeatureFinder):
     def getFeatureTitle(self):
         return "Html Form"
@@ -26,6 +31,7 @@ class HTMLFormFinder(FeatureFinder):
         payload = utils.getpayload(message).lower()
         return re.compile(r'<\s?\/?\s?form\s?>', re.IGNORECASE).search(payload) is not None
 
+
 class IFrameFinder(FeatureFinder):
     def getFeatureTitle(self):
         return "Html iFrame"
@@ -33,6 +39,7 @@ class IFrameFinder(FeatureFinder):
     def getFeature(self, message):
         payload = utils.getpayload(message).lower()
         return re.compile(r'<\s?\/?\s?iframe\s?>', re.IGNORECASE).search(payload) is not None
+
 
 class FlashFinder(FeatureFinder):
     def getFeatureTitle(self):
@@ -44,12 +51,14 @@ class FlashFinder(FeatureFinder):
         flashObject = re.compile(r'embed\s*src\s*=\s*\".*\.swf\"', re.IGNORECASE).search(payload)
         return (swflinks is not None and len(swflinks) > 0) or (flashObject is not None)
 
+
 class AttachmentFinder(FeatureFinder):
     def getFeatureTitle(self):
         return "Attachments"
 
     def getFeature(self, message):
         return utils.getAttachmentCount(message)
+
 
 class HTMLContentFinder(FeatureFinder):
     def getFeatureTitle(self):
@@ -58,12 +67,14 @@ class HTMLContentFinder(FeatureFinder):
     def getFeature(self, message):
         return utils.ishtml(message)
 
+
 class URLsFinder(FeatureFinder):
     def getFeatureTitle(self):
         return "URLs"
 
     def getFeature(self, message):
         return len(utils.geturls_payload(message))
+
 
 class ExternalResourcesFinder(FeatureFinder):
     def getFeatureTitle(self):
@@ -72,12 +83,14 @@ class ExternalResourcesFinder(FeatureFinder):
     def getFeature(self, message):
         return len(utils.getexternalresources(message))
 
+
 class JavascriptFinder(FeatureFinder):
     def getFeatureTitle(self):
         return "Javascript"
 
     def getFeature(self, message):
         return len(utils.getjavascriptusage(message))
+
 
 class CssFinder(FeatureFinder):
     def getFeatureTitle(self):
@@ -86,12 +99,14 @@ class CssFinder(FeatureFinder):
     def getFeature(self, message):
         return len(utils.getcssusage(message))
 
+
 class IPsInURLs(FeatureFinder):
     def getFeatureTitle(self):
         return "IPs in URLs"
 
     def getFeature(self, message):
         return len(utils.getIPHrefs(message)) > 0
+
 
 class AtInURLs(FeatureFinder):
     def getFeatureTitle(self):
@@ -100,17 +115,20 @@ class AtInURLs(FeatureFinder):
     def getFeature(self, message):
         emailPattern = re.compile(config.EMAILREGEX, re.IGNORECASE)
         for url in utils.geturls_payload(message):
-            if url.lower().startswith("mailto:") or (emailPattern.search(url) and emailPattern.search(url).group()):
+            if url.lower().startswith("mailto:") or (
+                    emailPattern.search(url) and emailPattern.search(url).group()):
                 continue
             atvalue = url.find("@")
             athexvalue = url.find("%40")
-            atvalue = min(atvalue, athexvalue) if atvalue != -1 and athexvalue != -1 else max(atvalue, athexvalue)
+            atvalue = min(atvalue, athexvalue) if atvalue != -1 and athexvalue != -1 else max(
+                atvalue, athexvalue)
             paramindex = url.find("?")
             if paramindex != -1 and atvalue != -1 and paramindex > atvalue:
                 return True
             elif atvalue != -1:
                 return True
         return False
+
 
 class EncodingFinder(FeatureFinder):
     def getFeatureTitle(self):
@@ -147,17 +165,20 @@ class AlexaRankFinder(FeatureFinder):
                 ranks.append(rank)
         return ranks if ranks else ['No Rank']
 
-def process_mbox_message(mbox_string):
-    # Parse the mbox string
-    message = mailbox.mboxMessage(mbox_string)
 
-    # Define your feature finders (assuming these are classes or functions you've defined)
+def process_single_email(mbox_string):
+    # Initialize finders...
     finders = [HTMLFormFinder(), AttachmentFinder(), FlashFinder(),
                IFrameFinder(), HTMLContentFinder(), URLsFinder(),
                ExternalResourcesFinder(), JavascriptFinder(),
                CssFinder(), IPsInURLs(), AtInURLs(), EncodingFinder()]
 
     email_data = {}
+
+    # Convert mbox_string to a mailbox message...
+    message = mailbox.mboxMessage(mbox_string)
+
+    # Feature extraction...
     payload = utils.getpayload_dict(message)
     totalsize = sum(len(re.sub(r'\s+', '', part["payload"])) for part in payload)
 
@@ -167,18 +188,7 @@ def process_mbox_message(mbox_string):
     for finder in finders:
         email_data[finder.getFeatureTitle()] = finder.getFeature(message)
 
+    # Preprocess features: rename columns, convert booleans
+    email_data = {col.replace(' ', '_').replace('@', 'at'): email_data[col] for col in email_data}
+
     return email_data
-
-
-
-
-
-
-
-
-def mboxtests():
-    resources_dir = 'res'
-    processFile(os.path.join(resources_dir, "emails-phishing.mbox"), "iso-8859-1", limit=2279)
-    processFile(os.path.join(resources_dir, "emails-enron.mbox"), "ascii", limit=2257, phishy=False)
-
-# mboxtests()

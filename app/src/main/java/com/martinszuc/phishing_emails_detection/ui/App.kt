@@ -7,6 +7,10 @@ import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @HiltAndroidApp
 class App : Application() {
     override fun onCreate() {

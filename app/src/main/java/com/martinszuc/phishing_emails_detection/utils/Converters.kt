@@ -9,6 +9,7 @@ import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.Par
 /**
  * Authored by matoszuc@gmail.com
  */
+
 class Converters {
     private val gson = Gson()
 
