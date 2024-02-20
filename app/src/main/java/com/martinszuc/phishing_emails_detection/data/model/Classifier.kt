@@ -5,38 +5,19 @@ import com.chaquo.python.PyObject
 import com.chaquo.python.Python
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.tensorflow.lite.Interpreter
-import java.io.FileInputStream
-import java.nio.channels.FileChannel
 import javax.inject.Inject
 
 /**
  * Classifier class for phishing email detection.
- * This class uses a TensorFlow Lite model for classification and a Python script for text preprocessing.
  * @author matoszuc@gmail.com
  */
 class Classifier @Inject constructor(private val context: Context) {
-    private var tflite: Interpreter? = null  // TensorFlow Lite interpreter
     private var py: Python? = null  // Python instance
     private var pyModule: PyObject? = null  // Python module
 
     suspend fun initializePython() = withContext(Dispatchers.IO) {
         py = Python.getInstance()
         pyModule = py?.getModule("classifier")
-    }
-
-    // Will be used for federated learning implementation // TODO is not async watchout
-    fun loadModel() {
-        // Load TensorFlow Lite model
-        val assetManager = context.assets
-        val modelPath = "phishing_model.tflite"
-        val fileDescriptor = assetManager.openFd(modelPath)
-        val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
-        val fileChannel = inputStream.channel
-        val startOffset = fileDescriptor.startOffset
-        val declaredLength = fileDescriptor.declaredLength
-        val fileBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
-        tflite = Interpreter(fileBuffer)
     }
 
     /**
