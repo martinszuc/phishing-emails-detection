@@ -2,8 +2,12 @@ package com.martinszuc.phishing_emails_detection.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.auth.FirebaseAuth
+import com.martinszuc.phishing_emails_detection.data.auth.AccountManager
+import com.martinszuc.phishing_emails_detection.data.auth.UserRepository
 import com.martinszuc.phishing_emails_detection.utils.Constants
-import com.martinszuc.phishing_emails_detection.data.local.db.AppDatabase
+import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
+import com.martinszuc.phishing_emails_detection.data.email.remote.api.GmailApiService
 import com.martinszuc.phishing_emails_detection.data.model.Classifier
 import dagger.Module
 import dagger.Provides
@@ -53,4 +57,18 @@ object AppModule {
     fun provideClassifier(@ApplicationContext context: Context): Classifier {
         return Classifier(context)
     }
+    @Provides
+    @Singleton
+    fun provideUserRepository(@ApplicationContext context: Context): UserRepository =
+        UserRepository(context)
+
+    @Provides
+    @Singleton
+    fun provideGmailApiService(@ApplicationContext context: Context, accountManager: AccountManager): GmailApiService =
+        GmailApiService(context)
+
+    @Singleton
+    @Provides
+    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
 }

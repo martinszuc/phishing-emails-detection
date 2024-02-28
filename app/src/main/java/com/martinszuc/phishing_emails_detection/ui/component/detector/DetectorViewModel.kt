@@ -8,9 +8,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
-import com.martinszuc.phishing_emails_detection.data.local.repository.EmailBlobLocalRepository
-import com.martinszuc.phishing_emails_detection.data.local.repository.EmailMinimalLocalRepository
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
+import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
+import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMinimalLocalRepository
 import com.martinszuc.phishing_emails_detection.data.model.Classifier
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class DetectorViewModel @Inject constructor(
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
     private val emailBlobLocalRepository: EmailBlobLocalRepository,
-    private val classifier: Classifier
+    private val classifier: Classifier                                              // TODO notificaiton when model isnt loaded
 ) : ViewModel() {
 
     private val _selectedEmailId = MutableLiveData<String?>(null)

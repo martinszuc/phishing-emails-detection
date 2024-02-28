@@ -8,7 +8,7 @@ import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSelectionBi
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.EmailsImportViewModel
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
