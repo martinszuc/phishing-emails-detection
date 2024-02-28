@@ -7,7 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.martinszuc.phishing_emails_detection.data.local.entity.EmailMinimal
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSelectionDetectorBinding
 import com.martinszuc.phishing_emails_detection.ui.component.detector.DetectorViewModel
 /**

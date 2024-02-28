@@ -1,6 +1,6 @@
 package com.martinszuc.phishing_emails_detection.utils.emails
 
-import com.martinszuc.phishing_emails_detection.data.local.entity.EmailBlob
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailBlob
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

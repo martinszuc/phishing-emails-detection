@@ -3,8 +3,8 @@ package com.martinszuc.phishing_emails_detection.utils
 import androidx.room.TypeConverter
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
-import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.Header
-import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.Part
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Header
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Part
 
 /**
  * Authored by matoszuc@gmail.com

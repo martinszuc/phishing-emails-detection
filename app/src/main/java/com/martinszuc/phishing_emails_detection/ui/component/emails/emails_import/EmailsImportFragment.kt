@@ -1,5 +1,6 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -19,9 +21,10 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsImportBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.adapter.EmailsImportAdapter
-import com.martinszuc.phishing_emails_detection.ui.component.login.UserAccountViewModel
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.user.AccountSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -30,10 +33,21 @@ import kotlinx.coroutines.launch
 class EmailsImportFragment : Fragment() {
     private var _binding: FragmentEmailsImportBinding? = null
     private val emailsImportViewModel: EmailsImportViewModel by viewModels()
-    private val userAccountViewModel: UserAccountViewModel by activityViewModels() // Inject UserAccountViewModel
+    private val accountSharedViewModel: AccountSharedViewModel by activityViewModels() // Inject UserAccountViewModel
     private lateinit var emailsImportAdapter: EmailsImportAdapter
 
     private val binding get() = _binding!!
+
+    private val requestConsent =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                observeEmailsFlow()
+            } else {
+                // Consent was denied, handle accordingly
+                Toast.makeText(context, "Access to Gmail was not granted.", Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -92,23 +106,27 @@ class EmailsImportFragment : Fragment() {
         recyclerView.visibility = View.VISIBLE
         binding.searchView.visibility = View.VISIBLE
 
-        // Start observing the emails once button is pressed
         observeEmailsFlow()
 
     }
 
     private fun observeEmailsFlow() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                emailsImportViewModel.remoteEmailsFlow.collectLatest { pagingData ->
-                    emailsImportAdapter.submitData(pagingData)
+            try {
+                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    emailsImportViewModel.remoteEmailsFlow.collectLatest { pagingData ->
+                        emailsImportAdapter.submitData(pagingData)
+                    }
                 }
+            } catch (e: UserRecoverableAuthIOException) {
+                // Start the activity for result using the intent from the exception
+                requestConsent.launch(e.intent)
             }
         }
     }
 
     private fun initUserAccount() {
-        userAccountViewModel.account.observe(viewLifecycleOwner) { account ->
+        accountSharedViewModel.account.observe(viewLifecycleOwner) { account ->
             Log.d("EmailImportFragment", "Account: $account")
         }
     }

@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "628461587525",
-    "project_id": "phishing-emails-detection",
-    "storage_bucket": "phishing-emails-detection.appspot.com"
+    "project_number": "101829037621",
+    "project_id": "matoszuc-phishing",
+    "storage_bucket": "matoszuc-phishing.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:628461587525:android:9d88ca046f5cff9de3e72c",
+        "mobilesdk_app_id": "1:101829037621:android:1e3762d5e70b500942ab7c",
         "android_client_info": {
           "package_name": "com.martinszuc.phishing_emails_detection"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "101829037621-f0u5fiudqf4c44pesf6vvbg0pc3jo1o0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.martinszuc.phishing_emails_detection",
+            "certificate_hash": "5e35d388915812e9c4037a5d6e449bad2b1045ec"
+          }
+        },
+        {
+          "client_id": "101829037621-eqahc6elokfbjf56epf1tl2eph2ngr65.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAWR3OkhtcK_Cs82A8NyFimdUWv9lBiYD0"
+          "current_key": "AIzaSyChA7lxTH1ZkJc5dchdoxIimaPtdmK-D8A"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101829037621-eqahc6elokfbjf56epf1tl2eph2ngr65.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

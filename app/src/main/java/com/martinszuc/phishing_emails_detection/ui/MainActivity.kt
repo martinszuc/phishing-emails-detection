@@ -12,13 +12,19 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.martinszuc.phishing_emails_detection.R
+import com.martinszuc.phishing_emails_detection.data.auth.AuthenticationRepository
 import com.martinszuc.phishing_emails_detection.data.model.Classifier
 import com.martinszuc.phishing_emails_detection.databinding.ActivityMainBinding
-import com.martinszuc.phishing_emails_detection.ui.component.login.UserAccountViewModel
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.user.AccountSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -29,20 +35,39 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {                                                      // TODO little bar with status of processes
     @Inject
     lateinit var classifier: Classifier
-    private val userAccountViewModel: UserAccountViewModel by viewModels()
+    @Inject
+    lateinit var authenticationRepository: AuthenticationRepository
 
+    private val accountSharedViewModel: AccountSharedViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
-    private var isLoggedIn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupClassifier()
         setupPermaNightMode()
         setupBinding()
         setupToolbar()
         setupBottomNav()
-        observeLoginState()
+        setupAuthentication()
+        launchPython {
+            setupClassifier()
+        }
     }
+
+    private fun launchPython(onPythonStarted: () -> Unit) {
+        GlobalScope.launch {
+            if (!Python.isStarted()) {
+                Python.start(AndroidPlatform(this@MainActivity))
+                withContext(Dispatchers.Main) {
+                    onPythonStarted()
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    onPythonStarted()
+                }
+            }
+        }
+    }
+
 
     private fun setupClassifier() {
         // Initialize Classifier in the background
@@ -120,15 +145,15 @@ class MainActivity : AppCompatActivity() {                                      
         setContentView(binding.root)
     }
 
-    private fun observeLoginState() {
-        userAccountViewModel.retrieveAccount(this)
-        userAccountViewModel.loginState.observe(this) { loggedIn ->
-            isLoggedIn = loggedIn
-            val destinationId = if (loggedIn) R.id.EmailsParentFragment else R.id.LoginFragment
+    private fun setupAuthentication() {
+        accountSharedViewModel.refreshAccount()
+        accountSharedViewModel.loginState.observe(this) { isLoggedIn ->
+            val destinationId = if (isLoggedIn) R.id.EmailsParentFragment else R.id.LoginFragment
             navigate(destinationId)
             invalidateOptionsMenu()
         }
     }
+
 
     private fun navigate(destinationId: Int) {
         findNavController(R.id.nav_host_fragment_content_main).apply {

@@ -64,7 +64,7 @@ android {
 chaquopy {
     defaultConfig {
         version = "3.8"
-        buildPython("/home/mszuc/.pyenv/versions/3.8.18/bin/python3.8")
+        buildPython("/home/mszuc/.pyenv/versions/jupyterlab_env/bin/python3.8")
         pip {
             install ("protobuf==3.20.0")
             install ("tensorflow==2.1.0")

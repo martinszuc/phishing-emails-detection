@@ -6,7 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.EmailFull
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.DialogEmailDetailsBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.adapter.EmailFullAdapter
 

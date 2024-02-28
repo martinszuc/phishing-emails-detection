@@ -1,6 +1,5 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.adapter
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -8,7 +7,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.Part
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Part
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailDetailsPartBinding
 
 /**
