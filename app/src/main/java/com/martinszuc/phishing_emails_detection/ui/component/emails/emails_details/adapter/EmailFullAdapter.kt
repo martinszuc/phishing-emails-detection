@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.martinszuc.phishing_emails_detection.data.local.entity.email_full.EmailFull
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailDetailsFullBinding
 import java.text.SimpleDateFormat
 import java.util.Locale
