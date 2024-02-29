@@ -35,8 +35,6 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {                                                      // TODO little bar with status of processes
     @Inject
     lateinit var classifier: Classifier
-    @Inject
-    lateinit var authenticationRepository: AuthenticationRepository
 
     private val accountSharedViewModel: AccountSharedViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding

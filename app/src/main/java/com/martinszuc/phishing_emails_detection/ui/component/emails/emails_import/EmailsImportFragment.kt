@@ -38,17 +38,6 @@ class EmailsImportFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private val requestConsent =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                observeEmailsFlow()
-            } else {
-                // Consent was denied, handle accordingly
-                Toast.makeText(context, "Access to Gmail was not granted.", Toast.LENGTH_LONG)
-                    .show()
-            }
-        }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -120,7 +109,7 @@ class EmailsImportFragment : Fragment() {
                 }
             } catch (e: UserRecoverableAuthIOException) {
                 // Start the activity for result using the intent from the exception
-                requestConsent.launch(e.intent)
+//                requestConsent.launch(e.intent)
             }
         }
     }
