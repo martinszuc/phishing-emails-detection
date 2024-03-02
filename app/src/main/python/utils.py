@@ -68,7 +68,11 @@ def __getAttachmentCountrec__(msg, count):
 
 def __hasAttachment__(message):
     contentDisp = message.get("Content-Disposition")
-    return contentDisp is not None and contentDisp.lower().find("attachment") != -1
+    if contentDisp:
+        # Ensure contentDisp is a string before calling .lower()
+        contentDisp_str = str(contentDisp)
+        return "attachment" in contentDisp_str.lower()
+    return False
 
 def getContentTypes(msg):
     return __getContentTypes_rec__(msg, [])

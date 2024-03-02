@@ -5,11 +5,9 @@ import csv
 import os
 import utils
 import config
-import joblib
-import numpy
-import tensorflow as tf
 from bs4 import BeautifulSoup
 from abc import ABC, abstractmethod
+from io import StringIO
 
 
 class FeatureFinder(ABC):
@@ -22,28 +20,25 @@ class FeatureFinder(ABC):
     def getFeature(self, message):
         pass
 
-
 class HTMLFormFinder(FeatureFinder):
     def getFeatureTitle(self):
-        return "Html Form"
+        return "html_form"
 
     def getFeature(self, message):
         payload = utils.getpayload(message).lower()
         return re.compile(r'<\s?\/?\s?form\s?>', re.IGNORECASE).search(payload) is not None
 
-
 class IFrameFinder(FeatureFinder):
     def getFeatureTitle(self):
-        return "Html iFrame"
+        return "html_iframe"
 
     def getFeature(self, message):
         payload = utils.getpayload(message).lower()
         return re.compile(r'<\s?\/?\s?iframe\s?>', re.IGNORECASE).search(payload) is not None
 
-
 class FlashFinder(FeatureFinder):
     def getFeatureTitle(self):
-        return "Flash content"
+        return "flash_content"
 
     def getFeature(self, message):
         payload = utils.getpayload(message).lower()
@@ -51,77 +46,67 @@ class FlashFinder(FeatureFinder):
         flashObject = re.compile(r'embed\s*src\s*=\s*\".*\.swf\"', re.IGNORECASE).search(payload)
         return (swflinks is not None and len(swflinks) > 0) or (flashObject is not None)
 
-
 class AttachmentFinder(FeatureFinder):
     def getFeatureTitle(self):
-        return "Attachments"
+        return "attachments"
 
     def getFeature(self, message):
         return utils.getAttachmentCount(message)
 
-
 class HTMLContentFinder(FeatureFinder):
     def getFeatureTitle(self):
-        return "HTML content"
+        return "html_content"
 
     def getFeature(self, message):
         return utils.ishtml(message)
 
-
 class URLsFinder(FeatureFinder):
     def getFeatureTitle(self):
-        return "URLs"
+        return "urls"
 
     def getFeature(self, message):
         return len(utils.geturls_payload(message))
 
-
 class ExternalResourcesFinder(FeatureFinder):
     def getFeatureTitle(self):
-        return "External Resources"
+        return "external_resources"
 
     def getFeature(self, message):
         return len(utils.getexternalresources(message))
 
-
 class JavascriptFinder(FeatureFinder):
     def getFeatureTitle(self):
-        return "Javascript"
+        return "javascript"
 
     def getFeature(self, message):
         return len(utils.getjavascriptusage(message))
 
-
 class CssFinder(FeatureFinder):
     def getFeatureTitle(self):
-        return "Css"
+        return "css"
 
     def getFeature(self, message):
         return len(utils.getcssusage(message))
 
-
 class IPsInURLs(FeatureFinder):
     def getFeatureTitle(self):
-        return "IPs in URLs"
+        return "ips_in_urls"
 
     def getFeature(self, message):
         return len(utils.getIPHrefs(message)) > 0
 
-
 class AtInURLs(FeatureFinder):
     def getFeatureTitle(self):
-        return "@ in URLs"
+        return "at_in_urls"
 
     def getFeature(self, message):
         emailPattern = re.compile(config.EMAILREGEX, re.IGNORECASE)
         for url in utils.geturls_payload(message):
-            if url.lower().startswith("mailto:") or (
-                    emailPattern.search(url) and emailPattern.search(url).group()):
+            if url.lower().startswith("mailto:") or (emailPattern.search(url) and emailPattern.search(url).group()):
                 continue
             atvalue = url.find("@")
             athexvalue = url.find("%40")
-            atvalue = min(atvalue, athexvalue) if atvalue != -1 and athexvalue != -1 else max(
-                atvalue, athexvalue)
+            atvalue = min(atvalue, athexvalue) if atvalue != -1 and athexvalue != -1 else max(atvalue, athexvalue)
             paramindex = url.find("?")
             if paramindex != -1 and atvalue != -1 and paramindex > atvalue:
                 return True
@@ -129,24 +114,28 @@ class AtInURLs(FeatureFinder):
                 return True
         return False
 
-
 class EncodingFinder(FeatureFinder):
     def getFeatureTitle(self):
-        return "Encoding"
+        return "encoding"
 
     def getFeature(self, message):
         encoding = message.get('content-transfer-encoding')
+        common_encodings = ['7bit', '8bit', 'none', 'quoted_printable', 'base64', 'binary']
+
         if encoding:
             # Normalize the encoding string by making it lowercase and stripping white spaces and line breaks
-            encoding = encoding.strip().lower()
-            encoding = encoding.replace('\r', '').replace('\n', '')
+            encoding = encoding.strip().lower().replace('\r', '').replace('\n', '')
+
+            # Sanitize the encoding name first
+            encoding = re.sub(r'\s+', ' ', encoding)  # Replace multiple spaces with a single space
+            encoding = encoding.replace('/', '_').replace(';', '').replace(':', '').replace(' ', '_')
 
             # Normalize different variations of '7bit' and '8bit' to a standard form
-            encoding = re.sub(r'7bit.*', '7bit', encoding)
-            encoding = re.sub(r'8bit.*', '8bit', encoding)
+            encoding = '7bit' if '7bit' in encoding else encoding
+            encoding = '8bit' if '8bit' in encoding else encoding
 
-            # Replace multiple spaces with a single space and strip leading/trailing whitespace
-            encoding = re.sub(r'\s+', ' ', encoding).strip()
+            # Check if the encoding is one of the common encodings, else classify as 'other'
+            encoding = encoding if encoding in common_encodings else 'other'
 
             return encoding
         return 'none'
@@ -154,7 +143,7 @@ class EncodingFinder(FeatureFinder):
 
 class AlexaRankFinder(FeatureFinder):
     def getFeatureTitle(self):
-        return "Alexa Rank"
+        return "alexa_rank"
 
     def getFeature(self, message):
         urls = utils.geturls_payload(message)
@@ -163,32 +152,53 @@ class AlexaRankFinder(FeatureFinder):
             rank = utils.get_alexa_rank(url)
             if rank != -1:
                 ranks.append(rank)
-        return ranks if ranks else ['No Rank']
+        return ranks if ranks else ['no_rank']
 
+def processMboxFile(mbox_file_path, phishy=True, limit=500):
+    """
+    Processes an mbox file and extracts features for email classification.
 
-def process_single_email(mbox_string):
-    # Initialize finders...
+    Parameters:
+    - mbox_file_path: The path to the mbox file.
+    - phishy: Flag indicating if the emails are considered phishing (True) or not (False).
+    - limit: The maximum number of emails to process.
+
+    Returns:
+    A pandas DataFrame containing the extracted features.
+    """
+    data = []
+    email_index = []
     finders = [HTMLFormFinder(), AttachmentFinder(), FlashFinder(),
                IFrameFinder(), HTMLContentFinder(), URLsFinder(),
                ExternalResourcesFinder(), JavascriptFinder(),
                CssFinder(), IPsInURLs(), AtInURLs(), EncodingFinder()]
 
-    email_data = {}
+    try:
+        mbox = mailbox.mbox(mbox_file_path)
+    except Exception as e:
+        print(f"Error processing mbox file: {e}")
+        return pd.DataFrame()  # Return an empty DataFrame on error
 
-    # Convert mbox_string to a mailbox message...
-    message = mailbox.mboxMessage(mbox_string)
+    for i, message in enumerate(mbox, start=1):
+        if i > limit:
+            break
+        payload = utils.getpayload_dict(message)
+        if sum(len(re.sub(r'\s+', '', part["payload"])) for part in payload) < 1:
+            continue
 
-    # Feature extraction...
-    payload = utils.getpayload_dict(message)
-    totalsize = sum(len(re.sub(r'\s+', '', part["payload"])) for part in payload)
+        email_data = {finder.getFeatureTitle(): finder.getFeature(message) for finder in finders}
+        email_data["is_phishy"] = phishy
+        data.append(email_data)
 
-    if totalsize < 1:
-        return None
+        try:
+            email_raw = message.as_bytes().decode('utf-8', errors='replace')
+            email_index.append({"id": i, "message": utils.getpayload_dict(message), "raw": email_raw})
+        except (UnicodeEncodeError, AttributeError):
+            continue
 
-    for finder in finders:
-        email_data[finder.getFeatureTitle()] = finder.getFeature(message)
+    # Create DataFrame from the extracted data
+    df_data = pd.DataFrame(data)
+    # df_email_index = pd.DataFrame(email_index)  # Optionally return or use email index information
 
-    # Preprocess features: rename columns, convert booleans
-    email_data = {col.replace(' ', '_').replace('@', 'at'): email_data[col] for col in email_data}
-
-    return email_data
+    # Return the processed DataFrame
+    return df_data

@@ -8,7 +8,7 @@ import com.martinszuc.phishing_emails_detection.data.auth.UserRepository
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.email.remote.api.GmailApiService
-import com.martinszuc.phishing_emails_detection.data.model.Classifier
+import com.martinszuc.phishing_emails_detection.data.model.Model
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,12 +50,12 @@ object AppModule {
      * Provides the classifier for the application.
      *
      * @param context The application context.
-     * @return An instance of [Classifier].
+     * @return An instance of [Model].
      */
     @Provides
     @Singleton
-    fun provideClassifier(@ApplicationContext context: Context): Classifier {
-        return Classifier(context)
+    fun provideClassifier(@ApplicationContext context: Context): Model {
+        return Model(context)
     }
     @Provides
     @Singleton

@@ -3,6 +3,7 @@ package com.martinszuc.phishing_emails_detection.ui.component.detector
 /**
  * Authored by matoszuc@gmail.com
  */
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,8 +12,10 @@ import androidx.lifecycle.viewModelScope
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMinimalLocalRepository
-import com.martinszuc.phishing_emails_detection.data.model.Classifier
+import com.martinszuc.phishing_emails_detection.data.model.Model
+import com.martinszuc.phishing_emails_detection.utils.emails.EmailUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,7 +25,9 @@ import javax.inject.Inject
 class DetectorViewModel @Inject constructor(
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
     private val emailBlobLocalRepository: EmailBlobLocalRepository,
-    private val classifier: Classifier                                              // TODO notificaiton when model isnt loaded
+    private val model: Model,                                              // TODO notificaiton when model isnt loaded
+    @ApplicationContext private val context: Context  // Injecting application context
+
 ) : ViewModel() {
 
     private val _selectedEmailId = MutableLiveData<String?>(null)
@@ -68,26 +73,35 @@ class DetectorViewModel @Inject constructor(
 
     fun classifySelectedMinimalEmail() {
         val emailId = _selectedEmailId.value
-        Log.d("DetectorViewModel", "Processing email for detection: $emailId")
         if (emailId == null) {
             Log.d("DetectorViewModel", "No email selected for processing")
+            _classificationResult.postValue(false)
             return
         }
+
         viewModelScope.launch {
-            Log.d("DetectorViewModel", "Fetching full email")
-            _isLoading.value = true
-            val fullEmail = emailMinimalLocalRepository.getEmailById(emailId)
-            if (fullEmail == null) {
-                Log.d("DetectorViewModel", "Full email is null")
+            _isLoading.postValue(true)
+            Log.d("DetectorViewModel", "Fetching mbox content for email ID: $emailId")
+
+            val mboxContent = emailBlobLocalRepository.getMboxById(emailId)
+            if (mboxContent.isEmpty()) {
+                Log.d("DetectorViewModel", "Mbox content is empty")
+                _classificationResult.postValue(false)
+                _isLoading.postValue(false)
                 return@launch
             }
 
-            Log.d("DetectorViewModel", "Classifying email")
-            val result = classifier.classify(emailBlobLocalRepository.getMboxById(emailId))
-            _classificationResult.value = result
+            // Save mbox content to a file
+            val mboxFile = EmailUtils.saveMboxToFile(context, mboxContent, "email_$emailId.mbox")
+            Log.d("DetectorViewModel", "Mbox content saved to file: ${mboxFile.absolutePath}")
 
-            _isLoading.value = false
-            _isFinished.value = true
+            // Perform classification using the saved file
+            Log.d("DetectorViewModel", "Classifying email from saved mbox file")
+            val result = model.classify(mboxFile.absolutePath)  // Assume model.classify now accepts a file path
+            _classificationResult.postValue(result)
+
+            _isLoading.postValue(false)
+            _isFinished.postValue(true)
             Log.d("DetectorViewModel", "Classification result: $result")
         }
     }
