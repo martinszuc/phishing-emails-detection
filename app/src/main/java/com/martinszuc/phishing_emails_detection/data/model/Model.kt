@@ -13,16 +13,16 @@ class Model @Inject constructor(private val context: Context) {
 
     suspend fun initializePython() = withContext(Dispatchers.IO) {
         py = Python.getInstance()
-        pyModule = py?.getModule("model")  // Ensure this matches the name of your Python script
+        pyModule = py?.getModule("model_predict")  // Ensure this matches the name of your Python script file without the '.py' extension
     }
 
-    // Update this method to accept a file path instead of mboxString
-    suspend fun classify(mboxFilePath: String): Boolean = withContext(Dispatchers.IO) {
-        // Call the predict_email function with the file path
-        val predictionResult = pyModule?.callAttr("predict_email", mboxFilePath)?.toString() ?: "Error"
-        predictionResult == "Phishing"
-    }
+    suspend fun classify(modelPath: String, mboxFilePath: String): List<Float> = withContext(Dispatchers.IO) {
+        // Call the Python function and get the predictions
+        val predictions = pyModule?.callAttr("predict_on_mbox", modelPath, mboxFilePath)?.asList()
 
-    // Optionally, create a method for training if you plan to train the model directly from the app.
-    // Note: Training a model on a mobile device might not be feasible for larger datasets or more complex models.
+        // Flatten the list of lists and convert each prediction to Float
+        val flatPredictions = predictions?.flatMap { it.asList() }?.map { it.toFloat() } ?: emptyList()
+
+        flatPredictions
+    }
 }

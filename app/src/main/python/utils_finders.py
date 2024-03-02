@@ -3,7 +3,7 @@ import logging
 from bs4 import BeautifulSoup
 import urllib.request as urllib
 from functools import lru_cache
-import config
+from utils_config import Config
 
 def getpayload(msg):
     return __getpayload_rec__(msg, payloadresult="")
@@ -11,7 +11,7 @@ def getpayload(msg):
 def __getpayload_rec__(msg, payloadresult):
     payload = msg.get_payload()
 
-    if str(msg.get('content-transfer-encoding')).lower() == "base64":
+    if str(msg.get('content-transfer-encodin2279g')).lower() == "base64":
         payload = msg.get_payload(decode=True)
 
     if payload and msg.is_multipart():
@@ -91,7 +91,7 @@ def geturls_payload(message):
 
 def getIPHrefs(message):
     urls = geturls_payload(message)
-    iphref = re.compile(config.IPREGEX, re.IGNORECASE)
+    iphref = re.compile(Config.IPREGEX, re.IGNORECASE)
     result = []
     for url in urls:
         if iphref.search(url) and iphref.search(url).group(1) is not None:
@@ -138,14 +138,14 @@ def geturls_string(string):
     result = []
 
     cleanPayload = re.sub(r'\s+', ' ', string)
-    linkregex = re.compile(config.HREFREGEX, re.IGNORECASE)
+    linkregex = re.compile(Config.HREFREGEX, re.IGNORECASE)
     links = linkregex.findall(cleanPayload)
 
     for link in links:
         if isurl(link):
             result.append(link)
 
-    urlregex = re.compile(config.URLREGEX_NOT_ALONE, re.IGNORECASE)
+    urlregex = re.compile(Config.URLREGEX_NOT_ALONE, re.IGNORECASE)
     links = urlregex.findall(cleanPayload)
     for link in links:
         if link not in result:
@@ -153,7 +153,7 @@ def geturls_string(string):
     return result
 
 def isurl(link):
-    return re.compile(config.URLREGEX, re.IGNORECASE).search(link) is not None
+    return re.compile(Config.URLREGEX, re.IGNORECASE).search(link) is not None
 
 def returnallmatches(string, regex):
     matches = re.finditer(regex, string, re.MULTILINE)
@@ -161,25 +161,6 @@ def returnallmatches(string, regex):
     for matchNum, match in enumerate(matches):
         result.append(match.group())
     return result
-
-@lru_cache(maxsize=1000)
-def get_alexa_rank(url):
-    try:
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-        req = urllib.Request('http://data.alexa.com/data?cli=10&dat=s&url=' + url, headers=headers)
-        with urllib.urlopen(req, timeout=10) as response:
-            xml = response.read()
-            rank = int(re.search(r'RANK="(\d+)"', xml.decode('utf-8')).groups()[0])
-            return rank
-    except urllib.URLError as e:
-        logging.warning(f"URL Error for {url}: {e}")
-    except urllib.HTTPError as e:
-        logging.error(f"HTTP Error for {url}: {e}")
-    except re.error as e:
-        logging.error(f"Regex Error parsing Alexa rank for {url}: {e}")
-    except Exception as e:
-        logging.error(f"Unexpected error for {url}: {e}")
-    return -1
 
 def extract_registered_domain(url):
     return tldextract.extract(url).registered_domain

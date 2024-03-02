@@ -95,14 +95,24 @@ class DetectorViewModel @Inject constructor(
             val mboxFile = EmailUtils.saveMboxToFile(context, mboxContent, "email_$emailId.mbox")
             Log.d("DetectorViewModel", "Mbox content saved to file: ${mboxFile.absolutePath}")
 
-            // Perform classification using the saved file
+            // Assuming the model path is a constant string "tf_saved_model"
+            val modelPath = "tf_model_saved"
+            Log.d("DetectorViewModel", "Preparing to classify email. Model path: $modelPath, Mbox file path: ${mboxFile.absolutePath}")
+
+            // Perform classification using the saved file and model path
             Log.d("DetectorViewModel", "Classifying email from saved mbox file")
-            val result = model.classify(mboxFile.absolutePath)  // Assume model.classify now accepts a file path
-            _classificationResult.postValue(result)
+            val result = withContext(Dispatchers.IO) {
+                model.classify(modelPath, mboxFile.absolutePath)  // Updated to pass both modelPath and mboxFilePath
+            }
+
+            // Check the first email prediction in the list to see if it's classified as phishing or not
+            val isPhishing = result.firstOrNull()?.let { it > 0.45 } ?: false
+
+            _classificationResult.postValue(isPhishing)
 
             _isLoading.postValue(false)
             _isFinished.postValue(true)
-            Log.d("DetectorViewModel", "Classification result: $result")
+            Log.d("DetectorViewModel", "Classification result for the first email: $isPhishing")
         }
     }
 }

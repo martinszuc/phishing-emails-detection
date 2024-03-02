@@ -1,14 +1,7 @@
-import mailbox
-import pandas as pd
 import re
-import csv
-import os
-import utils
-import config
-from bs4 import BeautifulSoup
 from abc import ABC, abstractmethod
-from io import StringIO
-
+from utils_config import Config
+import utils_finders as utils
 
 class FeatureFinder(ABC):
 
@@ -42,7 +35,7 @@ class FlashFinder(FeatureFinder):
 
     def getFeature(self, message):
         payload = utils.getpayload(message).lower()
-        swflinks = re.compile(config.FLASH_LINKED_CONTENT, re.IGNORECASE).findall(payload)
+        swflinks = re.compile(Config.FLASH_LINKED_CONTENT, re.IGNORECASE).findall(payload)
         flashObject = re.compile(r'embed\s*src\s*=\s*\".*\.swf\"', re.IGNORECASE).search(payload)
         return (swflinks is not None and len(swflinks) > 0) or (flashObject is not None)
 
@@ -100,7 +93,7 @@ class AtInURLs(FeatureFinder):
         return "at_in_urls"
 
     def getFeature(self, message):
-        emailPattern = re.compile(config.EMAILREGEX, re.IGNORECASE)
+        emailPattern = re.compile(Config.EMAILREGEX, re.IGNORECASE)
         for url in utils.geturls_payload(message):
             if url.lower().startswith("mailto:") or (emailPattern.search(url) and emailPattern.search(url).group()):
                 continue
@@ -121,7 +114,7 @@ class EncodingFinder(FeatureFinder):
     def getFeature(self, message):
         encoding = message.get('content-transfer-encoding')
         common_encodings = ['7bit', '8bit', 'none', 'quoted_printable', 'base64', 'binary']
-
+        
         if encoding:
             # Normalize the encoding string by making it lowercase and stripping white spaces and line breaks
             encoding = encoding.strip().lower().replace('\r', '').replace('\n', '')
@@ -139,66 +132,3 @@ class EncodingFinder(FeatureFinder):
 
             return encoding
         return 'none'
-
-
-class AlexaRankFinder(FeatureFinder):
-    def getFeatureTitle(self):
-        return "alexa_rank"
-
-    def getFeature(self, message):
-        urls = utils.geturls_payload(message)
-        ranks = []
-        for url in urls:
-            rank = utils.get_alexa_rank(url)
-            if rank != -1:
-                ranks.append(rank)
-        return ranks if ranks else ['no_rank']
-
-def processMboxFile(mbox_file_path, phishy=True, limit=500):
-    """
-    Processes an mbox file and extracts features for email classification.
-
-    Parameters:
-    - mbox_file_path: The path to the mbox file.
-    - phishy: Flag indicating if the emails are considered phishing (True) or not (False).
-    - limit: The maximum number of emails to process.
-
-    Returns:
-    A pandas DataFrame containing the extracted features.
-    """
-    data = []
-    email_index = []
-    finders = [HTMLFormFinder(), AttachmentFinder(), FlashFinder(),
-               IFrameFinder(), HTMLContentFinder(), URLsFinder(),
-               ExternalResourcesFinder(), JavascriptFinder(),
-               CssFinder(), IPsInURLs(), AtInURLs(), EncodingFinder()]
-
-    try:
-        mbox = mailbox.mbox(mbox_file_path)
-    except Exception as e:
-        print(f"Error processing mbox file: {e}")
-        return pd.DataFrame()  # Return an empty DataFrame on error
-
-    for i, message in enumerate(mbox, start=1):
-        if i > limit:
-            break
-        payload = utils.getpayload_dict(message)
-        if sum(len(re.sub(r'\s+', '', part["payload"])) for part in payload) < 1:
-            continue
-
-        email_data = {finder.getFeatureTitle(): finder.getFeature(message) for finder in finders}
-        email_data["is_phishy"] = phishy
-        data.append(email_data)
-
-        try:
-            email_raw = message.as_bytes().decode('utf-8', errors='replace')
-            email_index.append({"id": i, "message": utils.getpayload_dict(message), "raw": email_raw})
-        except (UnicodeEncodeError, AttributeError):
-            continue
-
-    # Create DataFrame from the extracted data
-    df_data = pd.DataFrame(data)
-    # df_email_index = pd.DataFrame(email_index)  # Optionally return or use email index information
-
-    # Return the processed DataFrame
-    return df_data
