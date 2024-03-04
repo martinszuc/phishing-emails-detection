@@ -4,12 +4,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSavedBinding
-import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.EmailsDetailsDialog
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.EmailsSavedViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -18,8 +18,9 @@ import java.util.Locale
 /**
  * Authored by matoszuc@gmail.com
  */
-class EmailsSavedAdapter(private val viewModel: EmailsSavedViewModel) :
-    PagingDataAdapter<EmailFull, EmailsSavedAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
+class EmailsSavedAdapter(
+    private val onEmailClicked: (String) -> Unit
+) : PagingDataAdapter<EmailFull, EmailsSavedAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
 
     inner class EmailViewHolder(val binding: ItemEmailSavedBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -55,7 +56,9 @@ class EmailsSavedAdapter(private val viewModel: EmailsSavedViewModel) :
             }
 
             holder.itemView.setOnClickListener {
-                EmailsDetailsDialog(it.context, email).show()
+                email?.let {// TODO warning "Unnecessary safe call on a non-null receiver of type EmailFull?"
+                    onEmailClicked(it.id) // Assuming email has an id field
+                }
             }
         }
     }

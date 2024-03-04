@@ -18,6 +18,7 @@ import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_fu
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Part
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Payload
 import com.martinszuc.phishing_emails_detection.utils.Constants
+import com.martinszuc.phishing_emails_detection.utils.factory.EmailFactory
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -45,14 +46,17 @@ class GmailApiService @Inject constructor(
                 .setApplicationName(Constants.APPLICATION_NAME)
                 .build()
 
-            fetchEmailMinimal(service, null, pageToken, pageSize) // Pass service directly
+            val listResponse = fetchEmailList(service, null, pageToken, pageSize)
+            val emails = listResponse.messages?.mapNotNull { message ->
+                fetchMessageMinimal(service, "me", message.id)
+            } ?: emptyList()
+
+            Pair(emails, listResponse.nextPageToken)
         } catch (e: UserRecoverableAuthIOException) {
-            // Specific handling or rethrowing for UserRecoverableAuthIOException
             throw e
         } catch (e: Exception) {
-            // General exception handling
             Log.e("GmailApiService", "An error occurred while fetching emails: ${e.message}")
-            throw e // Rethrow or handle the general exception as needed
+            throw e
         }
     }
 
@@ -62,33 +66,25 @@ class GmailApiService @Inject constructor(
         pageToken: String?,
         pageSize: Int
     ): Pair<List<EmailMinimal>, String?> = withContext(Dispatchers.IO) {
-        Log.d(
-            "GmailApiService",
-            "Searching emails with query: $query, pageToken: $pageToken and pageSize: $pageSize"
-        )
-        val credential = GoogleAccountCredential.usingOAuth2(
-            context, listOf(Constants.GMAIL_READONLY_SCOPE)
-        ).setSelectedAccount(account.account)
+        try {
+            val credential = GoogleAccountCredential.usingOAuth2(
+                context, listOf(Constants.GMAIL_READONLY_SCOPE)
+            ).setSelectedAccount(account.account)
+            val service = Gmail.Builder(transport, jsonFactory, credential)
+                .setApplicationName(Constants.APPLICATION_NAME)
+                .build()
 
-        val service = Gmail.Builder(transport, jsonFactory, credential)
-            .setApplicationName(Constants.APPLICATION_NAME)
-            .build()
+            // Use fetchEmailMinimal method to reuse the fetching and mapping logic
+            val listResponse = fetchEmailList(service, query, pageToken, pageSize)
+            val emails = listResponse.messages?.mapNotNull { message ->
+                fetchMessageMinimal(service, "me", message.id)
+            } ?: emptyList()
 
-        fetchEmailMinimal(service, query, pageToken, pageSize) // Corrected to pass the service
-    }
-
-    private suspend fun fetchEmailMinimal(
-        service: Gmail, // Accept Gmail service directly
-        query: String?,
-        pageToken: String?,
-        pageSize: Int
-    ): Pair<List<EmailMinimal>, String?> = withContext(Dispatchers.IO) {
-        val listResponse = fetchEmailList(service, query, pageToken, pageSize)
-        val emails = listResponse.messages?.mapNotNull { message ->
-            fetchMessageMinimal(service, "me", message.id)
-        } ?: emptyList()
-
-        Pair(emails, listResponse.nextPageToken)
+            Pair(emails, listResponse.nextPageToken)
+        } catch (e: Exception) {
+            Log.e("GmailApiService", "An error occurred while searching emails: ${e.message}")
+            throw e
+        }
     }
 
     private fun fetchEmailList(
@@ -98,15 +94,11 @@ class GmailApiService @Inject constructor(
         pageSize: Int
     ): ListMessagesResponse {
         val user = "me"
-        val listRequest = service.users().messages().list(user)
+        return service.users().messages().list(user)
             .setMaxResults(pageSize.toLong())
             .setPageToken(pageToken)
-
-        if (!query.isNullOrEmpty()) {
-            listRequest.q = query
-        }
-
-        return listRequest.execute()
+            .apply { if (!query.isNullOrEmpty()) q = query }
+            .execute()
     }
 
     private fun fetchMessageMinimal(
@@ -115,14 +107,7 @@ class GmailApiService @Inject constructor(
         messageId: String
     ): EmailMinimal? {
         val email = service.users().messages().get(user, messageId).execute()
-
-        return EmailMinimal(
-            id = email.id,
-            sender = email.payload.headers.find { it.name == "From" }?.value ?: "",
-            subject = email.payload.headers.find { it.name == "Subject" }?.value ?: "",
-            body = email.snippet,
-            timestamp = email.internalDate
-        )
+        return EmailFactory.createEmailMinimal(email)
     }
 
     suspend fun fetchEmailFullByIds(
@@ -139,9 +124,8 @@ class GmailApiService @Inject constructor(
                 .build()
 
             emailIds.mapNotNull { emailId ->
-                fetchFullEmail(service, "me", emailId)
-            }.also { emails ->
-                Log.d("GmailApiService", "Fetched ${emails.size} full emails")
+                val email = service.users().messages().get("me", emailId).setFormat("full").execute()
+                EmailFactory.createEmailFull(email)
             }
         }
 

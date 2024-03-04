@@ -1,6 +1,8 @@
 package com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -22,6 +24,9 @@ import javax.inject.Inject
 class EmailMinimalSharedViewModel @Inject constructor(
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
 ) : ViewModel() {
+
+    val isLoading = MutableLiveData<Boolean>()
+
     private val _emailsFlow = MutableStateFlow<PagingData<EmailMinimal>>(PagingData.empty())
     val emailsFlow: Flow<PagingData<EmailMinimal>> = _emailsFlow.asStateFlow()
 
@@ -36,6 +41,23 @@ class EmailMinimalSharedViewModel @Inject constructor(
             _emailsFlow.emitAll(flow)
             Log.d("DetectorViewModel", "Emails fetched")
         }
+    }
+
+
+    private val _emailById = MutableLiveData<EmailMinimal?>()
+    val emailById: LiveData<EmailMinimal?> = _emailById
+
+    fun fetchEmailById(emailId: String) {
+        isLoading.value = true
+        viewModelScope.launch {
+            val email = emailMinimalLocalRepository.getEmailById(emailId)
+            _emailById.postValue(email)
+            isLoading.value = false
+        }
+    }
+
+    fun clearIdFetchedEmail() {
+        _emailById.postValue(null)
     }
 
 }

@@ -1,5 +1,7 @@
 package com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -21,6 +23,8 @@ import javax.inject.Inject
 class EmailFullSharedViewModel  @Inject constructor(
     private val emailFullLocalRepository: EmailFullLocalRepository
 ) : ViewModel() {
+
+    val isLoading = MutableLiveData<Boolean>()
 
     private val _localEmailsFlow = MutableStateFlow<PagingData<EmailFull>>(PagingData.empty())
     val localEmailsFlow: Flow<PagingData<EmailFull>> = _localEmailsFlow.asStateFlow()
@@ -45,4 +49,22 @@ class EmailFullSharedViewModel  @Inject constructor(
                 }
         }
     }
+
+    private val _emailById = MutableLiveData<EmailFull?>()
+    val emailById: LiveData<EmailFull?> = _emailById
+
+    fun fetchEmailById(emailId: String) {
+        isLoading.value = true
+        viewModelScope.launch {
+            val email = emailFullLocalRepository.getEmailById(emailId)
+            _emailById.postValue(email)
+            isLoading.value = false
+        }
+    }
+
+    fun clearIdFetchedEmail() {
+        _emailById.postValue(null)
+    }
+
+
 }
