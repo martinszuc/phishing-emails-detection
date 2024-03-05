@@ -53,7 +53,7 @@ class EmailMinimalSharedViewModel @Inject constructor(
 
     fun getRemoteEmails() {
         viewModelScope.launch {
-            val pagingData = emailMinimalRemoteRepository.getEmails().first()
+            val pagingData = emailMinimalRemoteRepository.getEmails().cachedIn(viewModelScope).first()
             _remoteEmailsFlow.value = pagingData
         }
     }

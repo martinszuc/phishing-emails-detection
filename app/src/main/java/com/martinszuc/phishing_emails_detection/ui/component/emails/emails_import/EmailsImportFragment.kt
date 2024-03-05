@@ -53,6 +53,11 @@ class EmailsImportFragment : Fragment() {
         initFloatingActionButton()
         initEmailsImport()
         initSearchView()
+        // Observe selected emails LiveData to update UI accordingly
+        emailsImportViewModel.selectedEmails.observe(viewLifecycleOwner) { selectedEmails ->
+            // Notify the adapter that the selection state has changed
+            emailsImportAdapter.notifyDataSetChanged() // This triggers a UI refresh
+        }
 
         return binding.root
     }

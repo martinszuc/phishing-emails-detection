@@ -16,7 +16,7 @@ import com.martinszuc.phishing_emails_detection.utils.Constants
  * Authored by matoszuc@gmail.com
  */
 
-class LearningFragment : Fragment() {
+class LearningFragment : Fragment() {   // TODO maybe change this to model info and evaluation on a testing dataset from internal
 
     private var _binding: FragmentLearningBinding? = null
     private val binding get() = _binding!!

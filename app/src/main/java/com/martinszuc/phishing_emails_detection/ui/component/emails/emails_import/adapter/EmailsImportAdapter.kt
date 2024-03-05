@@ -54,6 +54,22 @@ class EmailsImportAdapter(private val viewModel: EmailsImportViewModel) :
                     viewModel.toggleEmailSelected(email)
                 }
             }
+
+            holder.binding.checkbox.setOnLongClickListener {
+                // Toggle selection in ViewModel
+                viewModel.toggleEmailSelected(email)
+
+                if (viewModel.isSelectionMode.value == true) {
+                    // End selection mode with this email as the second selection
+                    viewModel.handleSecondSelection(email)
+                } else {
+                    // Start selection mode with this email as the first selection
+                    val visibleEmails = snapshot().items.filterNotNull()
+                    viewModel.handleFirstSelection(email, visibleEmails)
+                }
+                true
+            }
+
         } else {
             // The item is null, indicating a placeholder item
             // Reset the checkbox state to prevent it from staying checked

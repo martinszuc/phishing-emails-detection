@@ -1,5 +1,6 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,14 +31,24 @@ class EmailsImportViewModel @Inject constructor(
     private val emailFullRemoteRepository: EmailFullRemoteRepository
 ) : ViewModel() {
 
-    val selectedEmails = MutableLiveData<List<EmailMinimal>>(emptyList())
+    private val _isSelectionMode = MutableLiveData<Boolean>(false)
+    val isSelectionMode: LiveData<Boolean> = _isSelectionMode
+
+    private val _listOfEmailsBeforeSelection = MutableLiveData<List<EmailMinimal>>(listOf())
+    val listOfEmailsBeforeSelection: LiveData<List<EmailMinimal>> = _listOfEmailsBeforeSelection
+
+    private val _selectedEmails = MutableLiveData<List<EmailMinimal>>(listOf())
+    val selectedEmails: LiveData<List<EmailMinimal>> = _selectedEmails
+
+    private val _firstSelectedEmail = MutableLiveData<EmailMinimal?>()
+    private var firstSelectedEmail: EmailMinimal? = null
 
     fun toggleEmailSelected(email: EmailMinimal) {
-        val currentSelectedEmails = selectedEmails.value ?: emptyList()
+        val currentSelectedEmails = _selectedEmails.value ?: emptyList()
         if (email in currentSelectedEmails) {
-            selectedEmails.value = currentSelectedEmails - email
+            _selectedEmails.value = currentSelectedEmails - email
         } else {
-            selectedEmails.value = currentSelectedEmails + email
+            _selectedEmails.value = currentSelectedEmails + email
         }
     }
 
@@ -59,7 +70,36 @@ class EmailsImportViewModel @Inject constructor(
             emailMinimalLocalRepository.insertAll(selectedEmailsList)
 
             // Clear the selected emails
-            selectedEmails.postValue(emptyList())
+            _selectedEmails.postValue(emptyList())
+        }
+    }
+
+    private fun addToSelectedEmails(selected: List<EmailMinimal>) {
+        val currentSelected = _selectedEmails.value.orEmpty().toMutableList()
+        selected.forEach { email ->
+            if (!currentSelected.contains(email)) currentSelected.add(email)
+        }
+        _selectedEmails.value = currentSelected
+    }
+
+    fun handleFirstSelection(email: EmailMinimal, visibleEmails: List<EmailMinimal>) {
+        firstSelectedEmail = email
+        _listOfEmailsBeforeSelection.value = visibleEmails
+        _isSelectionMode.value = true
+    }
+
+    fun handleSecondSelection(secondEmail: EmailMinimal) {
+        firstSelectedEmail?.let { firstEmail ->
+            val firstIndex = _listOfEmailsBeforeSelection.value!!.indexOf(firstEmail)
+            val secondIndex = _listOfEmailsBeforeSelection.value!!.indexOf(secondEmail)
+            if (firstIndex == -1 || secondIndex == -1) return
+
+            val range = if (firstIndex < secondIndex) firstIndex..secondIndex else secondIndex..firstIndex
+            addToSelectedEmails(_listOfEmailsBeforeSelection.value!!.slice(range))
+
+            // Reset selection mode
+            _isSelectionMode.value = false
+            firstSelectedEmail = null
         }
     }
 }
