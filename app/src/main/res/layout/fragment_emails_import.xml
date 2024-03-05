@@ -4,11 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Main content: RecyclerView and SearchView -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- SearchView -->
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
             android:layout_width="match_parent"
@@ -16,13 +18,7 @@
             android:queryHint="Search by subject"
             android:visibility="gone"/>
 
-        <ProgressBar
-            android:id="@+id/loading_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone" />
-
+        <!-- RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/emailSelectionRecyclerView"
             android:layout_width="match_parent"
@@ -31,13 +27,26 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </LinearLayout>
 
+    <!-- Loading Spinner centered in the middle -->
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:progressTint="@color/md_theme_dark_primary"
+        android:indeterminateTint="@color/md_theme_dark_primary" />
+
+
+    <!-- Floating action button (FAB) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:src="@drawable/ic_saved"
-        android:contentDescription="@string/submit"
         android:layout_marginBottom="72dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginRight="16dp"
+        android:src="@drawable/ic_saved"
+        android:contentDescription="@string/submit" />
+
 </FrameLayout>
