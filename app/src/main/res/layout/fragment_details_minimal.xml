@@ -51,6 +51,14 @@
         </LinearLayout>
     </ScrollView>
 
+    <View
+        android:layout_width="2dp"
+        android:layout_height="160dp"
+        android:background="@color/md_theme_dark_primary"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="-1dp"/>
+
+
     <ImageView
         android:id="@+id/swipeRightIndicator"
         android:layout_width="wrap_content"
