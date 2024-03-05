@@ -19,7 +19,7 @@ object EmailFactory {
             id = email.id,
             sender = email.payload.headers.find { it.name == "From" }?.value ?: "",
             subject = email.payload.headers.find { it.name == "Subject" }?.value ?: "",
-            body = email.snippet,
+            body = email.snippet, // TODO set the body correctly
             timestamp = email.internalDate
         )
     }

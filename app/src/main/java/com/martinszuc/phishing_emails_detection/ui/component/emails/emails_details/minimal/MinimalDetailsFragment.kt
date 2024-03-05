@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.databinding.FragmentDetailsMinimalBinding
 import com.martinszuc.phishing_emails_detection.utils.DateUtils
@@ -23,6 +26,12 @@ class MinimalDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDetailsMinimalBinding.inflate(inflater, container, false)
+        val view = binding.root
+
+        // For MinimalDetailsFragment use swipeRightIndicator, for FullDetailsFragment use swipeLeftIndicator
+        val arrowIndicator: ImageView = binding.swipeRightIndicator
+        val animation = AnimationUtils.loadAnimation(context, R.anim.arrow_fade_animation)
+        arrowIndicator.startAnimation(animation)
 
         email?.let { email ->
             with(binding) {
@@ -35,6 +44,13 @@ class MinimalDetailsFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Assuming the arrow indicator in FullDetailsFragment is swipeLeftIndicator
+        val animation = AnimationUtils.loadAnimation(context, R.anim.arrow_fade_animation)
+        binding.swipeRightIndicator.startAnimation(animation)
     }
 
     override fun onDestroyView() {

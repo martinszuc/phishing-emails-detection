@@ -17,8 +17,8 @@ class DetailsPagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> FullDetailsFragment.newInstance(emailFull)
-            1 -> MinimalDetailsFragment.newInstance(emailMinimal)
+            0 -> MinimalDetailsFragment.newInstance(emailMinimal)
+            1 -> FullDetailsFragment.newInstance(emailFull)
             else -> throw IllegalStateException("Unexpected position $position")
         }
     }

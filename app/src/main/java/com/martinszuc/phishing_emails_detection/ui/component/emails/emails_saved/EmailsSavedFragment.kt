@@ -22,7 +22,7 @@ import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsSavedBinding
-import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.EmailsDetailsDialog
+import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.EmailsDetailsDialogFragment
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.adapter.EmailsSavedAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailFullSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailMinimalSharedViewModel
@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
  * Authored by matoszuc@gmail.com
  */
 @AndroidEntryPoint
-class EmailsSavedFragment : Fragment(), EmailsDetailsDialog.DialogDismissListener {
+class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismissListener {
     private var _binding: FragmentEmailsSavedBinding? = null
     private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()
     private val emailFullSharedViewModel: EmailFullSharedViewModel by activityViewModels()
@@ -142,7 +142,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialog.DialogDismissListene
     }
 
     private fun showEmailDetailsDialog(emailMinimal: EmailMinimal, emailFull: EmailFull) {
-        EmailsDetailsDialog(emailMinimal, emailFull).apply {
+        EmailsDetailsDialogFragment(emailMinimal, emailFull).apply {
             setDialogDismissListener(this@EmailsSavedFragment)
             show(this@EmailsSavedFragment.parentFragmentManager, "emailDetailsDialog")
         }

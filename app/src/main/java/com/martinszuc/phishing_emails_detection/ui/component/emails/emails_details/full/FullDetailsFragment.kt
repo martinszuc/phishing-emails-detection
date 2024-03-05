@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.FragmentDetailsFullBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.full.adapter.EmailFullAdapter
@@ -24,6 +27,11 @@ class FullDetailsFragment : Fragment() {
         _binding = FragmentDetailsFullBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        // For MinimalDetailsFragment use swipeRightIndicator, for FullDetailsFragment use swipeLeftIndicator
+        val arrowIndicator: ImageView = binding.swipeLeftIndicator
+        val animation = AnimationUtils.loadAnimation(context, R.anim.arrow_fade_animation)
+        arrowIndicator.startAnimation(animation)
+
         if (email != null) {
             val emailFullAdapter = EmailFullAdapter()
             binding.fullDetailsRecyclerView.adapter = emailFullAdapter
@@ -33,6 +41,13 @@ class FullDetailsFragment : Fragment() {
         }
 
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Assuming the arrow indicator in FullDetailsFragment is swipeLeftIndicator
+        val animation = AnimationUtils.loadAnimation(context, R.anim.arrow_fade_animation)
+        binding.swipeLeftIndicator.startAnimation(animation)
     }
 
     override fun onDestroyView() {
