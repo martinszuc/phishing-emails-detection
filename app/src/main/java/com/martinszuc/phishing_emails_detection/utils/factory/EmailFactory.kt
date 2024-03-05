@@ -13,6 +13,7 @@ import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_fu
 
 object EmailFactory {
 
+    // Minimal
     fun createEmailMinimal(email: Message): EmailMinimal {
         return EmailMinimal(
             id = email.id,
@@ -23,6 +24,7 @@ object EmailFactory {
         )
     }
 
+    // Full
     fun createEmailFull(email: Message): EmailFull? {
         val payload = email.payload ?: run {
             Log.d("EmailFactory", "Email with ID ${email.id} has null payload")
@@ -78,5 +80,16 @@ object EmailFactory {
                 null
             }
         } ?: emptyList()
+    }
+
+    // Raw
+    fun parseHeader(emailContent: String, headerName: String): String? {
+        val lines = emailContent.split("\r\n")
+        for (line in lines) {
+            if (line.startsWith(headerName + ":")) {
+                return line.substringAfter(": ").trim()
+            }
+        }
+        return null
     }
 }
