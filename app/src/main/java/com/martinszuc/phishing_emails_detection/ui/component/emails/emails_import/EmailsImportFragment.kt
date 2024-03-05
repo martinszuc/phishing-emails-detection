@@ -1,6 +1,5 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -24,6 +22,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsImportBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.adapter.EmailsImportAdapter
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailMinimalSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.user.AccountSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -37,6 +36,7 @@ import kotlinx.coroutines.launch
 class EmailsImportFragment : Fragment() {
     private var _binding: FragmentEmailsImportBinding? = null
     private val emailsImportViewModel: EmailsImportViewModel by viewModels()
+    private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()
     private val accountSharedViewModel: AccountSharedViewModel by activityViewModels() // Inject UserAccountViewModel
     private lateinit var emailsImportAdapter: EmailsImportAdapter
 
@@ -107,7 +107,7 @@ class EmailsImportFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    emailsImportViewModel.remoteEmailsFlow.collectLatest { pagingData ->
+                    emailMinimalSharedViewModel.remoteEmailsFlow.collectLatest { pagingData ->
                         emailsImportAdapter.submitData(pagingData)
                     }
                 }
@@ -129,7 +129,7 @@ class EmailsImportFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // This method is called when the user submits the search string.
                 query?.let {
-                    emailsImportViewModel.searchEmails(it)
+                    emailMinimalSharedViewModel.searchRemoteEmails(it)
                 }
 
                 hideKeyboard()
@@ -141,7 +141,7 @@ class EmailsImportFragment : Fragment() {
                 // This method is called when the query text is changed by the user.
                 if (newText.isNullOrEmpty()) {
                     // If the query text is empty, call getEmails to fetch all emails.
-                    emailsImportViewModel.getEmails()
+                    emailMinimalSharedViewModel.getRemoteEmails()
                 }
                 return true
             }

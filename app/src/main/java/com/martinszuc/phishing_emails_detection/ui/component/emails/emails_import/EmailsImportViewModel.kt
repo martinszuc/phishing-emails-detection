@@ -9,6 +9,7 @@ import com.martinszuc.phishing_emails_detection.data.email.local.repository.Emai
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMinimalLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.remote.repository.EmailFullRemoteRepository
 import com.martinszuc.phishing_emails_detection.data.email.remote.repository.EmailMinimalRemoteRepository
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailMinimalSharedViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -25,32 +26,11 @@ import javax.inject.Inject
 @HiltViewModel
 class EmailsImportViewModel @Inject constructor(
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
-    private val emailMinimalRemoteRepository: EmailMinimalRemoteRepository,
     private val emailFullLocalRepository: EmailFullLocalRepository,
     private val emailFullRemoteRepository: EmailFullRemoteRepository
 ) : ViewModel() {
 
-    private val _remoteEmailsFlow = MutableStateFlow<PagingData<EmailMinimal>>(PagingData.empty())
-    val remoteEmailsFlow: Flow<PagingData<EmailMinimal>> = _remoteEmailsFlow.asStateFlow()
     val selectedEmails = MutableLiveData<List<EmailMinimal>>(emptyList())
-
-    init {
-        getEmails()
-    }
-
-    fun getEmails() {
-        viewModelScope.launch {
-            val pagingData = emailMinimalRemoteRepository.getEmails().first()
-            _remoteEmailsFlow.value = pagingData
-        }
-    }
-
-    fun searchEmails(query: String) {
-        viewModelScope.launch {
-            val pagingData = emailMinimalRemoteRepository.searchEmails(query).first()
-            _remoteEmailsFlow.value = pagingData
-        }
-    }
 
     fun toggleEmailSelected(email: EmailMinimal) {
         val currentSelectedEmails = selectedEmails.value ?: emptyList()
@@ -66,7 +46,8 @@ class EmailsImportViewModel @Inject constructor(
             val selectedEmailsList = selectedEmails.value ?: return@launch
 
             // Fetch the full format of the selected emails
-            val fullEmails = emailFullRemoteRepository.getEmailsFullByIds(selectedEmailsList.map { it.id })
+            val fullEmails =
+                emailFullRemoteRepository.getEmailsFullByIds(selectedEmailsList.map { it.id })
             emailFullLocalRepository.insertAllEmailsFull(fullEmails)
 
             // Fetch and save the raw format of the selected emails

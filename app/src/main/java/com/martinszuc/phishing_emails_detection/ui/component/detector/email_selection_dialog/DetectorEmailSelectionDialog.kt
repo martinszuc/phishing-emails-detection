@@ -48,7 +48,7 @@ class DetectorEmailSelectionDialog : BottomSheetDialogFragment(), EmailSelection
         // Observe the emailsFlow from the ViewModel
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                emailMinimalSharedViewModel.emailsFlow.collectLatest { pagingData ->
+                emailMinimalSharedViewModel.localEmailsFlow.collectLatest { pagingData ->
                     Log.d("EmailListBottomSheetFragment", "New PagingData received")
                     detectorAdapter.submitData(pagingData)
                 }
