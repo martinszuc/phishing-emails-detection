@@ -19,5 +19,9 @@ class Constants {
         const val PHISHING_QUIZ_LINK = "https://phishingquiz.withgoogle.com/"
         const val PHISHING_INFO_LINK = "https://consumer.ftc.gov/articles/how-recognize-and-avoid-phishing-scams"
 
+        // GmailApiService constants
+
+        const val SENDER_UNKNOWN = "unknown@sender.com"
+
     }
 }

@@ -10,8 +10,8 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
@@ -19,9 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.martinszuc.phishing_emails_detection.R
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsSavedBinding
+import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.EmailsDetailsDialog
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.adapter.EmailsSavedAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailFullSharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailMinimalSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -30,10 +34,11 @@ import kotlinx.coroutines.launch
  * Authored by matoszuc@gmail.com
  */
 @AndroidEntryPoint
-class EmailsSavedFragment : Fragment() {
+class EmailsSavedFragment : Fragment(), EmailsDetailsDialog.DialogDismissListener {
     private var _binding: FragmentEmailsSavedBinding? = null
-    private val emailsSavedViewModel: EmailsSavedViewModel by activityViewModels()
+    private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()
     private val emailFullSharedViewModel: EmailFullSharedViewModel by activityViewModels()
+    private val emailDetailsCombined = MediatorLiveData<Pair<EmailMinimal?, EmailFull?>>()
     private lateinit var emailsSavedAdapter: EmailsSavedAdapter
 
     private val binding get() = _binding!!
@@ -49,8 +54,14 @@ class EmailsSavedFragment : Fragment() {
         initSearchView()
         initEmptyTextAndButton()
         observeEmailsFlow()
+        setupEmailDetailsObserver()
 
         return binding.root
+    }
+
+    override fun onDialogDismissed() {
+        emailMinimalSharedViewModel.clearIdFetchedEmail()
+        emailFullSharedViewModel.clearIdFetchedEmail()
     }
 
     private fun initEmptyTextAndButton() {
@@ -89,13 +100,52 @@ class EmailsSavedFragment : Fragment() {
     }
 
     private fun initEmailsSaved() {
-        // Initialize RecyclerView
+        // Initialize RecyclerView and Adapter
         val recyclerView: RecyclerView = binding.emailSelectionRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        // Initialize EmailAdapter
-        emailsSavedAdapter = EmailsSavedAdapter(emailsSavedViewModel)
+        emailsSavedAdapter = EmailsSavedAdapter { emailId ->
+            emailMinimalSharedViewModel.fetchEmailById(emailId)
+            emailFullSharedViewModel.fetchEmailById(emailId)
+        }
+
         recyclerView.adapter = emailsSavedAdapter
+    }
+
+    private fun setupEmailDetailsObserver() {
+        // Define temporary holders for your email data
+        var emailMinimal: EmailMinimal? = null
+        var emailFull: EmailFull? = null
+
+        // Observe minimal email details
+        emailDetailsCombined.addSource(emailMinimalSharedViewModel.emailById) { minimal ->
+            emailMinimal = minimal
+            if (emailMinimal != null && emailFull != null) {
+                emailDetailsCombined.value = Pair(emailMinimal, emailFull)
+            }
+        }
+
+        // Observe full email details
+        emailDetailsCombined.addSource(emailFullSharedViewModel.emailById) { full ->
+            emailFull = full
+            if (emailMinimal != null && emailFull != null) {
+                emailDetailsCombined.value = Pair(emailMinimal, emailFull)
+            }
+        }
+
+        // Observe the combined LiveData for changes
+        emailDetailsCombined.observe(viewLifecycleOwner) { (minimal, full) ->
+            if (minimal != null && full != null) {
+                showEmailDetailsDialog(minimal, full)
+            }
+        }
+    }
+
+    private fun showEmailDetailsDialog(emailMinimal: EmailMinimal, emailFull: EmailFull) {
+        EmailsDetailsDialog(emailMinimal, emailFull).apply {
+            setDialogDismissListener(this@EmailsSavedFragment)
+            show(this@EmailsSavedFragment.parentFragmentManager, "emailDetailsDialog")
+        }
     }
 
     private fun observeEmailsFlow() {
@@ -139,14 +189,18 @@ class EmailsSavedFragment : Fragment() {
         inputManager.hideSoftInputFromWindow(binding.searchView.windowToken, 0)
     }
 
-    // Show a loading spinner while a refresh operation is in progress
     private fun initLoadingSpinner() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            emailsSavedAdapter.loadStateFlow.collectLatest { loadStates ->
-                binding.loadingSpinner.visibility =
-                    if (loadStates.refresh is LoadState.Loading) View.VISIBLE else View.GONE
-                Log.d("EmailImportFragment", "Load state changed: ${loadStates.refresh}")
-            }
+        // Observing the loading state of both emails to control the spinner
+        emailMinimalSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoadingMinimal ->
+            updateLoadingSpinner(isLoadingMinimal || emailFullSharedViewModel.isLoading.value == true)
         }
+
+        emailFullSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoadingFull ->
+            updateLoadingSpinner(isLoadingFull || emailMinimalSharedViewModel.isLoading.value == true)
+        }
+    }
+
+    private fun updateLoadingSpinner(show: Boolean) {
+        binding.loadingSpinner.visibility = if (show) View.VISIBLE else View.GONE
     }
 }

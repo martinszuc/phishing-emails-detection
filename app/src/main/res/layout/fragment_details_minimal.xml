@@ -1,0 +1,48 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/emailSenderTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sender"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/emailSubjectTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Subject"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/emailBodyTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Body"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/emailTimestampTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Timestamp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/emailIsPhishingChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:chipBackgroundColor="?attr/colorPrimary"
+            android:text="Phishing Status"/>
+
+    </LinearLayout>
+</ScrollView>

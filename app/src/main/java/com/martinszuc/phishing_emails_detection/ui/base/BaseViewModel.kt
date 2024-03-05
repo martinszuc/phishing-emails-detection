@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 open class BaseViewModel : ViewModel() {
 
     // Base class to handle common tasks, like error handling
+    // TODO
     fun handleException(task: () -> Unit) {
         viewModelScope.launch {
             try {
