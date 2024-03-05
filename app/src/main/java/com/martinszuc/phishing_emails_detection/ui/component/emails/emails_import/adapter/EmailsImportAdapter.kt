@@ -13,6 +13,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 class EmailsImportAdapter(private val viewModel: EmailsImportViewModel) :
     PagingDataAdapter<EmailMinimal, EmailsImportAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
 

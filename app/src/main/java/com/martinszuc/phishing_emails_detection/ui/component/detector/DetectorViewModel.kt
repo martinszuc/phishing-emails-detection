@@ -1,8 +1,5 @@
 package com.martinszuc.phishing_emails_detection.ui.component.detector
 
-/**
- * Authored by matoszuc@gmail.com
- */
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -20,6 +17,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+
+/**
+ * Authored by matoszuc@gmail.com
+ */
 
 @HiltViewModel
 class DetectorViewModel @Inject constructor(

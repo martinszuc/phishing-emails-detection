@@ -16,6 +16,7 @@ import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_paren
 /**
  * Authored by matoszuc@gmail.com
  */
+
 class EmailsParentFragment : Fragment() {
 
     private var _binding: FragmentEmailsParentBinding? = null

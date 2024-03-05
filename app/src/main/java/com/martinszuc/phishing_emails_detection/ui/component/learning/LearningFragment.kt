@@ -1,21 +1,16 @@
 package com.martinszuc.phishing_emails_detection.ui.component.learning
 
-import android.R
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.martinszuc.phishing_emails_detection.databinding.FragmentLearningBinding
-import com.martinszuc.phishing_emails_detection.ui.component.webview.WebViewActivity
 import com.martinszuc.phishing_emails_detection.utils.Constants
-
 
 /**
  * Authored by matoszuc@gmail.com

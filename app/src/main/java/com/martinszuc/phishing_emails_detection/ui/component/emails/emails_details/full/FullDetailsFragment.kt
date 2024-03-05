@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.martinszuc.phishing_emails_detection.R
@@ -13,41 +12,28 @@ import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_fu
 import com.martinszuc.phishing_emails_detection.databinding.FragmentDetailsFullBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.full.adapter.EmailFullAdapter
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 class FullDetailsFragment : Fragment() {
 
     private var _binding: FragmentDetailsFullBinding? = null
     private val binding get() = _binding!!
 
-    // Assuming EmailFull is Parcelable or Serializable. Use the appropriate method to retrieve it.
-    private val email by lazy {
+    private val email: EmailFull? by lazy {
         arguments?.getParcelable<EmailFull>("email")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDetailsFullBinding.inflate(inflater, container, false)
-        val view = binding.root
-
-        // For MinimalDetailsFragment use swipeRightIndicator, for FullDetailsFragment use swipeLeftIndicator
-        val arrowIndicator: ImageView = binding.swipeLeftIndicator
-        val animation = AnimationUtils.loadAnimation(context, R.anim.arrow_fade_animation)
-        arrowIndicator.startAnimation(animation)
-
-        if (email != null) {
-            val emailFullAdapter = EmailFullAdapter()
-            binding.fullDetailsRecyclerView.adapter = emailFullAdapter
-            binding.fullDetailsRecyclerView.layoutManager = LinearLayoutManager(context)
-            emailFullAdapter.emails = listOf(email!!)
-            emailFullAdapter.notifyDataSetChanged()
-        }
-
-        return view
+        return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Assuming the arrow indicator in FullDetailsFragment is swipeLeftIndicator
-        val animation = AnimationUtils.loadAnimation(context, R.anim.arrow_fade_animation)
-        binding.swipeLeftIndicator.startAnimation(animation)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUpViews()
+        startAnimation()
     }
 
     override fun onDestroyView() {
@@ -55,11 +41,25 @@ class FullDetailsFragment : Fragment() {
         _binding = null
     }
 
+    private fun setUpViews() {
+        email?.let {
+            val emailFullAdapter = EmailFullAdapter()
+            binding.fullDetailsRecyclerView.adapter = emailFullAdapter
+            binding.fullDetailsRecyclerView.layoutManager = LinearLayoutManager(context)
+            emailFullAdapter.emails = listOf(it)
+            emailFullAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun startAnimation() {
+        binding.swipeLeftIndicator.startAnimation(AnimationUtils.loadAnimation(context, R.anim.arrow_fade_animation))
+    }
+
     companion object {
         fun newInstance(email: EmailFull): FullDetailsFragment {
             val fragment = FullDetailsFragment()
             val bundle = Bundle()
-            bundle.putParcelable("email", email) // Make sure EmailFull implements Parcelable
+            bundle.putParcelable("email", email)
             fragment.arguments = bundle
             return fragment
         }

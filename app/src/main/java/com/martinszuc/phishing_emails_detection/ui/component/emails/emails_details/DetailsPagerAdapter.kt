@@ -8,6 +8,10 @@ import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_fu
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.full.FullDetailsFragment
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.minimal.MinimalDetailsFragment
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 class DetailsPagerAdapter(
     fa: FragmentActivity,
     private val emailMinimal: EmailMinimal,

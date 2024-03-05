@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 /**
  * Authored by matoszuc@gmail.com
  */
+
 @AndroidEntryPoint
 class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismissListener {
     private var _binding: FragmentEmailsSavedBinding? = null

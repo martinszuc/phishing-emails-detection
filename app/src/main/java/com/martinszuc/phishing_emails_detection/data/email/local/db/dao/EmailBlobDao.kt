@@ -6,6 +6,10 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailBlob
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @Dao
 interface EmailBlobDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -18,6 +18,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @HiltViewModel
 class EmailsImportViewModel @Inject constructor(
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,

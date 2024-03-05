@@ -8,6 +8,10 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @Dao
 interface EmailMinimalDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

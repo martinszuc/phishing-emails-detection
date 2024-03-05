@@ -20,9 +20,11 @@ import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.Emai
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+
 /**
  * Authored by matoszuc@gmail.com
  */
+
 private const val BODY_SIZE = 195
 
 @AndroidEntryPoint

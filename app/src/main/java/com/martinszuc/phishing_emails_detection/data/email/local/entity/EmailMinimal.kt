@@ -5,6 +5,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @Parcelize
 @Entity(tableName = "email_minimal")
 data class EmailMinimal(

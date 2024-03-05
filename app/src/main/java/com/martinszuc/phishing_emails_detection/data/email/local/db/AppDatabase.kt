@@ -13,6 +13,10 @@ import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMin
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.Subject
 import com.martinszuc.phishing_emails_detection.utils.Converters
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @Database(entities = [EmailMinimal::class, EmailFull::class, EmailBlob::class, Subject::class], exportSchema = false, version = 3)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

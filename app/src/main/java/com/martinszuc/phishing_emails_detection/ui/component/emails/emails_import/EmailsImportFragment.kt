@@ -29,6 +29,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @AndroidEntryPoint
 class EmailsImportFragment : Fragment() {
     private var _binding: FragmentEmailsImportBinding? = null

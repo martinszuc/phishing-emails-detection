@@ -11,6 +11,10 @@ import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_fu
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Part
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Payload
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 object EmailFactory {
 
     // Minimal

@@ -4,6 +4,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 object DateUtils {
     fun formatTimestamp(timestamp: Long): String {
         // You can adjust the date format as needed

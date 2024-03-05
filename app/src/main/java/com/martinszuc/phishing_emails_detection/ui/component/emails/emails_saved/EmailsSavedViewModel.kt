@@ -10,6 +10,7 @@ import javax.inject.Inject
 /**
  * Authored by matoszuc@gmail.com
  */
+
 @HiltViewModel
 class EmailsSavedViewModel @Inject constructor(
     private val emailFullLocalRepository: EmailFullLocalRepository

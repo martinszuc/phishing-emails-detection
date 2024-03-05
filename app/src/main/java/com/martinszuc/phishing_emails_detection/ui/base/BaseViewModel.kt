@@ -5,6 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 open class BaseViewModel : ViewModel() {
 
     // Base class to handle common tasks, like error handling

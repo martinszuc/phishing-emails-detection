@@ -10,6 +10,11 @@
     <string name="sign_in_to_your_email_account">Please, sign in to your Gmail account:</string>
     <string name="sender">Sender: </string>
     <string name="subject">Subject</string>
+    <string name="sender_details_minimal">Sender: %1$s</string>
+    <string name="subject_details_minimal">Subject: %1$s</string>
+    <string name="body_details_minimal">Body:\n%1$s</string>
+    <string name="timestamp_details_minimal">Timestamp: %1$s</string>
+    <string name="phishing_status_details_minimal">Phishing Status: %1$s</string>
     <string name="import_emails_from_gmail">Import emails from Gmail</string>
     <string name="save_selected_emails">Save</string>
     <string name="login_web_client_id">101829037621-eqahc6elokfbjf56epf1tl2eph2ngr65.apps.googleusercontent.com</string>

@@ -13,6 +13,7 @@ import javax.inject.Inject
 /**
  * Authored by matoszuc@gmail.com
  */
+
 class EmailFullLocalRepository @Inject constructor(
     private val database: AppDatabase
 ) {

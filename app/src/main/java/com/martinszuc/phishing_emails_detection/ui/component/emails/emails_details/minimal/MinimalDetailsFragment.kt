@@ -5,52 +5,71 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.databinding.FragmentDetailsMinimalBinding
 import com.martinszuc.phishing_emails_detection.utils.DateUtils
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 class MinimalDetailsFragment : Fragment() {
 
     private var _binding: FragmentDetailsMinimalBinding? = null
     private val binding get() = _binding!!
 
-    private val email by lazy {
-        arguments?.getParcelable<EmailMinimal>("email")
+    // Lazy initialization of email using safe call and Parcelable
+    private val email: EmailMinimal? by lazy {
+        arguments?.getParcelable("email")
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        // Inflate the layout for this fragment
         _binding = FragmentDetailsMinimalBinding.inflate(inflater, container, false)
-        val view = binding.root
 
-        // For MinimalDetailsFragment use swipeRightIndicator, for FullDetailsFragment use swipeLeftIndicator
-        val arrowIndicator: ImageView = binding.swipeRightIndicator
-        val animation = AnimationUtils.loadAnimation(context, R.anim.arrow_fade_animation)
-        arrowIndicator.startAnimation(animation)
+        binding.emailIsPhishingChip.visibility = View.GONE
 
-        email?.let { email ->
-            with(binding) {
-                emailSenderTextView.text = "Sender: ${email.sender}"
-                emailSubjectTextView.text = "Subject: ${email.subject}"
-                emailBodyTextView.text = "Body:\n${email.body}"
-                emailTimestampTextView.text = "Timestamp: ${DateUtils.formatTimestamp(email.timestamp)}"
-                emailIsPhishingChip.text = "Phishing Status: ${if (email.isPhishing == true) "Suspicious" else "Safe"}"
-            }
-        }
 
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initUI()
+    }
+
+    // Initialize UI components
+    private fun initUI() {
+        startArrowIndicatorAnimation()
+        populateEmailDetails()
+    }
+
+    // Start the arrow indicator animation
+    private fun startArrowIndicatorAnimation() {
+        val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.arrow_fade_animation)
+        binding.swipeRightIndicator.apply {
+            startAnimation(animation)
+        }
+    }
+
+    // Populate the UI with email details
+    private fun populateEmailDetails() {
+        email?.let {
+            with(binding) {
+                emailSenderTextView.text = getString(R.string.sender_details_minimal, it.sender)
+                emailSubjectTextView.text = getString(R.string.subject_details_minimal, it.subject)
+                emailBodyTextView.text = getString(R.string.body_details_minimal, it.body)
+                emailTimestampTextView.text = getString(R.string.timestamp_details_minimal, DateUtils.formatTimestamp(it.timestamp))
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-        // Assuming the arrow indicator in FullDetailsFragment is swipeLeftIndicator
-        val animation = AnimationUtils.loadAnimation(context, R.anim.arrow_fade_animation)
-        binding.swipeRightIndicator.startAnimation(animation)
+        // Restart the animation when the fragment resumes
+        startArrowIndicatorAnimation()
     }
 
     override fun onDestroyView() {
@@ -59,12 +78,11 @@ class MinimalDetailsFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(email: EmailMinimal): MinimalDetailsFragment {
-            val fragment = MinimalDetailsFragment()
-            val bundle = Bundle()
-            bundle.putParcelable("email", email)
-            fragment.arguments = bundle
-            return fragment
-        }
+        fun newInstance(email: EmailMinimal): MinimalDetailsFragment =
+            MinimalDetailsFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable("email", email)
+                }
+            }
     }
 }

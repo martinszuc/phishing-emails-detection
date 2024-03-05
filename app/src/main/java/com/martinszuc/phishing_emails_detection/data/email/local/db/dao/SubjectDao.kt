@@ -6,6 +6,10 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.Subject
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @Dao
 interface SubjectDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

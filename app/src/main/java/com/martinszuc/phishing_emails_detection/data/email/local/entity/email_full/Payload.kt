@@ -10,6 +10,7 @@ import kotlinx.android.parcel.Parcelize
 /**
  * Authored by matoszuc@gmail.com
  */
+
 @Parcelize
 data class Payload(
     @ColumnInfo(name = "part_id")

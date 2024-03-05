@@ -20,6 +20,7 @@ import com.martinszuc.phishing_emails_detection.databinding.DialogEmailDetailsBi
 /**
  * Authored by matoszuc@gmail.com
  */
+
 class EmailsDetailsDialogFragment(
     private val emailMinimal: EmailMinimal,
     private val emailFull: EmailFull
