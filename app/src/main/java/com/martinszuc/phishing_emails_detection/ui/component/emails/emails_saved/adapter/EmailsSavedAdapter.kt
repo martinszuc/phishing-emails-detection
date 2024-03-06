@@ -4,16 +4,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSavedBinding
-import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.EmailsSavedViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.martinszuc.phishing_emails_detection.utils.StringUtils
 
 /**
  * Authored by matoszuc@gmail.com
@@ -35,13 +31,9 @@ class EmailsSavedAdapter(
         val email = getItem(position)
         Log.d("EmailsSavedAdapter", "Binding email at position $position")
         if (email != null) {
-            // Convert the timestamp
-            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-            val date = Date(email.internalDate)
-
             holder.binding.senderValue.text = email.payload.headers.find { it.name == "From" }?.value
             holder.binding.subject.text = email.payload.headers.find { it.name == "Subject" }?.value
-            holder.binding.timestamp.text = sdf.format(date)
+            holder.binding.timestamp.text = StringUtils.formatTimestamp(email.internalDate)
             holder.binding.snippet.text = email.snippet
 
             if (!email.payload.parts.isNullOrEmpty()) {

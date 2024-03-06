@@ -68,4 +68,6 @@
     <string name="select_email">Select email</string>
     <string name="submit_button_string_fab">submit fab</string>
     <string name="left_arrow_indicator_non_clickable">Left arrow indicator, non-clickable</string>
+    <string name="ended_range_selection">"Ended range selection "</string>
+    <string name="started_range_selection">"Started range selection "</string>
 </resources>

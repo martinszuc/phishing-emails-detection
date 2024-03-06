@@ -24,6 +24,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import javax.inject.Inject
 
 /**
@@ -45,8 +48,45 @@ class MainActivity : AppCompatActivity() {                                      
         setupToolbar()
         setupBottomNav()
         setupAuthentication()
+
+        setupBackgroundTasks()
+
         launchPython {
             setupClassifier()
+        }
+    }
+
+    private fun setupBackgroundTasks() {
+        // Copy CSV files to internal storage in a background thread
+        lifecycleScope.launch(Dispatchers.IO) {
+            copyCsvFilesToInternalStorage()
+        }
+    }
+
+    private fun copyCsvFilesToInternalStorage() {
+        try {
+            val assetsFolder = "email_csv_samples"
+            val filesToCopy = assets.list(assetsFolder) ?: arrayOf() // List all files in the assets folder
+
+            val internalStorageFolder = File(filesDir, assetsFolder)
+            if (!internalStorageFolder.exists()) {
+                internalStorageFolder.mkdir() // Create the folder if it doesn't exist
+            }
+
+            filesToCopy.forEach { filename ->
+                val fileInInternalStorage = File(internalStorageFolder, filename)
+                if (!fileInInternalStorage.exists()) {
+                    // Copy each file from assets to internal storage
+                    val inputStream = assets.open("$assetsFolder/$filename")
+                    val outputStream = FileOutputStream(fileInInternalStorage)
+                    inputStream.copyTo(outputStream)
+                    inputStream.close()
+                    outputStream.flush()
+                    outputStream.close()
+                }
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 

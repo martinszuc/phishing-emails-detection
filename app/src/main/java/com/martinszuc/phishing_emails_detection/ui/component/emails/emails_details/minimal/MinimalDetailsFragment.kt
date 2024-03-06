@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.databinding.FragmentDetailsMinimalBinding
-import com.martinszuc.phishing_emails_detection.utils.DateUtils
+import com.martinszuc.phishing_emails_detection.utils.StringUtils
 
 /**
  * Authored by matoszuc@gmail.com
@@ -61,7 +61,7 @@ class MinimalDetailsFragment : Fragment() {
                 emailSenderTextView.text = getString(R.string.sender_details_minimal, it.sender)
                 emailSubjectTextView.text = getString(R.string.subject_details_minimal, it.subject)
                 emailBodyTextView.text = getString(R.string.body_details_minimal, it.body)
-                emailTimestampTextView.text = getString(R.string.timestamp_details_minimal, DateUtils.formatTimestamp(it.timestamp))
+                emailTimestampTextView.text = getString(R.string.timestamp_details_minimal, StringUtils.formatTimestamp(it.timestamp))
             }
         }
     }

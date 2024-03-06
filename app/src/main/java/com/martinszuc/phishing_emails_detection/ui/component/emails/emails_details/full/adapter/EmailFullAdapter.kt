@@ -6,9 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailDetailsFullBinding
-import java.text.SimpleDateFormat
+import com.martinszuc.phishing_emails_detection.utils.StringUtils
 import java.util.Locale
-import java.util.TimeZone
 
 
 /**
@@ -36,14 +35,8 @@ class EmailFullAdapter : RecyclerView.Adapter<EmailFullAdapter.EmailViewHolder>(
         holder.binding.idValue.text = email.id
         holder.binding.threadIdValue.text = email.threadId
         holder.binding.snippetValue.text = email.snippet
-        // Format the historyId
         holder.binding.historyIdValue.text = String.format(Locale.getDefault(), "%,d", email.historyId)
-
-        // Format the internalDate
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        sdf.timeZone = TimeZone.getDefault()  // Set your desired timezone here
-        val formattedDate = sdf.format(email.internalDate)
-        holder.binding.internalDateValue.text = formattedDate
+        holder.binding.internalDateValue.text = StringUtils.formatTimestamp(email.internalDate)
 
         holder.binding.labelIdsValue.text = email.labelIds.joinToString(", ")
         holder.binding.labelIdsValue.text = email.labelIds.joinToString(", ")

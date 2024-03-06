@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomSnackbar" parent="Widget.Material3.Snackbar">
+        <item name="backgroundTint">@color/md_theme_dark_primaryContainer</item>
+        <item name="android:textColor">@color/md_theme_dark_onPrimaryContainer</item>
+    </style>
+</resources>

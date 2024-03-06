@@ -8,7 +8,7 @@ import java.util.Locale
  * Authored by matoszuc@gmail.com
  */
 
-object DateUtils {
+object StringUtils {
     fun formatTimestamp(timestamp: Long): String {
         // You can adjust the date format as needed
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
