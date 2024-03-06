@@ -70,4 +70,8 @@
     <string name="left_arrow_indicator_non_clickable">Left arrow indicator, non-clickable</string>
     <string name="ended_range_selection">"Ended range selection "</string>
     <string name="started_range_selection">"Started range selection "</string>
+    <string name="data_picking_fragment">Data Picking Fragment</string>
+    <string name="data_processing_fragment">Data Processing Fragment</string>
+    <string name="retraining_fragment">Retraining fragment</string>
+    <string name="training_fragment">Training Fragment</string>
 </resources>
