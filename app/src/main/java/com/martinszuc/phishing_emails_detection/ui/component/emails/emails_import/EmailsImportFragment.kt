@@ -53,43 +53,23 @@ class EmailsImportFragment : Fragment() {
         initFloatingActionButton()
         initEmailsImport()
         initSearchView()
+        initObserveSelectedEmails()
+
+        return binding.root
+    }
+
+    private fun initObserveSelectedEmails() {
         // Observe selected emails LiveData to update UI accordingly
         emailsImportViewModel.selectedEmails.observe(viewLifecycleOwner) { selectedEmails ->
             // Notify the adapter that the selection state has changed
             emailsImportAdapter.notifyDataSetChanged() // This triggers a UI refresh
         }
-
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Observe load state changes
         initLoadingSpinner()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d("EmailImportFragment", "onDestroyView called")
-        _binding = null
-    }
-
-    private fun initFloatingActionButton() {
-        val fab: FloatingActionButton = binding.fab
-
-        // Set an observer on the selectedEmails LiveData
-        emailsImportViewModel.selectedEmails.observe(viewLifecycleOwner) { emails ->
-            if (emails.isNotEmpty()) {
-                fab.show()
-            } else {
-                fab.hide()
-            }
-        }
-
-        fab.setOnClickListener {
-            emailsImportViewModel.importSelectedEmails()
-            Toast.makeText(context, "Emails successfully saved!", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun initEmailsImport() {
@@ -126,6 +106,30 @@ class EmailsImportFragment : Fragment() {
     private fun initUserAccount() {
         accountSharedViewModel.account.observe(viewLifecycleOwner) { account ->
             Log.d("EmailImportFragment", "Account: $account")
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("EmailImportFragment", "onDestroyView called")
+        _binding = null
+    }
+
+    private fun initFloatingActionButton() {
+        val fab: FloatingActionButton = binding.fab
+
+        // Set an observer on the selectedEmails LiveData
+        emailsImportViewModel.selectedEmails.observe(viewLifecycleOwner) { emails ->
+            if (emails.isNotEmpty()) {
+                fab.show()
+            } else {
+                fab.hide()
+            }
+        }
+
+        fab.setOnClickListener {
+            emailsImportViewModel.importSelectedEmails()
+            Toast.makeText(context, "Emails successfully saved!", Toast.LENGTH_SHORT).show()
         }
     }
 

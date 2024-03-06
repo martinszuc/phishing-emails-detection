@@ -54,6 +54,7 @@ class EmailsImportAdapter(private val viewModel: EmailsImportViewModel) :
             holder.binding.checkbox.setOnLongClickListener { view ->
                 handleCheckboxLongClick(view, email)
             }
+
         } else {
             // The item is null, indicating a placeholder item
             // Reset the checkbox state to prevent it from staying checked

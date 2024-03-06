@@ -39,6 +39,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
     private var _binding: FragmentEmailsSavedBinding? = null
     private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()
     private val emailFullSharedViewModel: EmailFullSharedViewModel by activityViewModels()
+    private val emailsSavedViewModel: EmailsSavedViewModel by activityViewModels()
     private val emailDetailsCombined = MediatorLiveData<Pair<EmailMinimal?, EmailFull?>>()
     private lateinit var emailsSavedAdapter: EmailsSavedAdapter
 
@@ -56,6 +57,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
         initEmptyTextAndButton()
         observeEmailsFlow()
         setupEmailDetailsObserver()
+        initObserveSelectedEmails()
 
         return binding.root
     }
@@ -63,6 +65,15 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
     override fun onDialogDismissed() {
         emailMinimalSharedViewModel.clearIdFetchedEmail()
         emailFullSharedViewModel.clearIdFetchedEmail()
+    }
+
+
+    // Inside EmailsSavedFragment
+    private fun initObserveSelectedEmails() {
+        emailsSavedViewModel.selectedEmails.observe(viewLifecycleOwner) { selectedEmails ->
+            // This may need a custom method in your adapter to properly refresh checkbox states without reloading all data
+            emailsSavedAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun initEmptyTextAndButton() {
@@ -105,7 +116,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
         val recyclerView: RecyclerView = binding.emailSelectionRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        emailsSavedAdapter = EmailsSavedAdapter { emailId ->
+        emailsSavedAdapter = EmailsSavedAdapter(emailsSavedViewModel) { emailId ->
             emailMinimalSharedViewModel.fetchEmailById(emailId)
             emailFullSharedViewModel.fetchEmailById(emailId)
         }

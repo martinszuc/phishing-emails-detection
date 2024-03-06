@@ -35,12 +35,10 @@ class EmailsImportViewModel @Inject constructor(
     val isSelectionMode: LiveData<Boolean> = _isSelectionMode
 
     private val _listOfEmailsBeforeSelection = MutableLiveData<List<EmailMinimal>>(listOf())
-    val listOfEmailsBeforeSelection: LiveData<List<EmailMinimal>> = _listOfEmailsBeforeSelection
 
     private val _selectedEmails = MutableLiveData<List<EmailMinimal>>(listOf())
     val selectedEmails: LiveData<List<EmailMinimal>> = _selectedEmails
 
-    private val _firstSelectedEmail = MutableLiveData<EmailMinimal?>()
     private var firstSelectedEmail: EmailMinimal? = null
 
     fun toggleEmailSelected(email: EmailMinimal) {
