@@ -54,9 +54,9 @@
     <!-- Training Fragment -->
     <fragment
         android:id="@+id/TrainingFragment"
-        android:name="com.martinszuc.phishing_emails_detection.ui.component.training.TrainingFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningFragment"
         android:label="@string/title_training"
-        tools:layout="@layout/fragment_training"/>
+        tools:layout="@layout/fragment_machine_learning"/>
 
     <!-- Detector Fragment-->
     <fragment
