@@ -1,5 +1,6 @@
 import mailbox
 import pandas as pd
+import os
 import re
 import csv
 from feature_finders import HTMLFormFinder, AttachmentFinder, FlashFinder, IFrameFinder, HTMLContentFinder, URLsFinder, ExternalResourcesFinder, JavascriptFinder, CssFinder, IPsInURLs, AtInURLs, EncodingFinder

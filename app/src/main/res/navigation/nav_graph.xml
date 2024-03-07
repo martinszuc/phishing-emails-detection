@@ -26,9 +26,9 @@
     <!-- Emails Detector Fragment -->
     <fragment
         android:id="@+id/EmailsDetectorFragment"
-        android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detector.EmailsDetectorFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detector.EmailsPackageManagerFragment"
         android:label="@string/title_emails_detector"
-        tools:layout="@layout/fragment_emails_detector"/>
+        tools:layout="@layout/fragment_email_package_manager"/>
 
     <!-- Emails Import Fragment -->
     <fragment

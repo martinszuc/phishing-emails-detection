@@ -23,5 +23,8 @@ class Constants {
 
         const val SENDER_UNKNOWN = "unknown@sender.com"
 
+        const val DIR_EMAIL_PACKAGES = "email_packages"
+
+
     }
 }

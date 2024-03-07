@@ -23,4 +23,13 @@ class PackageManifestManager @Inject constructor(private val context: Context) {
         currentManifest.add(metadata)
         manifestFile.writeText(gson.toJson(currentManifest))
     }
+
+    fun removePackageFromManifest(fileName: String) {
+        val currentManifest = loadManifest().toMutableList()
+        val packageToRemove = currentManifest.firstOrNull { it.fileName == fileName }
+        if (packageToRemove != null) {
+            currentManifest.remove(packageToRemove)
+            manifestFile.writeText(gson.toJson(currentManifest))
+        }
+    }
 }

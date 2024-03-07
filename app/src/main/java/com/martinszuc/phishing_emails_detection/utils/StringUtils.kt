@@ -14,5 +14,10 @@ object StringUtils {
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
         return sdf.format(Date(timestamp))
     }
+    fun formatTimestampForFilename(timestamp: Long): String {
+        // You can adjust the date format as needed
+        val sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+        return sdf.format(Date(timestamp))
+    }
 
 }

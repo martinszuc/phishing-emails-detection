@@ -3,11 +3,14 @@ package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_save
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -22,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.R
+import com.martinszuc.phishing_emails_detection.data.data_class.PhishyDialogResult
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsSavedBinding
@@ -117,32 +121,56 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
         }
 
         fab.setOnClickListener {
-            // Launch a coroutine when FAB is clicked
             lifecycleScope.launch {
-                val isPhishy = showPhishyConfirmationDialog()
-                // Proceed with your logic after getting the user's decision
-                emailsSavedViewModel.createEmailPackageFromSelected(isPhishy) // Adjust this call according to your implementation
-                Toast.makeText(context, "Emails successfully packaged!", Toast.LENGTH_SHORT).show()
+                val result = showPhishyConfirmationDialog()
+                if (!result.wasCancelled && result.packageName != null) {
+                    // Only proceed if the dialog was not cancelled and a package name was entered
+                    emailsSavedViewModel.createEmailPackageFromSelected(result.isPhishy, result.packageName)
+                    Toast.makeText(context, "Emails successfully packaged!", Toast.LENGTH_SHORT).show()
+                }
             }
         }
+
     }
 
-    private suspend fun showPhishyConfirmationDialog(): Boolean = suspendCoroutine { cont ->
-        AlertDialog.Builder(requireContext()).apply {
+    private suspend fun showPhishyConfirmationDialog(): PhishyDialogResult = suspendCoroutine { cont ->
+        val context = requireContext()
+        val input = EditText(context)
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        input.hint = "Enter package name"
+        input.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // Show a Toast message
+                Toast.makeText(context, "Please select if the package is phishing or safe.", Toast.LENGTH_LONG).show()
+                true // Consume the event
+            } else {
+                false // Do not consume the event
+            }
+        }
+
+        val dialog = AlertDialog.Builder(context).apply {
             setTitle("Confirm Email Package")
             setMessage("Is this email package suspicious (phishy)?")
+            setView(input) // Add the input field to the dialog
             setPositiveButton("Yes") { _, _ ->
-                // User confirmed the package is phishy
-                cont.resume(true)
+                cont.resume(PhishyDialogResult(isPhishy = true, packageName = input.text.toString()))
             }
             setNegativeButton("No") { _, _ ->
-                // User confirmed the package is not phishy
-                cont.resume(false)
+                cont.resume(PhishyDialogResult(isPhishy = false, packageName = input.text.toString()))
             }
-            setCancelable(false) // Prevent the dialog from being cancelled without a choice
-            show()
-        }
+            setNeutralButton("Cancel") { _, _ ->
+                cont.resume(PhishyDialogResult(isPhishy = false, packageName = null, wasCancelled = true))
+            }
+            setCancelable(true)
+            setOnCancelListener {
+                cont.resume(PhishyDialogResult(isPhishy = false, packageName = null, wasCancelled = true))
+            }
+
+        }.create()
+
+        dialog.show()
     }
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

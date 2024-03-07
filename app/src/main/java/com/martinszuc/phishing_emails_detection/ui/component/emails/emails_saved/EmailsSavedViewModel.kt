@@ -83,21 +83,16 @@ class EmailsSavedViewModel @Inject constructor(
         }
     }
 
-    fun createEmailPackageFromSelected(isPhishy: Boolean) {
+    fun createEmailPackageFromSelected(isPhishy: Boolean, packageName: String) {
         // Assuming _selectedEmails holds the list of email IDs to be packaged
         val emailIds = _selectedEmails.value?.toList() ?: return
 
         viewModelScope.launch {
             try {
-                // This will create the email package and save it, updating the package manifest accordingly.
-                val filePath = emailPackageRepository.createAndSaveEmailPackage(emailIds, isPhishy)
-
-                // Here, you can update LiveData or state flow to notify the UI about the new package creation.
-                // For example: _packageCreationStatus.postValue(Success(filePath))
+                val filePath = emailPackageRepository.createAndSaveEmailPackage(emailIds, isPhishy, packageName)
 
             } catch (e: Exception) {
                 // Handle any errors that might occur during the package creation process.
-                // For example: _packageCreationStatus.postValue(Error(e.localizedMessage))
             }
         }
     }

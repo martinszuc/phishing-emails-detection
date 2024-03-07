@@ -33,4 +33,12 @@ class FileManager(private val context: Context) {
         val file = File(directory, fileName)
         return if (file.exists()) file.readText() else null
     }
+
+    fun deleteFile(directoryName: String, fileName: String) {
+        val file = loadFileFromDirectory(directoryName, fileName)
+        if (file?.exists() == true) {
+            file.delete()
+        }
+    }
+
 }

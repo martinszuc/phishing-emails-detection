@@ -74,4 +74,6 @@
     <string name="data_processing_fragment">Data Processing Fragment</string>
     <string name="retraining_fragment">Retraining fragment</string>
     <string name="training_fragment">Training Fragment</string>
+    <string name="delete">delete email package</string>
+    <string name="refresh">Refresh</string>
 </resources>

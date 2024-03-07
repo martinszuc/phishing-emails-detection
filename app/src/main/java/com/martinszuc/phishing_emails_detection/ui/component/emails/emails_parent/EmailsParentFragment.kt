@@ -55,8 +55,8 @@ class EmailsParentFragment : Fragment() {
                 }
 
                 2 -> {
-                    tab.text = "Detected"
-                    tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_email_seal)
+                    tab.text = "E-Packages"
+                    tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_box_package)
                 }
             }
         }.attach()

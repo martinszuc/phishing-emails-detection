@@ -64,3 +64,10 @@ def prepare_data_for_model(resources_dir, safe_filename, phishing_filename, test
     train_ds = df_to_dataset(train_df, shuffle=True, batch_size=batch_size)
     test_ds = df_to_dataset(test_df, shuffle=False, batch_size=batch_size)
     return train_ds, test_ds
+
+def prepare_data_for_retraining(resources_dir, safe_filename, phishing_filename, batch_size=32):
+    """Load, preprocess, and prepare data for retraining the model without splitting."""
+    combined_df = load_datasets(resources_dir, safe_filename, phishing_filename)
+    preprocessed_df = preprocess_features(combined_df)
+    train_ds = df_to_dataset(preprocessed_df, shuffle=True, batch_size=batch_size)
+    return train_ds
