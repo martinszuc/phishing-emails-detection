@@ -4,4 +4,9 @@
         <item name="backgroundTint">@color/md_theme_dark_primaryContainer</item>
         <item name="android:textColor">@color/md_theme_dark_onPrimaryContainer</item>
     </style>
+
+    <style name="CustomPopupMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <!-- Set the custom drawable as the popup menu background -->
+        <item name="android:popupBackground">@drawable/popup_menu_package_add_background</item>
+    </style>
 </resources>

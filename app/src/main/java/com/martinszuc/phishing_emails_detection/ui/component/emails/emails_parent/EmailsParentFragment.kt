@@ -6,21 +6,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsParentBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_parent.adapter.EmailsPagerAdapter
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailParentSharedViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Authored by matoszuc@gmail.com
  */
 
+@AndroidEntryPoint
 class EmailsParentFragment : Fragment() {
 
     private var _binding: FragmentEmailsParentBinding? = null
+    private val emailParentSharedViewModel: EmailParentSharedViewModel by activityViewModels()
+
     private val binding get() = _binding!!
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +42,15 @@ class EmailsParentFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupViewPager()
+        observePagerPosition()
     }
+
+    private fun observePagerPosition() {
+        emailParentSharedViewModel.viewPagerPosition.observe(viewLifecycleOwner) { position ->
+            binding.viewPager.currentItem = position
+        }
+    }
+
 
     private fun setupViewPager() {
         val viewPager: ViewPager2 = binding.viewPager
@@ -55,7 +70,7 @@ class EmailsParentFragment : Fragment() {
                 }
 
                 2 -> {
-                    tab.text = "E-Packages"
+                    tab.text = "@ Packages"
                     tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_box_package)
                 }
             }

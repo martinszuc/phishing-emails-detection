@@ -13,7 +13,7 @@ import com.martinszuc.phishing_emails_detection.utils.StringUtils
 class EmailPackageAdapter(
     private var items: List<EmailPackageMetadata>,
     private val onDeleteClicked: (String) -> Unit,
-    private val onAddClicked: () -> Unit
+    private val onAddClicked: (View) -> Unit
 ) : RecyclerView.Adapter<EmailPackageAdapter.EmailPackageViewHolder>() {
 
     companion object {
@@ -54,7 +54,7 @@ class EmailPackageAdapter(
         when (holder) {
             is EmailPackageViewHolder.AddViewHolder -> {
                 holder.itemView.setOnClickListener {
-                    onAddClicked()
+                    onAddClicked(it)
                 }
             }
             is EmailPackageViewHolder.PackageViewHolder -> {
@@ -82,4 +82,5 @@ class EmailPackageAdapter(
         items = newItems
         notifyDataSetChanged()
     }
+
 }

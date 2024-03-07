@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_add_from_file"
+        android:title="Select .mbox using Files"/>
+    <item
+        android:id="@+id/action_build_package"
+        android:title="Select from Saved emails"
+        />
+</menu>
