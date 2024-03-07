@@ -55,8 +55,8 @@ class EmailsSavedAdapter(
             }
 
             holder.itemView.setOnClickListener {
-                email?.let {// TODO warning "Unnecessary safe call on a non-null receiver of type EmailFull?"
-                    onEmailClicked(it.id) // Assuming email has an id field
+                email?.let {
+                    onEmailClicked(it.id)
                 }
             }
 

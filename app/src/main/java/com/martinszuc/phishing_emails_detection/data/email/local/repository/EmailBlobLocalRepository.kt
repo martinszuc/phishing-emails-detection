@@ -37,4 +37,10 @@ class EmailBlobLocalRepository @Inject constructor(
         }
     }
 
+    suspend fun getEmailBlobsByIds(ids: List<String>): List<EmailBlob> {
+        return ids.mapNotNull { id ->
+            emailBlobDao.getEmailBlob(id)
+        }
+    }
+
 }

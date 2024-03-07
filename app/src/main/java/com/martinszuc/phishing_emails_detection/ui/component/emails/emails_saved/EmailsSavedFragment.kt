@@ -1,5 +1,6 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,6 +20,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
@@ -29,6 +32,8 @@ import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.Emai
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Authored by matoszuc@gmail.com
@@ -58,6 +63,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
         observeEmailsFlow()
         setupEmailDetailsObserver()
         initObserveSelectedEmails()
+        initFloatingActionButton() // TODO number of emails saved in the snackbar
 
         return binding.root
     }
@@ -95,6 +101,46 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
                 binding.emptySavedTextview.visibility = View.GONE
                 binding.gotoSavedEmailsButton.visibility = View.GONE
             }
+        }
+    }
+
+    private fun initFloatingActionButton() {
+        val fab: FloatingActionButton = binding.fab
+
+        // Set an observer on the selectedEmails LiveData
+        emailsSavedViewModel.selectedEmails.observe(viewLifecycleOwner) { emails ->
+            if (emails.isNotEmpty()) {
+                fab.show()
+            } else {
+                fab.hide()
+            }
+        }
+
+        fab.setOnClickListener {
+            // Launch a coroutine when FAB is clicked
+            lifecycleScope.launch {
+                val isPhishy = showPhishyConfirmationDialog()
+                // Proceed with your logic after getting the user's decision
+                emailsSavedViewModel.createEmailPackageFromSelected(isPhishy) // Adjust this call according to your implementation
+                Toast.makeText(context, "Emails successfully packaged!", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private suspend fun showPhishyConfirmationDialog(): Boolean = suspendCoroutine { cont ->
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle("Confirm Email Package")
+            setMessage("Is this email package suspicious (phishy)?")
+            setPositiveButton("Yes") { _, _ ->
+                // User confirmed the package is phishy
+                cont.resume(true)
+            }
+            setNegativeButton("No") { _, _ ->
+                // User confirmed the package is not phishy
+                cont.resume(false)
+            }
+            setCancelable(false) // Prevent the dialog from being cancelled without a choice
+            show()
         }
     }
 

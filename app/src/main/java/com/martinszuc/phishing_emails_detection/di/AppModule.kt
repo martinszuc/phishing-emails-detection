@@ -7,7 +7,13 @@ import com.martinszuc.phishing_emails_detection.data.auth.AccountManager
 import com.martinszuc.phishing_emails_detection.data.auth.UserRepository
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
+import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.remote.api.GmailApiService
+import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageManager
+import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageRepository
+import com.martinszuc.phishing_emails_detection.data.email_package.PackageManifestManager
+import com.martinszuc.phishing_emails_detection.data.file.FileManager
+import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.data.model.Model
 import dagger.Module
 import dagger.Provides
@@ -57,18 +63,73 @@ object AppModule {
     fun provideClassifier(@ApplicationContext context: Context): Model {
         return Model(context)
     }
+
     @Provides
     @Singleton
     fun provideUserRepository(@ApplicationContext context: Context): UserRepository =
         UserRepository(context)
 
+
     @Provides
     @Singleton
-    fun provideGmailApiService(@ApplicationContext context: Context, accountManager: AccountManager): GmailApiService =
+    fun provideGmailApiService(
+        @ApplicationContext context: Context,
+        accountManager: AccountManager
+    ): GmailApiService =
         GmailApiService(context)
 
     @Singleton
     @Provides
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
+    // Providing FileManager
+    @Provides
+    @Singleton
+    fun provideFileManager(@ApplicationContext context: Context): FileManager {
+        return FileManager(context)
+    }
+
+    // Providing FileRepository with FileManager dependency
+    @Provides
+    @Singleton
+    fun provideFileRepository(fileManager: FileManager): FileRepository {
+        return FileRepository(fileManager)
+    }
+
+    // Provide EmailBlobLocalRepository
+    @Provides
+    @Singleton
+    fun provideEmailBlobLocalRepository(appDatabase: AppDatabase): EmailBlobLocalRepository {
+        return EmailBlobLocalRepository(appDatabase)
+    }
+
+    // Provide PackageManifestManager
+    @Provides
+    @Singleton
+    fun providePackageManifestManager(@ApplicationContext context: Context): PackageManifestManager {
+        return PackageManifestManager(context)
+    }
+
+    // Provide EmailPackageManager
+    @Provides
+    @Singleton
+    fun provideEmailPackageManager(
+        emailBlobLocalRepository: EmailBlobLocalRepository,
+        fileRepository: FileRepository,
+        packageManifestManager: PackageManifestManager
+    ): EmailPackageManager {
+        return EmailPackageManager(emailBlobLocalRepository, fileRepository, packageManifestManager)
+    }
+
+    // Provide EmailPackageRepository
+    @Provides
+    @Singleton
+    fun provideEmailPackageRepository(
+        emailPackageManager: EmailPackageManager,
+        packageManifestManager: PackageManifestManager,
+        fileRepository: FileRepository
+    ): EmailPackageRepository {
+        return EmailPackageRepository(emailPackageManager, packageManifestManager, fileRepository)
+    }
 
 }

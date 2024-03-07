@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailFullLocalRepository
+import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EmailsSavedViewModel @Inject constructor(
-    private val emailFullLocalRepository: EmailFullLocalRepository
+    private val emailFullLocalRepository: EmailFullLocalRepository,
+    private val emailPackageRepository: EmailPackageRepository
 ) : ViewModel() {
 
     private val _isSelectionMode = MutableLiveData<Boolean>(false)
@@ -70,8 +72,33 @@ class EmailsSavedViewModel @Inject constructor(
             emailFullLocalRepository.clearAll()
         }
     }
+    fun loadSelectedEmailPackageContent(fileName: String) {
+        viewModelScope.launch {
+            val packageContent = emailPackageRepository.loadEmailPackageContent(fileName)
+            packageContent?.let {
+                // Update the UI with the content or process it as needed
+            } ?: run {
+                // Handle the case where the file does not exist or an error occurred
+            }
+        }
+    }
 
-    fun packageSelectedEmails() {
-        // Implement logic to package selected emails
+    fun createEmailPackageFromSelected(isPhishy: Boolean) {
+        // Assuming _selectedEmails holds the list of email IDs to be packaged
+        val emailIds = _selectedEmails.value?.toList() ?: return
+
+        viewModelScope.launch {
+            try {
+                // This will create the email package and save it, updating the package manifest accordingly.
+                val filePath = emailPackageRepository.createAndSaveEmailPackage(emailIds, isPhishy)
+
+                // Here, you can update LiveData or state flow to notify the UI about the new package creation.
+                // For example: _packageCreationStatus.postValue(Success(filePath))
+
+            } catch (e: Exception) {
+                // Handle any errors that might occur during the package creation process.
+                // For example: _packageCreationStatus.postValue(Error(e.localizedMessage))
+            }
+        }
     }
 }
