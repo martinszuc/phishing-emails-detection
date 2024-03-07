@@ -1,5 +1,7 @@
 package com.martinszuc.phishing_emails_detection.data.file
 
+import android.content.Context
+import android.net.Uri
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import java.io.File
 import java.text.DecimalFormat
@@ -42,5 +44,13 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
 
     fun deleteFile(directoryName: String, fileName: String) {
         fileManager.deleteFile(directoryName, fileName)
+    }
+
+    fun copyFileFromUri(uri: Uri, directoryName: String, fileName: String): File? {
+        return fileManager.copyFileFromUri(uri, directoryName, fileName)
+    }
+
+    fun countEmailsInMbox(file: File): Int {
+        return fileManager.countEmailsInMbox(file)
     }
 }

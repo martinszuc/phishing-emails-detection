@@ -1,5 +1,6 @@
 package com.martinszuc.phishing_emails_detection.data.email_package
 
+import android.net.Uri
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.utils.Constants
@@ -11,7 +12,11 @@ class EmailPackageRepository @Inject constructor(
     private val packageManifestManager: PackageManifestManager,
     private val fileRepository: FileRepository
 ) {
-    suspend fun createAndSaveEmailPackage(emailIds: List<String>, isPhishy: Boolean, packageName: String): String {
+    suspend fun createAndSaveEmailPackage(
+        emailIds: List<String>,
+        isPhishy: Boolean,
+        packageName: String
+    ): String {
         return emailPackageManager.createEmailPackage(emailIds, isPhishy, packageName)
     }
 
@@ -31,6 +36,10 @@ class EmailPackageRepository @Inject constructor(
 
         // Delete the package file itself
         fileRepository.deleteFile(Constants.DIR_EMAIL_PACKAGES, fileName)
+    }
+
+    suspend fun createAndSaveEmailPackageFromMbox(uri: Uri, is_phishy: Boolean, packageName: String): String? {
+        return emailPackageManager.createAndSaveEmailPackageFromMbox(uri, is_phishy, packageName)
     }
 
 }

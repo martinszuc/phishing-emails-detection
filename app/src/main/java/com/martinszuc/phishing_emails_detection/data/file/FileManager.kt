@@ -1,6 +1,7 @@
 package com.martinszuc.phishing_emails_detection.data.file
 
 import android.content.Context
+import android.net.Uri
 import java.io.File
 
 class FileManager(private val context: Context) {
@@ -39,6 +40,41 @@ class FileManager(private val context: Context) {
         if (file?.exists() == true) {
             file.delete()
         }
+    }
+
+    fun copyFileFromUri(uri: Uri, directoryName: String, fileName: String): File? {
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val directory = File(context.filesDir, directoryName).apply {
+                if (!exists()) mkdirs()
+            }
+            val file = File(directory, fileName)
+            inputStream.use { input ->
+                file.outputStream().use { output ->
+                    input?.copyTo(output)
+                }
+            }
+            file
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    fun countEmailsInMbox(file: File): Int {
+        var emailCount = 0
+        try {
+            file.bufferedReader().useLines { lines ->
+                lines.forEach { line ->
+                    if (line.startsWith("From ")) { // Assuming each email starts with "From "
+                        emailCount++
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return emailCount
     }
 
 }

@@ -1,5 +1,6 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detector
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,4 +25,15 @@ class EmailPackageManagerViewModel @Inject constructor(
             emailPackageRepository.deleteEmailPackage(fileName)
         }
     }
+
+    fun createAndSaveEmailPackageFromMboxFile(uri: Uri, isPhishy: Boolean, packageName: String) {
+        viewModelScope.launch {
+            try {
+                val filePath = emailPackageRepository.createAndSaveEmailPackageFromMbox(uri, isPhishy, packageName)
+            } catch (e: Exception) {
+                // Handle any errors
+            }
+        }
+    }
+
 }

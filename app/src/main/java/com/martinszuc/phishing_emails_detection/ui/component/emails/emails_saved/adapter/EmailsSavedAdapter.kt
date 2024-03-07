@@ -21,7 +21,7 @@ import com.martinszuc.phishing_emails_detection.utils.StringUtils
  * Authored by matoszuc@gmail.com
  */
 class EmailsSavedAdapter(
-    private val viewModel: EmailsSavedViewModel,
+    private val emailsSavedViewModel: EmailsSavedViewModel,
     private val onEmailClicked: (String) -> Unit
 ) : PagingDataAdapter<EmailFull, EmailsSavedAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
 
@@ -66,7 +66,7 @@ class EmailsSavedAdapter(
             holder.binding.checkbox.setOnCheckedChangeListener(null)
 
             // Set the checkbox state based on whether the email ID is selected
-            holder.binding.checkbox.isChecked = viewModel.selectedEmails.value?.contains(email.id) ?: false
+            holder.binding.checkbox.isChecked = emailsSavedViewModel.selectedEmails.value?.contains(email.id) ?: false
 
             holder.binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
                 handleCheckboxCheckedChange(isChecked, email)
@@ -87,9 +87,9 @@ class EmailsSavedAdapter(
         email: EmailFull
     ) {
         if (isChecked) {
-            viewModel.toggleEmailSelected(email.id)
+            emailsSavedViewModel.toggleEmailSelected(email.id)
         } else {
-            viewModel.toggleEmailSelected(email.id)
+            emailsSavedViewModel.toggleEmailSelected(email.id)
         }
     }
 
@@ -99,19 +99,19 @@ class EmailsSavedAdapter(
         view.startAnimation(animation)
 
         // Toggle selection in ViewModel
-        viewModel.toggleEmailSelected(emailId)
+        emailsSavedViewModel.toggleEmailSelected(emailId)
 
-        if (viewModel.isSelectionMode.value == true) {
+        if (emailsSavedViewModel.isSelectionMode.value == true) {
             val snackbarMessage = view.resources.getString(R.string.ended_range_selection)
             view.showCustomSnackbar(snackbarMessage)
             // End selection mode with this email as the second selection
-            viewModel.handleSecondSelection(emailId)
+            emailsSavedViewModel.handleSecondSelection(emailId)
         } else {
             val snackbarMessage = view.resources.getString(R.string.started_range_selection)
             view.showCustomSnackbar(snackbarMessage)
             // Start selection mode with this email as the first selection
             val visibleEmailIds = snapshot().items.filterNotNull().map { it.id } // Map to list of IDs
-            viewModel.handleFirstSelection(emailId, visibleEmailIds)
+            emailsSavedViewModel.handleFirstSelection(emailId, visibleEmailIds)
         }
         return true
     }

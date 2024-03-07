@@ -1,5 +1,6 @@
 package com.martinszuc.phishing_emails_detection.data.email_package
 
+import android.net.Uri
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
@@ -32,5 +33,34 @@ class EmailPackageManager @Inject constructor(
 
         // Return the file path
         return file.absolutePath
+    }
+    suspend fun createAndSaveEmailPackageFromMbox(uri: Uri, isPhishy: Boolean, packageName: String): String? {
+        val currentTimeFormatted = StringUtils.formatTimestampForFilename(System.currentTimeMillis())
+        val filename = "${packageName}_${currentTimeFormatted}_${if (isPhishy) "phishy" else "safe"}.mbox"
+
+        // Copy the .mbox file to internal storage with the new filename
+        val copiedFile = fileRepository.copyFileFromUri(uri, Constants.DIR_EMAIL_PACKAGES, filename)
+
+        if (copiedFile != null) {
+            // Count the number of emails in the copied mbox file
+            val numberOfEmails = fileRepository.countEmailsInMbox(copiedFile)
+
+            // Save the package content to a file (if additional processing is needed) or use directly
+            // Update the manifest with new package metadata
+            val metadata = EmailPackageMetadata(
+                fileName = filename,
+                isPhishy = isPhishy,
+                packageName = packageName,
+                creationDate = System.currentTimeMillis(),
+                fileSize = copiedFile.length(),
+                numberOfEmails = numberOfEmails
+            )
+            packageManifestManager.addPackageToManifest(metadata)
+
+            // Return the file path of the copied file
+            return copiedFile.absolutePath.toString()
+        } else {
+            return null
+        }
     }
 }
