@@ -37,10 +37,14 @@ class EmailsPackageManagerFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        emailPackageAdapter = EmailPackageAdapter(emptyList(), onDeleteClicked = { fileName ->
+        emailPackageAdapter = EmailPackageAdapter(emptyList(),
+            onDeleteClicked = { fileName ->
             emailPackageManagerViewModel.deleteEmailPackage(fileName)
             emailPackageSharedViewModel.loadEmailPackages()
-        })
+        },
+            onAddClicked = {
+                // TODO
+            })
         binding.rvEmailPackages.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = emailPackageAdapter

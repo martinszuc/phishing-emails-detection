@@ -76,4 +76,5 @@
     <string name="training_fragment">Training Fragment</string>
     <string name="delete">delete email package</string>
     <string name="refresh">Refresh</string>
+    <string name="add_new_package">Add new package</string>
 </resources>
