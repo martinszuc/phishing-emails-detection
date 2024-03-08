@@ -1,11 +1,65 @@
-<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
+    <!-- Someone's text at the top -->
     <TextView
+        android:id="@+id/tvAdditional"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/data_processing_fragment" />
+        android:layout_gravity="top"
+        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal"
+        android:text="@string/additional_text" />
+
+    <!-- Loading spinner in the center -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"/>
+
+    <!-- Loading text just below the spinner -->
+    <TextView
+        android:id="@+id/tvLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:layout_marginTop="64dp"
+        android:gravity="center_horizontal"
+        android:text="@string/loading"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/ivCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="130dp"
+        android:src="@drawable/ic_thumbs_up_line"
+        android:visibility="gone" />
+
+    <!-- Process Emails button at the bottom, 16dp from the bottom of the fragment -->
+    <Button
+        android:id="@+id/btnProcessEmails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="16dp"
+        android:text="Process Emails" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/next"
+        android:src="@drawable/ic_next_arrow_2"
+        android:visibility="gone" />
+
 </FrameLayout>

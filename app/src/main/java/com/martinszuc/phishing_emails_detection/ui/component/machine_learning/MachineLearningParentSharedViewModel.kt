@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.machine_learning
+package com.martinszuc.phishing_emails_detection.ui.component.machine_learning
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,13 +11,21 @@ import javax.inject.Inject
  */
 
 @HiltViewModel
-class MachineLearningSharedViewModel @Inject constructor() : ViewModel() {
+class MachineLearningParentSharedViewModel @Inject constructor() : ViewModel() {
     private val _state = MutableLiveData<MachineLearningState>()
     val state: LiveData<MachineLearningState> = _state
 
     fun setState(newState: MachineLearningState) {
         _state.value = newState
     }
+    fun decideNextStateBasedOnCondition(condition: Boolean) {
+        if (condition) {
+            setState(MachineLearningState.TRAINING)
+        } else {
+            setState(MachineLearningState.RETRAINING)
+        }
+    }
+
 }
 enum class MachineLearningState {
     DATA_PICKING,

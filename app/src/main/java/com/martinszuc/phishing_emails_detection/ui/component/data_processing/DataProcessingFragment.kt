@@ -4,23 +4,87 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlDataProcessingBinding
+import com.martinszuc.phishing_emails_detection.ui.component.data_picking.DataPickingViewModel
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentSharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningState
 import dagger.hilt.android.AndroidEntryPoint
-
-/**
- * Authored by matoszuc@gmail.com
- */
 
 @AndroidEntryPoint
 class DataProcessingFragment : Fragment() {
 
     private var _binding: FragmentMlDataProcessingBinding? = null
     private val binding get() = _binding!!
+    private val dataProcessingViewModel: DataProcessingViewModel by viewModels()
+    private val dataPickingViewModel: DataPickingViewModel by activityViewModels()
+    private val machineLearningParentSharedViewModel: MachineLearningParentSharedViewModel by activityViewModels()
+
+    private var processingStarted = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMlDataProcessingBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initFloatingActionButton()
+
+        binding.btnProcessEmails.setOnClickListener {
+            val selectedPackages = dataPickingViewModel.selectedPackages.value ?: setOf()
+            if (selectedPackages.isNotEmpty()) {
+                processingStarted = true
+                binding.ivCheck.visibility = View.GONE  // Ensure check icon is hidden when starting
+                processPackages(selectedPackages)
+            } else {
+                Toast.makeText(context, "No packages selected", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dataProcessingViewModel.isProcessing.observe(viewLifecycleOwner) { isProcessing ->
+            if (isProcessing) {
+                // Show the loading spinner and text
+                binding.progressBar.visibility = View.VISIBLE
+                binding.tvLoading.visibility = View.VISIBLE
+                // Disable the button while processing
+                binding.btnProcessEmails.isEnabled = false
+            } else {
+                // Hide the loading spinner and text
+                binding.progressBar.visibility = View.GONE
+                binding.tvLoading.visibility = View.GONE
+                // Enable the button after processing
+                binding.btnProcessEmails.isEnabled = true
+            }
+        }
+
+        dataProcessingViewModel.isFinishedProcessing.observe(viewLifecycleOwner) { isFinished ->
+            if (isFinished && processingStarted) {
+                // Show the check icon if processing has finished and was started by the button press
+                binding.ivCheck.visibility = View.VISIBLE
+                // Optionally, hide the icon after a delay or based on user action
+                binding.ivCheck.postDelayed({ binding.ivCheck.visibility = View.GONE }, 2000)
+                processingStarted = false // Reset the flag after handling
+            }
+        }
+    }
+
+    private fun processPackages(packages: Set<EmailPackageMetadata>) {
+        dataProcessingViewModel.processEmailPackages(packages)
+    }
+
+    private fun initFloatingActionButton() {
+        val fab: FloatingActionButton = binding.fab
+        fab.setOnClickListener {
+            // Set the state to DATA_PROCESSING to navigate to the Data Processing Fragment
+            machineLearningParentSharedViewModel.setState(MachineLearningState.DATA_PROCESSING)
+        }
     }
 
     override fun onDestroyView() {

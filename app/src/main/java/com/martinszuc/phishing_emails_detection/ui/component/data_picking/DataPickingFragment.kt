@@ -1,19 +1,18 @@
 package com.martinszuc.phishing_emails_detection.ui.component.data_picking
 
-import android.R
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlDataPickingBinding
 import com.martinszuc.phishing_emails_detection.ui.component.data_picking.adapter.DataPickingSelectionAdapter
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentSharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningState
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.EmailPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,13 +26,19 @@ class DataPickingFragment : Fragment() {
     private var _binding: FragmentMlDataPickingBinding? = null
     private val binding get() = _binding!!
     private val emailPackageSharedViewModel: EmailPackageSharedViewModel by activityViewModels()
-    private val dataPickingViewModel: DataPickingViewModel by viewModels()
+    private val machineLearningParentSharedViewModel: MachineLearningParentSharedViewModel by activityViewModels()
+    private val dataPickingViewModel: DataPickingViewModel by activityViewModels()
 
     private lateinit var emailPackageSelectionAdapter: DataPickingSelectionAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentMlDataPickingBinding.inflate(inflater, container, false)
         setupRecyclerView()
+        initFloatingActionButton()
         return binding.root
     }
 
@@ -43,8 +48,8 @@ class DataPickingFragment : Fragment() {
                 // Your logic for adding a new package
             },
             onPackageSelected = { emailPackage, isChecked ->
-                val packageName = emailPackage.packageName
-                dataPickingViewModel.togglePackageSelected(packageName)
+                // Assuming emailPackage is an EmailPackageMetadata object
+                dataPickingViewModel.togglePackageSelected(emailPackage)
             }
         )
         binding.rvEmailPackages.layoutManager = LinearLayoutManager(context)
@@ -60,6 +65,24 @@ class DataPickingFragment : Fragment() {
     private fun observeEmailPackages() {
         emailPackageSharedViewModel.emailPackages.observe(viewLifecycleOwner) { packages ->
             emailPackageSelectionAdapter.setItems(packages)
+        }
+    }
+
+    private fun initFloatingActionButton() {
+        val fab: FloatingActionButton = binding.fab
+
+        // Set an observer on the selectedEmails LiveData
+        emailPackageSharedViewModel.emailPackages.observe(viewLifecycleOwner) { packageMetadata ->
+            if (packageMetadata.isNotEmpty()) {
+                fab.show()
+            } else {
+                fab.hide()
+            }
+        }
+
+        fab.setOnClickListener {
+            // Set the state to DATA_PROCESSING to navigate to the Data Processing Fragment
+            machineLearningParentSharedViewModel.setState(MachineLearningState.DATA_PROCESSING)
         }
     }
 

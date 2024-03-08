@@ -41,5 +41,10 @@ class EmailPackageRepository @Inject constructor(
     suspend fun createAndSaveEmailPackageFromMbox(uri: Uri, is_phishy: Boolean, packageName: String): Boolean? {
         return emailPackageManager.createAndSaveEmailPackageFromMbox(uri, is_phishy, packageName)
     }
+    fun getEmailPackageMetadataByFilename(fileName: String): EmailPackageMetadata? {
+        // Assuming you have a method or a way to fetch all the email packages
+        val allPackages = loadEmailPackagesMetadata()
+        return allPackages.firstOrNull { it.fileName == fileName }
+    }
 
 }

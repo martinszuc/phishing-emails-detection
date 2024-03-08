@@ -15,6 +15,7 @@ import com.martinszuc.phishing_emails_detection.data.email_package.PackageManife
 import com.martinszuc.phishing_emails_detection.data.file.FileManager
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.data.model.Model
+import com.martinszuc.phishing_emails_detection.utils.machine_learning.MachineLearningUtils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -130,6 +131,14 @@ object AppModule {
         fileRepository: FileRepository
     ): EmailPackageRepository {
         return EmailPackageRepository(emailPackageManager, packageManifestManager, fileRepository)
+    }
+
+    // Provide MachineLearningUtils
+    @Provides
+    @Singleton
+    fun provideMachineLearningUtils(): MachineLearningUtils {
+        // You may need to adjust the parameters according to the constructor of MachineLearningUtils
+        return MachineLearningUtils()
     }
 
 }

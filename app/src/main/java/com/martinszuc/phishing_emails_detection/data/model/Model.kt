@@ -12,8 +12,8 @@ class Model @Inject constructor(private val context: Context) {
     private var pyModule: PyObject? = null
 
     suspend fun initializePython() = withContext(Dispatchers.IO) {
-        py = Python.getInstance()
-        pyModule = py?.getModule("model_predict")  // Ensure this matches the name of your Python script file without the '.py' extension
+        pyModule = py?.getModule("model_predict")
+        // Ensure this matches the name of your Python script file without the '.py' extension
     }
 
     suspend fun classify(modelPath: String, mboxFilePath: String): List<Float> = withContext(Dispatchers.IO) {

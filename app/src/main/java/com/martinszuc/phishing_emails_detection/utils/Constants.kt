@@ -24,6 +24,7 @@ class Constants {
         const val SENDER_UNKNOWN = "unknown@sender.com"
 
         const val DIR_EMAIL_PACKAGES = "email_packages"
+        const val OUTPUT_CSV_DIR = "extracted_csv"
 
 
     }

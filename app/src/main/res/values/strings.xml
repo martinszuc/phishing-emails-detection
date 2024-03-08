@@ -77,4 +77,6 @@
     <string name="delete">delete email package</string>
     <string name="refresh">Refresh</string>
     <string name="add_new_package">Add new package</string>
+    <string name="loading">Nacitavanie</string>
+    <string name="additional_text">Some some some\n</string>
 </resources>
