@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detector.adapter
+package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_package_manager.adapter
 
 import android.view.LayoutInflater
 import android.view.View

@@ -38,7 +38,7 @@ class EmailPackageRepository @Inject constructor(
         fileRepository.deleteFile(Constants.DIR_EMAIL_PACKAGES, fileName)
     }
 
-    suspend fun createAndSaveEmailPackageFromMbox(uri: Uri, is_phishy: Boolean, packageName: String): String? {
+    suspend fun createAndSaveEmailPackageFromMbox(uri: Uri, is_phishy: Boolean, packageName: String): Boolean? {
         return emailPackageManager.createAndSaveEmailPackageFromMbox(uri, is_phishy, packageName)
     }
 

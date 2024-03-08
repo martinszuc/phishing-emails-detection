@@ -34,7 +34,7 @@ class EmailPackageManager @Inject constructor(
         // Return the file path
         return file.absolutePath
     }
-    suspend fun createAndSaveEmailPackageFromMbox(uri: Uri, isPhishy: Boolean, packageName: String): String? {
+    suspend fun createAndSaveEmailPackageFromMbox(uri: Uri, isPhishy: Boolean, packageName: String): Boolean? {
         val currentTimeFormatted = StringUtils.formatTimestampForFilename(System.currentTimeMillis())
         val filename = "${packageName}_${currentTimeFormatted}_${if (isPhishy) "phishy" else "safe"}.mbox"
 
@@ -58,7 +58,7 @@ class EmailPackageManager @Inject constructor(
             packageManifestManager.addPackageToManifest(metadata)
 
             // Return the file path of the copied file
-            return copiedFile.absolutePath.toString()
+            return true
         } else {
             return null
         }

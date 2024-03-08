@@ -53,4 +53,8 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
     fun countEmailsInMbox(file: File): Int {
         return fileManager.countEmailsInMbox(file)
     }
+    fun getFilePath(directoryName: String, fileName: String): String? {
+        val file = loadFileFromDirectory(directoryName, fileName)
+        return file?.absolutePath
+    }
 }

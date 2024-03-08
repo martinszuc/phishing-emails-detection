@@ -1,13 +1,9 @@
-package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detector
+package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_package_manager
 
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageRepository
-import com.martinszuc.phishing_emails_detection.data.email_package.PackageManifestManager
-import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,7 +25,7 @@ class EmailPackageManagerViewModel @Inject constructor(
     fun createAndSaveEmailPackageFromMboxFile(uri: Uri, isPhishy: Boolean, packageName: String) {
         viewModelScope.launch {
             try {
-                val filePath = emailPackageRepository.createAndSaveEmailPackageFromMbox(uri, isPhishy, packageName)
+                emailPackageRepository.createAndSaveEmailPackageFromMbox(uri, isPhishy, packageName)
             } catch (e: Exception) {
                 // Handle any errors
             }
