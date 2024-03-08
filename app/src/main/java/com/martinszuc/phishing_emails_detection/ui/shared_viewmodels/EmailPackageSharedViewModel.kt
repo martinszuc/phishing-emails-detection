@@ -32,27 +32,4 @@ class EmailPackageSharedViewModel @Inject constructor(
         }
     }
 
-    fun getPackageFilePathsByNames(packageNames: List<String>): LiveData<List<String>> {
-        val filePathsLiveData = MutableLiveData<List<String>>()
-
-        viewModelScope.launch {
-            // Fetch all available package metadata
-            val allPackages = emailPackageRepository.loadEmailPackagesMetadata()
-
-            // Filter packages whose names are in the provided list
-            val selectedPackages = allPackages.filter { it.packageName in packageNames }
-
-            // Resolve each selected package's file name to a file path
-            val filePaths = selectedPackages.mapNotNull { packageMeta ->
-                // Assuming you have a method in FileRepository to get the actual file path
-                fileRepository.getFilePath(Constants.DIR_EMAIL_PACKAGES, packageMeta.fileName)
-            }
-
-            // Post the list of file paths to the LiveData object
-            filePathsLiveData.postValue(filePaths)
-        }
-
-        return filePathsLiveData
-    }
-
 }

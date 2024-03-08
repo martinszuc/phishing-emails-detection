@@ -20,4 +20,9 @@ object StringUtils {
         return sdf.format(Date(timestamp))
     }
 
+    fun parseTimestampFromFilename(dateTimeStr: String): Date {
+        val format = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+        return format.parse(dateTimeStr) ?: Date()
+    }
+
 }

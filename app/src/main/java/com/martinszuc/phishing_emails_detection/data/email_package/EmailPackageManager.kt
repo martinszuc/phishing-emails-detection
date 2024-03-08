@@ -3,10 +3,12 @@ package com.martinszuc.phishing_emails_detection.data.email_package
 import android.net.Uri
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
+import com.martinszuc.phishing_emails_detection.data.email_package.entity.ProcessedPackageMetadata
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
 import com.martinszuc.phishing_emails_detection.utils.emails.EmailUtils
+import java.io.File
 import javax.inject.Inject
 
 class EmailPackageManager @Inject constructor(
@@ -14,53 +16,85 @@ class EmailPackageManager @Inject constructor(
     private val fileRepository: FileRepository,
     private val packageManifestManager: PackageManifestManager
 ) {
-    suspend fun createEmailPackage(emailIds: List<String>, isPhishy: Boolean, packageName: String): String {
+    suspend fun createEmailPackage(
+        emailIds: List<String>,
+        isPhishy: Boolean,
+        packageName: String
+    ): String {
         val emailBlobs = emailBlobLocalRepository.getEmailBlobsByIds(emailIds)
         val mboxStrings = emailBlobs.map { EmailUtils.formatToMbox(it) }
         val mboxContent = EmailUtils.mergeMboxStrings(mboxStrings)
-        val currentTimeFormatted = StringUtils.formatTimestampForFilename(System.currentTimeMillis())
-        val filename = "${packageName}_${currentTimeFormatted}_${if (isPhishy) "phishy" else "safe"}.mbox"
-        val filesize = fileRepository.getFileSizeInBytes(Constants.DIR_EMAIL_PACKAGES, filename)
+        val currentTimeFormatted =
+            StringUtils.formatTimestampForFilename(System.currentTimeMillis())
         val numberOfEmails = emailBlobs.size
+        val filename =
+            "${packageName}_${currentTimeFormatted}_${numberOfEmails}_${if (isPhishy) "phishy" else "safe"}.mbox"
+        val filesize = fileRepository.getFileSizeInBytes(Constants.DIR_EMAIL_PACKAGES, filename)
 
 
         // Save the package content to a file
         val file = fileRepository.saveMboxContent(mboxContent, "email_packages", filename)
 
         // Update the manifest with new package metadata
-        val metadata = EmailPackageMetadata(filename, isPhishy, packageName, System.currentTimeMillis(), filesize, numberOfEmails)
+        val metadata = EmailPackageMetadata(
+            filename,
+            isPhishy,
+            packageName,
+            System.currentTimeMillis(),
+            filesize,
+            numberOfEmails
+        )
         packageManifestManager.addPackageToManifest(metadata)
 
         // Return the file path
         return file.absolutePath
     }
-    suspend fun createAndSaveEmailPackageFromMbox(uri: Uri, isPhishy: Boolean, packageName: String): Boolean? {
-        val currentTimeFormatted = StringUtils.formatTimestampForFilename(System.currentTimeMillis())
-        val filename = "${packageName}_${currentTimeFormatted}_${if (isPhishy) "phishy" else "safe"}.mbox"
 
-        // Copy the .mbox file to internal storage with the new filename
-        val copiedFile = fileRepository.copyFileFromUri(uri, Constants.DIR_EMAIL_PACKAGES, filename)
+    suspend fun createAndSaveEmailPackageFromMbox(
+        uri: Uri,
+        isPhishy: Boolean,
+        packageName: String
+    ): Boolean? {
+        val currentTimeFormatted =
+            StringUtils.formatTimestampForFilename(System.currentTimeMillis())
+        // Initial temporary filename, without the email count
+        val tempFilename =
+            "${packageName}_${currentTimeFormatted}_${if (isPhishy) "phishy" else "safe"}.mbox"
+
+        // Step 1: Copy the mbox file from the URI to internal storage with the temporary filename
+        val copiedFile =
+            fileRepository.copyFileFromUri(uri, Constants.DIR_EMAIL_PACKAGES, tempFilename)
 
         if (copiedFile != null) {
-            // Count the number of emails in the copied mbox file
+            // Step 2: Count the number of emails in the copied mbox file
             val numberOfEmails = fileRepository.countEmailsInMbox(copiedFile)
 
-            // Save the package content to a file (if additional processing is needed) or use directly
-            // Update the manifest with new package metadata
+            // New filename that includes the email count
+            val finalFilename =
+                "${packageName}_${currentTimeFormatted}_${numberOfEmails}_${if (isPhishy) "phishy" else "safe"}.mbox"
+
+            // Step 3: Rename the copied file to include the email count in its name
+            val finalFile = File(copiedFile.parent, finalFilename)
+            if (!copiedFile.renameTo(finalFile)) {
+                // Handle the case where the file could not be renamed
+                return null
+            }
+
+            // Step 4: Update the manifest with new package metadata
             val metadata = EmailPackageMetadata(
-                fileName = filename,
+                fileName = finalFilename,
                 isPhishy = isPhishy,
                 packageName = packageName,
                 creationDate = System.currentTimeMillis(),
-                fileSize = copiedFile.length(),
-                numberOfEmails = numberOfEmails
+                fileSize = finalFile.length(),
+                numberOfEmails = numberOfEmails // Use the generic itemCount field for email count
             )
             packageManifestManager.addPackageToManifest(metadata)
 
-            // Return the file path of the copied file
             return true
         } else {
             return null
         }
     }
+
 }

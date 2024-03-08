@@ -15,6 +15,8 @@ import com.martinszuc.phishing_emails_detection.data.email_package.PackageManife
 import com.martinszuc.phishing_emails_detection.data.file.FileManager
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.data.model.Model
+import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageManifestManager
+import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageRepository
 import com.martinszuc.phishing_emails_detection.utils.machine_learning.MachineLearningUtils
 import dagger.Module
 import dagger.Provides
@@ -139,6 +141,20 @@ object AppModule {
     fun provideMachineLearningUtils(): MachineLearningUtils {
         // You may need to adjust the parameters according to the constructor of MachineLearningUtils
         return MachineLearningUtils()
+    }
+    @Provides
+    @Singleton
+    fun provideProcessedPackageManifestManager(@ApplicationContext context: Context): ProcessedPackageManifestManager {
+        return ProcessedPackageManifestManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProcessedPackageRepository(
+        processedPackageManifestManager: ProcessedPackageManifestManager,
+        fileRepository: FileRepository
+    ): ProcessedPackageRepository {
+        return ProcessedPackageRepository(processedPackageManifestManager, fileRepository)
     }
 
 }

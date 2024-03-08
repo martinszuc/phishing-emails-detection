@@ -6,6 +6,7 @@ package com.martinszuc.phishing_emails_detection.utils
 
 class Constants {
     companion object {
+
         const val GMAIL_PAGER_PREFETCH = 7
         const val GMAIL_PAGER_INIT = 10
         const val GMAIL_PAGER_PAGE = 7
@@ -25,7 +26,6 @@ class Constants {
 
         const val DIR_EMAIL_PACKAGES = "email_packages"
         const val OUTPUT_CSV_DIR = "extracted_csv"
-
 
     }
 }

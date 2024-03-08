@@ -9,7 +9,6 @@ import javax.inject.Inject
 
 class FileRepository @Inject constructor(private val fileManager: FileManager) {
 
-    // Define a default directory name for mbox files or allow specifying it
 
     // Save mbox content to a file within a specified directory
     fun saveMboxContent(mboxContent: String, directoryName: String = Constants.DIR_EMAIL_PACKAGES, fileName: String): File {
@@ -56,5 +55,25 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
     fun getFilePath(directoryName: String, fileName: String): String? {
         val file = loadFileFromDirectory(directoryName, fileName)
         return file?.absolutePath
+    }
+
+    // Load a CSV file content by name from a specified directory
+    fun loadCsvContent(directoryName: String = Constants.OUTPUT_CSV_DIR, fileName: String): String? {
+        return fileManager.readFileContent(directoryName, fileName)
+    }
+
+    // List all CSV files within a specified directory
+    fun listCsvFilesInDirectory(directoryName: String = Constants.OUTPUT_CSV_DIR): List<File>? {
+        return fileManager.listFilesInDirectory(directoryName)?.filter { it.name.endsWith("-export.csv") }
+    }
+
+    // Save processed CSV content to a file within a specified directory
+    fun saveCsvContent(csvContent: String, directoryName: String = Constants.OUTPUT_CSV_DIR, fileName: String): File {
+        return fileManager.saveTextToFile(csvContent, directoryName, fileName)
+    }
+
+    // Delete a CSV file from a specified directory
+    fun deleteCsvFile(directoryName: String = Constants.OUTPUT_CSV_DIR, fileName: String) {
+        fileManager.deleteFile(directoryName, fileName)
     }
 }

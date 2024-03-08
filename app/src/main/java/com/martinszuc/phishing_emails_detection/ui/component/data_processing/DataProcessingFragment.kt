@@ -18,7 +18,7 @@ import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.Ma
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DataProcessingFragment : Fragment() {
+class DataProcessingFragment : Fragment() {  // TODO already processed data to show here and being able to choose
 
     private var _binding: FragmentMlDataProcessingBinding? = null
     private val binding get() = _binding!!
