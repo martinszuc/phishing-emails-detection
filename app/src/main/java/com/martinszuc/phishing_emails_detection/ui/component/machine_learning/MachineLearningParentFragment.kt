@@ -54,6 +54,7 @@ class MachineLearningParentFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        machineLearningParentSharedViewModel.setState(MachineLearningState.DATA_PICKING) // Or any default state
         _binding = null
     }
 }

@@ -1,5 +1,6 @@
 package com.martinszuc.phishing_emails_detection.ui.component.data_processing
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -68,8 +69,9 @@ class DataProcessingFragment : Fragment() {
             if (isFinished && processingStarted) {
                 // Show the check icon if processing has finished and was started by the button press
                 binding.ivCheck.visibility = View.VISIBLE
+                binding.fab.visibility = View.VISIBLE
                 // Optionally, hide the icon after a delay or based on user action
-                binding.ivCheck.postDelayed({ binding.ivCheck.visibility = View.GONE }, 2000)
+//                binding.ivCheck.postDelayed({ binding.ivCheck.visibility = View.GONE }, 2000)
                 processingStarted = false // Reset the flag after handling
             }
         }
@@ -82,9 +84,25 @@ class DataProcessingFragment : Fragment() {
     private fun initFloatingActionButton() {
         val fab: FloatingActionButton = binding.fab
         fab.setOnClickListener {
-            // Set the state to DATA_PROCESSING to navigate to the Data Processing Fragment
-            machineLearningParentSharedViewModel.setState(MachineLearningState.DATA_PROCESSING)
+            showTrainingOptionDialog()
         }
+    }
+
+    private fun showTrainingOptionDialog() {
+        val context = requireContext()
+        AlertDialog.Builder(context).apply {
+            setTitle("Select Option")
+            setMessage("Do you wish to train a new model or retrain an existing model?")
+            setPositiveButton("Train New") { _, _ ->
+                // User chooses to train a new model
+                machineLearningParentSharedViewModel.setState(MachineLearningState.TRAINING)
+            }
+            setNegativeButton("Retrain Existing") { _, _ ->
+                // User chooses to retrain an existing model
+                machineLearningParentSharedViewModel.setState(MachineLearningState.RETRAINING)
+            }
+            setCancelable(true)
+        }.create().show()
     }
 
     override fun onDestroyView() {
