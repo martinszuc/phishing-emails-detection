@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.ProcessedPackageMetadata
-import com.martinszuc.phishing_emails_detection.utils.EPackageUtils
+import com.martinszuc.phishing_emails_detection.utils.StringUtils
 import java.io.File
 import javax.inject.Inject
 
@@ -37,7 +37,7 @@ class ProcessedPackageManifestManager @Inject constructor(private val context: C
     fun refreshManifestFromDirectory(directory: File) {
         val processedFiles = directory.listFiles { _, name -> name.endsWith("-export.csv") }
         val newManifest = processedFiles?.mapNotNull { file ->
-            EPackageUtils.parseCsvFilename(file.name)?.also { metadata ->
+            StringUtils.parseCsvFilename(file.name)?.also { metadata ->
 //                metadata.fileSize = file.length() // Assuming you have fileSize in ProcessedPackageMetadata
             }
         } ?: emptyList()

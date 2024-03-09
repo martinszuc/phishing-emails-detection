@@ -77,4 +77,18 @@ class FileManager(private val context: Context) {
         return emailCount
     }
 
+    // Method to get all directories within the app's internal files folder
+    fun getAllDirectories(): List<File> {
+        val filesDir = context.filesDir
+        return filesDir.listFiles()?.filter { it.isDirectory }.orEmpty()
+    }
+
+    // Method to remove a directory by name in the app's internal files folder
+    fun removeDirectory(directoryName: String): Boolean {
+        val directory = File(context.filesDir, directoryName)
+        return if (directory.exists() && directory.isDirectory) {
+            directory.deleteRecursively()
+        } else false
+    }
+
 }

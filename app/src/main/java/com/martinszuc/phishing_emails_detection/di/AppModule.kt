@@ -14,10 +14,14 @@ import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageR
 import com.martinszuc.phishing_emails_detection.data.email_package.PackageManifestManager
 import com.martinszuc.phishing_emails_detection.data.file.FileManager
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
-import com.martinszuc.phishing_emails_detection.data.model.Model
+import com.martinszuc.phishing_emails_detection.data.model.Prediction
 import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageManifestManager
 import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageRepository
-import com.martinszuc.phishing_emails_detection.utils.machine_learning.MachineLearningUtils
+import com.martinszuc.phishing_emails_detection.data.model.DataProcessing
+import com.martinszuc.phishing_emails_detection.data.model.Training
+import com.martinszuc.phishing_emails_detection.data.model_manager.ModelManager
+import com.martinszuc.phishing_emails_detection.data.model_manager.ModelManifestManager
+import com.martinszuc.phishing_emails_detection.data.model_manager.ModelRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,12 +63,12 @@ object AppModule {
      * Provides the classifier for the application.
      *
      * @param context The application context.
-     * @return An instance of [Model].
+     * @return An instance of [Prediction].
      */
     @Provides
     @Singleton
-    fun provideClassifier(@ApplicationContext context: Context): Model {
-        return Model(context)
+    fun provideClassifier(@ApplicationContext context: Context): Prediction {
+        return Prediction(context)
     }
 
     @Provides
@@ -138,9 +142,9 @@ object AppModule {
     // Provide MachineLearningUtils
     @Provides
     @Singleton
-    fun provideMachineLearningUtils(): MachineLearningUtils {
+    fun provideMachineLearningUtils(): DataProcessing {
         // You may need to adjust the parameters according to the constructor of MachineLearningUtils
-        return MachineLearningUtils()
+        return DataProcessing()
     }
     @Provides
     @Singleton
@@ -155,6 +159,36 @@ object AppModule {
         fileRepository: FileRepository
     ): ProcessedPackageRepository {
         return ProcessedPackageRepository(processedPackageManifestManager, fileRepository)
+    }
+    @Provides
+    @Singleton
+    fun provideModelManifestManager(@ApplicationContext context: Context): ModelManifestManager {
+        return ModelManifestManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideModelManager(
+        modelManifestManager: ModelManifestManager
+    ): ModelManager {
+        return ModelManager(modelManifestManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideModelRepository(
+        modelManager: ModelManager,
+        modelManifestManager: ModelManifestManager
+    ): ModelRepository {
+        return ModelRepository(modelManager, modelManifestManager)
+    }
+
+    // If your Training class requires any dependencies, provide them here
+    @Provides
+    @Singleton
+    fun provideTraining(@ApplicationContext context: Context): Training {
+        // Adjust the Training class constructor as necessary
+        return Training()
     }
 
 }

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.databinding.ItemAddPackageBinding
 import com.martinszuc.phishing_emails_detection.databinding.ItemPackageEmailCheckboxBinding
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
+import com.martinszuc.phishing_emails_detection.utils.StringUtils
 
 class DataPickingSelectionAdapter(
     private val onAddClicked: () -> Unit,
@@ -41,7 +42,10 @@ class DataPickingSelectionAdapter(
                 val item = items[position - 1] // Adjust position for add item
                 with(holder.binding) {
                     tvPackageName.text = item.packageName
-                    tvIsPhishy.text = if (item.isPhishy) "Phishy" else "Safe"
+                    tvIsPhishy.text = if (item.isPhishy) "Phishing" else "Safe"
+// Assuming you have a method StringUtils.formatTimestamp for date formatting
+                    tvCreationDate.text = StringUtils.formatTimestamp(item.creationDate)
+                    tvNumberOfEmails.text = "Emails: ${item.numberOfEmails}"
                     checkBoxSelect.setOnCheckedChangeListener(null) // Clear existing listeners
                     checkBoxSelect.isChecked = false // Reset the checkbox state
                     checkBoxSelect.setOnCheckedChangeListener { _, isChecked ->

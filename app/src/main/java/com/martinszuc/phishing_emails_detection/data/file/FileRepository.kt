@@ -76,4 +76,14 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
     fun deleteCsvFile(directoryName: String = Constants.OUTPUT_CSV_DIR, fileName: String) {
         fileManager.deleteFile(directoryName, fileName)
     }
+
+    // Method to list all directories within the app's internal storage
+    fun listAllDirectories(): List<File> {
+        return fileManager.getAllDirectories()
+    }
+
+    // Method to delete a specific directory by name
+    fun deleteDirectory(directoryName: String): Boolean {
+        return fileManager.removeDirectory(directoryName)
+    }
 }

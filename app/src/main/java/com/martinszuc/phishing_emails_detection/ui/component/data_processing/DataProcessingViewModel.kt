@@ -6,17 +6,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
 import com.martinszuc.phishing_emails_detection.utils.Constants
-import com.martinszuc.phishing_emails_detection.utils.machine_learning.MachineLearningUtils
+import com.martinszuc.phishing_emails_detection.data.model.DataProcessing
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class DataProcessingViewModel @Inject constructor(
-    private val machineLearningUtils: MachineLearningUtils
+    private val dataProcessing: DataProcessing
     // Add other dependencies if needed
 ) : ViewModel() {
 
@@ -33,7 +32,7 @@ class DataProcessingViewModel @Inject constructor(
     private suspend fun processEmailPackage(metadata: EmailPackageMetadata) {
         withContext(Dispatchers.Default) {
             // Perform CPU-intensive processing in the background thread
-            machineLearningUtils.processMboxToCsv(
+            dataProcessing.processMboxToCsv(
                 Constants.DIR_EMAIL_PACKAGES,
                 metadata.fileName,
                 Constants.OUTPUT_CSV_DIR,

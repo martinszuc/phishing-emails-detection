@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.utils.factory
+package com.martinszuc.phishing_emails_detection.utils.emails
 
 import android.util.Log
 import com.google.api.services.gmail.model.Message

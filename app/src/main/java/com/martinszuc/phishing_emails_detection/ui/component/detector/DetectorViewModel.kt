@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMinimalLocalRepository
-import com.martinszuc.phishing_emails_detection.data.model.Model
+import com.martinszuc.phishing_emails_detection.data.model.Prediction
 import com.martinszuc.phishing_emails_detection.utils.emails.EmailUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -26,7 +26,7 @@ import javax.inject.Inject
 class DetectorViewModel @Inject constructor(
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
     private val emailBlobLocalRepository: EmailBlobLocalRepository,
-    private val model: Model,                                              // TODO notificaiton when model isnt loaded
+    private val prediction: Prediction,                                              // TODO notificaiton when model isnt loaded
     @ApplicationContext private val context: Context  // Injecting application context
 
 ) : ViewModel() {
@@ -103,7 +103,7 @@ class DetectorViewModel @Inject constructor(
             // Perform classification using the saved file and model path
             Log.d("DetectorViewModel", "Classifying email from saved mbox file")
             val result = withContext(Dispatchers.IO) {
-                model.classify(modelPath, mboxFile.absolutePath)  // Updated to pass both modelPath and mboxFilePath
+                prediction.classify(modelPath, mboxFile.absolutePath)  // Updated to pass both modelPath and mboxFilePath
             }
 
             // Check the first email prediction in the list to see if it's classified as phishing or not

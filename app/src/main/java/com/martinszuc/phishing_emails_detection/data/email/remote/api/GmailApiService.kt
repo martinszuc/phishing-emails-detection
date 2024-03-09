@@ -12,7 +12,7 @@ import com.google.api.services.gmail.model.ListMessagesResponse
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.utils.Constants
-import com.martinszuc.phishing_emails_detection.utils.factory.EmailFactory
+import com.martinszuc.phishing_emails_detection.utils.emails.EmailFactory
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

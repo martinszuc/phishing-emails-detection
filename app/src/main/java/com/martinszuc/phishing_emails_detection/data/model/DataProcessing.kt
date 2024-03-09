@@ -1,15 +1,14 @@
-package com.martinszuc.phishing_emails_detection.utils.machine_learning
+package com.martinszuc.phishing_emails_detection.data.model
 
 import android.util.Log
-import com.chaquo.python.Python
-import com.martinszuc.phishing_emails_detection.utils.python.PythonSingleton
+import com.martinszuc.phishing_emails_detection.data.python.PythonSingleton
 import javax.inject.Inject
 
 /**
  * Authored by matoszuc@gmail.com
  */
 
-class MachineLearningUtils @Inject constructor() {
+class DataProcessing @Inject constructor() {
 
     private val TAG = "MachineLearningUtils"
 

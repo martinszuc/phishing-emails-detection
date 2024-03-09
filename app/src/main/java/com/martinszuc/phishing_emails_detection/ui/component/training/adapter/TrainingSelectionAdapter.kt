@@ -31,6 +31,7 @@ class TrainingSelectionAdapter(
             checkBoxSelectProcessed.setOnCheckedChangeListener { _, isChecked ->
                 onPackageSelected(item, isChecked)
             }
+            tvIsPhishy.text = if (item.isPhishy) "Phishing" else "Safe"
         }
     }
 

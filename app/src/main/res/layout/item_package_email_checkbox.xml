@@ -10,45 +10,52 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:background="@color/md_theme_dark_surface"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:orientation="vertical"
             android:padding="16dp">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/tvPackageName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:text="Package Name"
-                    android:textSize="16sp" />
-
-                <CheckBox
-                    android:id="@+id/checkBoxSelect"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true" />
-
-            </RelativeLayout>
-
             <TextView
-                android:id="@+id/tvIsPhishy"
-                android:layout_width="match_parent"
+                android:id="@+id/tvPackageName"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Phishy"
-                android:textSize="14sp" />
+                android:layout_alignParentStart="true"
+                android:text="Package Name"
+                android:textSize="16sp" />
 
-        </LinearLayout>
+            <CheckBox
+                android:id="@+id/checkBoxSelect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tvIsPhishy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Phishy"
+            android:textSize="14sp" />
+
+        <!-- TextView for Creation Date -->
+        <TextView
+            android:id="@+id/tvCreationDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Creation Date"
+            android:textSize="14sp" />
+
+        <!-- TextView for Number of Emails -->
+        <TextView
+            android:id="@+id/tvNumberOfEmails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Emails: XX"
+            android:textSize="14sp" />
+
     </LinearLayout>
-
 </LinearLayout>
-

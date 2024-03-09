@@ -1,7 +1,7 @@
 package com.martinszuc.phishing_emails_detection.ui
 
 import android.app.Application
-import com.martinszuc.phishing_emails_detection.utils.python.PythonSingleton
+import com.martinszuc.phishing_emails_detection.data.python.PythonSingleton
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

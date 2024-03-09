@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class Model @Inject constructor(private val context: Context) {
+class Prediction @Inject constructor(private val context: Context) {
     private var py: Python? = null
     private var pyModule: PyObject? = null
 

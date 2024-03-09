@@ -1,18 +1,25 @@
+import os
 import tensorflow as tf
 import utils_data_preparation as udp
 import utils_model as um
 
-def train_and_evaluate_model(resources_dir, safe_filename, phishing_filename):
+def train_and_evaluate_model(resources_dir, safe_filename, phishing_filename, model_save_dir):
     """
-    Train and evaluate the model using the provided dataset paths.
+    Train and evaluate the model using the provided dataset paths and save the model into the specified directory.
 
     Parameters:
     - resources_dir: Directory where the dataset files are located.
     - safe_filename: Filename of the dataset containing safe emails.
     - phishing_filename: Filename of the dataset containing phishing emails.
+    - model_save_dir: Directory where the trained model should be saved.
     """
     print("Starting data preparation...")
-    train_ds, test_ds = udp.prepare_data_for_model(resources_dir, safe_filename, phishing_filename)
+
+    resources_path = os.path.join(os.environ["HOME"], resources_dir)
+    model_save_path = os.path.join(os.environ["HOME"], model_save_dir)
+
+
+    train_ds, test_ds = udp.prepare_data_for_model(resources_path, safe_filename, phishing_filename)
 
     # Debug: Print a sample of one data point from the training dataset
     for features, label in train_ds.take(1):
@@ -34,17 +41,7 @@ def train_and_evaluate_model(resources_dir, safe_filename, phishing_filename):
     um.generate_metrics(test_labels, predicted_classes, predictions)
 
     # Save the model
-    print("Saving the model...")
-    um.save_model(model, 'tf_model_saved')
+    # model_save_path = os.path.join(model_save_dir, 'my_model')
+    print("Saving the model to:", model_save_path)
+    um.save_model(model, model_save_path)
     print("Model saved successfully.")
-
-def main():
-    resources_dir = 'res'
-    safe_filename = 'emails-enron.mbox-export.csv'
-    phishing_filename = 'emails-phishing-pot.mbox-export.csv'
-
-    # Train and evaluate the model with the specified parameters
-    train_and_evaluate_model(resources_dir, safe_filename, phishing_filename)
-
-if __name__ == '__main__':
-    main()

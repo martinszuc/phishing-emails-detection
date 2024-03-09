@@ -45,7 +45,7 @@ class DataPickingFragment : Fragment() {
     private fun setupRecyclerView() {
         emailPackageSelectionAdapter = DataPickingSelectionAdapter(
             onAddClicked = {
-                // Your logic for adding a new package
+                machineLearningParentSharedViewModel.setState(MachineLearningState.TRAINING)
             },
             onPackageSelected = { emailPackage, isChecked ->
                 // Assuming emailPackage is an EmailPackageMetadata object
