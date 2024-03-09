@@ -13,9 +13,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlTrainingBinding
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentSharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningState
 import com.martinszuc.phishing_emails_detection.ui.component.training.adapter.TrainingSelectionAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +32,7 @@ class TrainingFragment : Fragment() {
     private var _binding: FragmentMlTrainingBinding? = null
     private val binding get() = _binding!!
     private val processedPackageSharedViewModel: ProcessedPackageSharedViewModel by activityViewModels()
+    private val machineLearningParentSharedViewModel: MachineLearningParentSharedViewModel by activityViewModels()
     private val trainingViewModel: TrainingViewModel by activityViewModels()
 
     private lateinit var trainingSelectionAdapter: TrainingSelectionAdapter
@@ -39,6 +43,7 @@ class TrainingFragment : Fragment() {
         _binding = FragmentMlTrainingBinding.inflate(inflater, container, false)
         setupRecyclerView()
         initFloatingActionButton()
+        initBackFloatingActionButton()
         return binding.root
     }
 
@@ -66,7 +71,7 @@ class TrainingFragment : Fragment() {
     }
 
     private fun initFloatingActionButton() {
-        val fab: FloatingActionButton = binding.fab
+        val fab: ExtendedFloatingActionButton = binding.fab
         // Implement FAB click action to proceed to the next step
         fab.setOnClickListener {
             lifecycleScope.launch {
@@ -76,6 +81,13 @@ class TrainingFragment : Fragment() {
                     trainingViewModel.startModelTraining(it)
                 }
             }
+        }
+    }
+    private fun initBackFloatingActionButton() {
+        val fab: ExtendedFloatingActionButton = binding.fabLeft
+        // Implement FAB click action to proceed to the next step
+        fab.setOnClickListener {
+            machineLearningParentSharedViewModel.setState(MachineLearningState.DATA_PICKING)
         }
     }
 

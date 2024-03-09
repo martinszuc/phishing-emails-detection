@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlDataPickingBinding
@@ -44,8 +43,11 @@ class DataPickingFragment : Fragment() {
 
     private fun setupRecyclerView() {
         emailPackageSelectionAdapter = DataPickingSelectionAdapter(
-            onAddClicked = {
+            onTrainingClicked = {
                 machineLearningParentSharedViewModel.setState(MachineLearningState.TRAINING)
+            },
+            onRetrainingClicked = {
+                machineLearningParentSharedViewModel.setState(MachineLearningState.RETRAINING)
             },
             onPackageSelected = { emailPackage, isChecked ->
                 // Assuming emailPackage is an EmailPackageMetadata object
@@ -72,8 +74,8 @@ class DataPickingFragment : Fragment() {
         val fab: FloatingActionButton = binding.fab
 
         // Set an observer on the selectedEmails LiveData
-        emailPackageSharedViewModel.emailPackages.observe(viewLifecycleOwner) { packageMetadata ->
-            if (packageMetadata.isNotEmpty()) {
+        dataPickingViewModel.selectedPackages.observe(viewLifecycleOwner) { selectedPackages ->
+            if (selectedPackages.isNotEmpty()) {
                 fab.show()
             } else {
                 fab.hide()

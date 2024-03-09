@@ -11,14 +11,19 @@ import com.martinszuc.phishing_emails_detection.databinding.FragmentMachineLearn
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MachineLearningParentFragment : Fragment() {              // TODO back button and skip button for data picker to training/retraining
+class MachineLearningParentFragment :
+    Fragment() {              // TODO back button and skip button for data picker to training/retraining
 
     private var _binding: FragmentMachineLearningBinding? = null
     private val binding get() = _binding!!
 
     private val machineLearningParentSharedViewModel: MachineLearningParentSharedViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentMachineLearningBinding.inflate(inflater, container, false)
 
         setupViewPager()
@@ -50,7 +55,8 @@ class MachineLearningParentFragment : Fragment() {              // TODO back but
         }
 
         // Adjust tab selection to reflect ViewPager page changes
-        binding.machineLearningViewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.machineLearningViewpager.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 if (position > 0) { // Adjust for "Data Picking" not having a visible tab
                     binding.machineLearningTabs.getTabAt(position - 1)?.select()
@@ -61,15 +67,35 @@ class MachineLearningParentFragment : Fragment() {              // TODO back but
 
     private fun observeViewModelState() {
         machineLearningParentSharedViewModel.state.observe(viewLifecycleOwner) { state ->
-            val currentItem = when (state) {
+            // Direct mapping of state to ViewPager's currentItem.
+            // The viewPagerItem logic remains aligned with the ViewModel's state.
+            val viewPagerItem = when (state) {
                 MachineLearningState.DATA_PICKING -> 0
                 MachineLearningState.DATA_PROCESSING -> 1
                 MachineLearningState.TRAINING -> 2
                 MachineLearningState.RETRAINING -> 3
             }
-            binding.machineLearningViewpager.currentItem = currentItem
+
+            // Ensure the ViewPager displays the correct fragment for the current state.
+            if (binding.machineLearningViewpager.currentItem != viewPagerItem) {
+                binding.machineLearningViewpager.currentItem = viewPagerItem
+            }
+
+            // Adjust the TabLayout's selected tab to reflect the merged view of DATA_PICKING and DATA_PROCESSING.
+            // Tab index logic accounts for the "merged" view in the TabLayout.
+            val tabIndex = when (state) {
+                MachineLearningState.DATA_PICKING, MachineLearningState.DATA_PROCESSING -> 0
+                MachineLearningState.TRAINING -> 1
+                MachineLearningState.RETRAINING -> 2
+            }
+
+            // This condition ensures we do not attempt to select a tab that does not exist for the first state,
+            // and correctly selects the tab for other states.
+            val selectedTab = binding.machineLearningTabs.getTabAt(tabIndex)
+            selectedTab?.select()
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

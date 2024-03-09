@@ -18,13 +18,6 @@ class MachineLearningParentSharedViewModel @Inject constructor() : ViewModel() {
     fun setState(newState: MachineLearningState) {
         _state.value = newState
     }
-    fun decideNextStateBasedOnCondition(condition: Boolean) {
-        if (condition) {
-            setState(MachineLearningState.TRAINING)
-        } else {
-            setState(MachineLearningState.RETRAINING)
-        }
-    }
 
 }
 enum class MachineLearningState {

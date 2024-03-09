@@ -81,4 +81,7 @@
     <string name="loading">Nacitavanie</string>
     <string name="additional_text">Some some some\n</string>
     <string name="title_model_manager">Manager your models</string>
+    <string name="one_pishing_one_safe">Pick one phishing, one safe processed emails package you would like to train the model with:</string>
+    <string name="one_pishing_one_safe_one_model">Pick one phishing, one safe processed emails package and model you would like to retrain on new data:</string>
+    <string name="select_email_packages_to_for_processing_or_skip_to_training_with_processed_packages">Select email packages for processing or skip to training/retraining with processed packages:</string>
 </resources>

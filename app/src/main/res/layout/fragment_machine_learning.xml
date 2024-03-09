@@ -9,7 +9,7 @@
         android:id="@+id/machine_learning_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/md_theme_dark_primaryContainer"
         app:tabIndicatorColor="@color/white"
         app:tabTextColor="@color/white"
         app:tabSelectedTextColor="@color/white"

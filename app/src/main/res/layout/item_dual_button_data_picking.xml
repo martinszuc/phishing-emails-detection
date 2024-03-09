@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <Button
+        android:id="@+id/btnTraining"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="4dp"
+        android:layout_weight="1"
+        android:background="?attr/colorOnSecondary"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:text="Training"
+        android:backgroundTint="@color/md_theme_dark_onSecondary"/>
+
+    <Button
+        android:id="@+id/btnRetraining"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="4dp"
+        android:layout_weight="1"
+        android:background="?attr/colorOnSecondary"
+        android:backgroundTint="@color/md_theme_dark_onSecondary"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:text="Retraining"/>
+</LinearLayout>
