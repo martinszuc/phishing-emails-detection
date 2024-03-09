@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.martinszuc.phishing_emails_detection.R
@@ -59,8 +60,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
             "load_model_h5" -> {
                 openFilePicker()
             }
+            "learn_phishing" -> {
+                openLearnPhishingFragment()
+            }
+
         }
         return super.onPreferenceTreeClick(preference)
+    }
+
+    private fun openLearnPhishingFragment() {
+        val navController = findNavController()
+        navController.navigate(R.id.action_settingsFragment_to_learnPhishingFragment)
     }
 
     private fun openDirectoryPicker() {

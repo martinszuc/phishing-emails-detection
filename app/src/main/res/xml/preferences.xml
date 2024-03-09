@@ -36,4 +36,15 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="Phishing">
+
+        <Preference
+            app:key="learn_phishing"
+            app:title="@string/learn_more_about_phishing_for_settings"
+            app:layout="@layout/preference_layout"
+            android:summary="Select a folder containing the model"/>
+
+    </PreferenceCategory>
+
+
 </PreferenceScreen>

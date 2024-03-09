@@ -21,7 +21,7 @@
     <string name="phishing_info_text">Scammers use email or text messages to trick you into giving them your personal and financial information. But there are several ways to protect yourself!</string>
     <string name="phishing_info_link"><a href="https://consumer.ftc.gov/articles/how-recognize-and-avoid-phishing-scams">How to Recognize and Avoid Phishing Scams</a></string>
     <string name="title_emails">My Emails</string>
-    <string name="title_training">Training your detector</string>
+    <string name="title_training">Training your models</string>
     <string name="title_detector">Phishing detector</string>
     <string name="title_learn">Learn about phishing</string>
     <string name="title_moremenu">More</string>
@@ -36,6 +36,7 @@
     <string name="title_tablayout">Tab layout</string>
     <string name="title_appbarlayout">App bar layout</string>
     <string name="take_a_phishing_quiz">Take a Phishing quiz</string>
+    <string name="learn_more_about_phishing_for_settings">Learn more about phishing</string>
     <string name="learn_more_about_phishing">Learn more about phishing:</string>
     <string name="learn_more_about_phishing_prevention">Learn more about phishing prevention</string>
     <string name="snippet">snippet\n</string>
@@ -79,4 +80,5 @@
     <string name="add_new_package">Add new package</string>
     <string name="loading">Nacitavanie</string>
     <string name="additional_text">Some some some\n</string>
+    <string name="title_model_manager">Manager your models</string>
 </resources>

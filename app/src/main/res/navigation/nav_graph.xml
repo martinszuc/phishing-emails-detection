@@ -70,7 +70,17 @@
     <fragment
         android:id="@+id/SettingsFragment"
         android:name="com.martinszuc.phishing_emails_detection.ui.component.settings.SettingsFragment"
-        android:label="@string/title_settings">
+        android:label="SettingsFragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_learnPhishingFragment"
+            app:destination="@id/LearningFragment" />
+    </fragment>
+
+    <!-- Model Manager Fragment-->
+    <fragment
+        android:id="@+id/ModelManagerFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.model_manager.ModelManagerFragment"
+        android:label="@string/title_model_manager">
         <!-- Actions to child fragments if needed -->
     </fragment>
 

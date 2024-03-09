@@ -18,10 +18,10 @@
         android:icon="@drawable/ic_detector_selector"
         android:title="@string/title_detector" />
 
-    <!-- Learning and Education Fragment -->
+    <!-- Model Manager Fragment -->
     <item
-        android:id="@+id/LearningFragment"
-        android:icon="@drawable/ic_learn_selector"
+        android:id="@+id/ModelManagerFragment"
+        android:icon="@drawable/ic_cube_icon"
         android:title="@string/title_learn" />
 
     <!-- Expanded menu Fragment -->

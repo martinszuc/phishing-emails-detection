@@ -166,7 +166,7 @@ class MainActivity : AppCompatActivity() {                                      
                     R.id.EmailsParentFragment -> R.id.EmailsParentFragment
                     R.id.TrainingFragment -> R.id.TrainingFragment
                     R.id.DetectorFragment -> R.id.DetectorFragment
-                    R.id.LearningFragment -> R.id.LearningFragment
+                    R.id.ModelManagerFragment -> R.id.ModelManagerFragment
                     R.id.SettingsFragment -> R.id.SettingsFragment
                     else -> return@setOnItemSelectedListener false
                 }

@@ -12,8 +12,11 @@ class ProcessedPackageManager @Inject constructor(
 ) {
     suspend fun refreshProcessedPackages() {
         val outputCsvDirPath = fileRepository.getFilePath("", Constants.OUTPUT_CSV_DIR) ?: return
+        val assetsCsvSamplesPath = fileRepository.getFilePath("", Constants.CSV_SAMPLES_DIR) ?: return
         val outputCsvDir = File(outputCsvDirPath)
+        val assetsCsvSamplesDir = File(assetsCsvSamplesPath)
 
         processedPackageManifestManager.refreshManifestFromDirectory(outputCsvDir)
+//        processedPackageManifestManager.refreshManifestFromDirectory(assetsCsvSamplesDir)             // TODO load csv
     }
 }
