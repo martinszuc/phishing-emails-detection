@@ -8,6 +8,7 @@ import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailP
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.ProcessedPackageMetadata
 import com.martinszuc.phishing_emails_detection.data.model.DataProcessing
 import com.martinszuc.phishing_emails_detection.data.model.Training
+import com.martinszuc.phishing_emails_detection.data.model_manager.ModelRepository
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TrainingViewModel @Inject constructor(
-    private val training: Training
+    private val training: Training,
+    private val modelRepository: ModelRepository
     // Add other dependencies if needed
 ) : ViewModel() {
 
@@ -48,6 +50,7 @@ class TrainingViewModel @Inject constructor(
             val phishingFilename = phishingPackages.first()
             val safeFilename = safePackages.first()
 
+
             viewModelScope.launch(Dispatchers.IO) {
                 _isLoading.postValue(true) // Notify UI that the training process has started
                 _isFinished.postValue(false)
@@ -59,6 +62,8 @@ class TrainingViewModel @Inject constructor(
                         phishingFilename,
                         modelName
                     )
+
+                    modelRepository.addModel(modelName)
                 } finally {
                     _isLoading.postValue(false) // Notify UI that the training process has ended
                     _isFinished.postValue(true)

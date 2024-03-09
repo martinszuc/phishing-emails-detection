@@ -16,7 +16,7 @@ def train_and_evaluate_model(resources_dir, safe_filename, phishing_filename, mo
     print("Starting data preparation...")
 
     resources_path = os.path.join(os.environ["HOME"], resources_dir)
-    model_save_path = os.path.join(os.environ["HOME"], model_save_dir)
+    model_save_path = os.path.join(os.environ["HOME"], 'models' , model_save_dir)
 
 
     train_ds, test_ds = udp.prepare_data_for_model(resources_path, safe_filename, phishing_filename)
@@ -41,7 +41,7 @@ def train_and_evaluate_model(resources_dir, safe_filename, phishing_filename, mo
     um.generate_metrics(test_labels, predicted_classes, predictions)
 
     # Save the model
-    # model_save_path = os.path.join(model_save_dir, 'my_model')
+    # model_save_path = os.path.join('models, 'model_save_dir, 'my_model')
     print("Saving the model to:", model_save_path)
     um.save_model(model, model_save_path)
     print("Model saved successfully.")
