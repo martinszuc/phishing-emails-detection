@@ -26,7 +26,6 @@ class EmailPackageRepository @Inject constructor(
     }
 
     fun loadEmailPackageContent(fileName: String): String? {
-        // Assuming all packages are saved under a standard directory ("emailPackages")
         return fileRepository.loadMboxContent(fileName = fileName)
     }
 

@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_package_manager
+package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_processed_manager
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -23,31 +23,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.data_class.PhishyDialogResult
-import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailPackageManagerBinding
+import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsProcessedPackageManagerBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_package_manager.adapter.EmailPackageAdapter
-import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.EmailPackageSharedViewModel
-import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailParentSharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_processed_manager.adapter.ProcessedPackageAdapter
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-/**
- * Authored by matoszuc@gmail.com
- */
 @AndroidEntryPoint
-class EmailsPackageManagerFragment : Fragment() {
-    private var _binding: FragmentEmailPackageManagerBinding? = null
+class ProcessedPackageManagerFragment : Fragment() {
+    private var _binding: FragmentEmailsProcessedPackageManagerBinding? = null
     private val binding get() = _binding!!
-    private lateinit var emailPackageAdapter: EmailPackageAdapter
-    private val emailPackageManagerViewModel: EmailPackageManagerViewModel by viewModels()
-    private val emailPackageSharedViewModel: EmailPackageSharedViewModel by activityViewModels()
-    private val emailParentSharedViewModel: EmailParentSharedViewModel by activityViewModels()
-
+    private val processedPackageManagerViewModel: ProcessedPackageManagerViewModel by viewModels()
+    private val processedPackageSharedViewModel: ProcessedPackageSharedViewModel by activityViewModels()
+    private lateinit var processedPackageAdapter: ProcessedPackageAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentEmailPackageManagerBinding.inflate(inflater, container, false)
+        _binding = FragmentEmailsProcessedPackageManagerBinding.inflate(inflater, container, false)
         setupRecyclerView()
         observeViewModel()
         initFloatingActionButton()
@@ -55,19 +50,19 @@ class EmailsPackageManagerFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        emailPackageAdapter = EmailPackageAdapter(
+        processedPackageAdapter = ProcessedPackageAdapter(
             emptyList(),
             onDeleteClicked = { fileName ->
-                emailPackageManagerViewModel.deleteEmailPackage(fileName)
-                emailPackageSharedViewModel.loadEmailPackages()
+                processedPackageManagerViewModel.deleteProcessedPackage(fileName)
+                processedPackageSharedViewModel.refreshAndLoadProcessedPackages()
             },
             onAddClicked = { view ->
                 showAddOptionsPopupMenu(view)
             }
         )
-        binding.rvEmailPackages.apply {
+        binding.rvProcessedPackages.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = emailPackageAdapter
+            adapter = processedPackageAdapter
         }
     }
 
@@ -79,14 +74,14 @@ class EmailsPackageManagerFragment : Fragment() {
                 R.id.action_add_from_file -> {
                     // Handle "Add .mbox from File"
                     Log.d("PopupMenu", "Add .mbox from File selected")
-                    selectMboxFile()
+//                    selectMboxFile() // TODO import csv
                     true
                 }
 
                 R.id.action_build_package -> {
                     // Handle "Build Package Within App"
                     Log.d("PopupMenu", "Build Package Within App selected")
-                    emailParentSharedViewModel.setViewPagerPosition(0)
+//                    emailParentSharedViewModel.setViewPagerPosition(0)
                     true
                 }
 
@@ -99,31 +94,11 @@ class EmailsPackageManagerFragment : Fragment() {
     private val filePickerResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
-                onMboxFileSelected(uri)
+//                // TODO import.csv (uri)
             }
         }
     }
 
-    private fun selectMboxFile() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = "*/*"
-            addCategory(Intent.CATEGORY_OPENABLE)
-            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("application/mbox", "text/plain")) // MIME type for mbox might vary, adjust as needed
-        }
-        filePickerResultLauncher.launch(intent)
-    }
-
-    private fun onMboxFileSelected(uri: Uri) {
-        lifecycleScope.launch {
-            val result = showPhishyConfirmationDialog()
-            if (!result.wasCancelled && result.packageName != null) {
-                // Proceed with creating the email package from the selected mbox file
-                // If copying is needed, use FileRepository for file operations
-                emailPackageManagerViewModel.createAndSaveEmailPackageFromMboxFile(uri, result.isPhishy, result.packageName)
-                Toast.makeText(context, "Email package created successfully.", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
 
     private suspend fun showPhishyConfirmationDialog(): PhishyDialogResult = suspendCoroutine { cont ->
         val context = requireContext()
@@ -164,9 +139,9 @@ class EmailsPackageManagerFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        emailPackageSharedViewModel.emailPackages.observe(viewLifecycleOwner) { packages ->
+        processedPackageSharedViewModel.processedPackages.observe(viewLifecycleOwner) { packages ->
             Log.d("EmailsPackageManager", "Packages received: ${packages.size}")
-            emailPackageAdapter.setItems(packages)
+            processedPackageAdapter.setItems(packages)
         }
     }
 
@@ -174,7 +149,7 @@ class EmailsPackageManagerFragment : Fragment() {
         val fab: FloatingActionButton = binding.fab
         fab.show()
         fab.setOnClickListener {
-            emailPackageSharedViewModel.loadEmailPackages()
+            processedPackageSharedViewModel.refreshAndLoadProcessedPackages()
         }
 
     }
