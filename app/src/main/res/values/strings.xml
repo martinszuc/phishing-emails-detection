@@ -78,10 +78,11 @@
     <string name="delete">delete email package</string>
     <string name="refresh">Refresh</string>
     <string name="add_new_package">Add new package</string>
-    <string name="loading">Nacitavanie</string>
-    <string name="additional_text">Some some some\n</string>
+    <string name="loading">Extracting features</string>
+    <string name="additional_text">Extract features from your selected email packages:</string>
     <string name="title_model_manager">Manager your models</string>
     <string name="one_pishing_one_safe">Pick one phishing, one safe processed emails package you would like to train the model with:</string>
     <string name="one_pishing_one_safe_one_model">Pick one phishing, one safe processed emails package and model you would like to retrain on new data:</string>
     <string name="select_email_packages_to_for_processing_or_skip_to_training_with_processed_packages">Select email packages for processing or skip to training/retraining with processed packages:</string>
+    <string name="select_from_your_models">Select from your models</string>
 </resources>

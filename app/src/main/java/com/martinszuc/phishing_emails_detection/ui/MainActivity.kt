@@ -18,6 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.model.Prediction
 import com.martinszuc.phishing_emails_detection.databinding.ActivityMainBinding
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.user.AccountSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -34,11 +35,14 @@ import javax.inject.Inject
  */
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {                                                      // TODO little bar with status of processes
+class MainActivity :
+    AppCompatActivity() {                                                      // TODO little bar with status of processes
     @Inject
     lateinit var prediction: Prediction
 
     private val accountSharedViewModel: AccountSharedViewModel by viewModels()
+    private val modelManagerSharedViewModel: ModelManagerSharedViewModel by viewModels()
+
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,45 +52,9 @@ class MainActivity : AppCompatActivity() {                                      
         setupToolbar()
         setupBottomNav()
         setupAuthentication()
-
-        setupBackgroundTasks()
-
+        setupModelSharedViewModel()
         launchPython {
             setupClassifier()
-        }
-    }
-
-    private fun setupBackgroundTasks() {
-        // Copy CSV files to internal storage in a background thread
-        lifecycleScope.launch(Dispatchers.IO) {
-            copyCsvFilesToInternalStorage()
-        }
-    }
-
-    private fun copyCsvFilesToInternalStorage() {
-        try {
-            val assetsFolder = "email_csv_samples"
-            val filesToCopy = assets.list(assetsFolder) ?: arrayOf() // List all files in the assets folder
-
-            val internalStorageFolder = File(filesDir, assetsFolder)
-            if (!internalStorageFolder.exists()) {
-                internalStorageFolder.mkdir() // Create the folder if it doesn't exist
-            }
-
-            filesToCopy.forEach { filename ->
-                val fileInInternalStorage = File(internalStorageFolder, filename)
-                if (!fileInInternalStorage.exists()) {
-                    // Copy each file from assets to internal storage
-                    val inputStream = assets.open("$assetsFolder/$filename")
-                    val outputStream = FileOutputStream(fileInInternalStorage)
-                    inputStream.copyTo(outputStream)
-                    inputStream.close()
-                    outputStream.flush()
-                    outputStream.close()
-                }
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
         }
     }
 
@@ -111,6 +79,13 @@ class MainActivity : AppCompatActivity() {                                      
         lifecycleScope.launch {
             prediction.initializePython()
 //            classifier.loadModel() // commented out until federated learning implementation
+        }
+    }
+
+    private fun setupModelSharedViewModel() {
+        // Initialize Classifier in the background
+        lifecycleScope.launch {
+            modelManagerSharedViewModel.refreshAndLoadModels()
         }
     }
 

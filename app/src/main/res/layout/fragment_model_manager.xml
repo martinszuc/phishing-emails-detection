@@ -5,13 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".ui.component.model_manager.ModelManagerFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvModels"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tvSelectModel"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:text="@string/select_from_your_models"
+        android:layout_gravity="start"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_marginBottom="8dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerModelSelector"
+        android:background="@color/md_theme_dark_inversePrimary"
+        android:popupBackground="@color/md_theme_dark_primaryContainer"
+        android:outlineAmbientShadowColor="@color/md_theme_dark_primary"
+        android:outlineSpotShadowColor="@color/md_theme_dark_primary"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"/>
 
 </LinearLayout>

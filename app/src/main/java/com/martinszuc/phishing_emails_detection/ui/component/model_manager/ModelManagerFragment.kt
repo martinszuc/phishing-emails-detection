@@ -4,28 +4,57 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import com.martinszuc.phishing_emails_detection.data.model_manager.ModelMetadata
 import com.martinszuc.phishing_emails_detection.databinding.FragmentModelManagerBinding
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ModelManagerFragment : Fragment() {
-
     private var _binding: FragmentModelManagerBinding? = null
-    // This property is only valid between onCreateView and onDestroyView.
+    private val modelManagerSharedViewModel: ModelManagerSharedViewModel by activityViewModels()
+
     private val binding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentModelManagerBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Observe model data from ViewModel
+        modelManagerSharedViewModel.models.observe(viewLifecycleOwner) { models ->
+            setupModelSpinner(models)
+        }
+    }
+
+    private fun setupModelSpinner(models: List<ModelMetadata>) {
+        // Ensure you're using the correct layout. Adjust R.layout.simple_spinner_item if needed.
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, models.map { it.modelName })
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) // Adjust this if you have a custom dropdown layout
+        binding.spinnerModelSelector.adapter = adapter
+
+        binding.spinnerModelSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedModel = models[position]
+                Toast.makeText(requireContext(), "Selected: ${selectedModel.modelName}", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Optional: Handle the case where nothing is selected
+            }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-    // Include other fragment methods or logic here as needed
 }

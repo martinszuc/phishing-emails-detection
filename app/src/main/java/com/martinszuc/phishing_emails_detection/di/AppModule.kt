@@ -169,9 +169,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideModelManager(
-        modelManifestManager: ModelManifestManager
+        modelManifestManager: ModelManifestManager,
+        fileRepository: FileRepository // Ensure you are providing FileRepository elsewhere in your DI setup
     ): ModelManager {
-        return ModelManager(modelManifestManager)
+        return ModelManager(modelManifestManager, fileRepository)
     }
 
     @Provides
