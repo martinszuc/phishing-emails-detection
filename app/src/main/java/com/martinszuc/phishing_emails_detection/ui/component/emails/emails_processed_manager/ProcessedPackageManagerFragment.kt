@@ -1,5 +1,6 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_processed_manager
 
+import ProcessedPackageAdapter
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -24,9 +25,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.data_class.PhishyDialogResult
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsProcessedPackageManagerBinding
-import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_package_manager.adapter.EmailPackageAdapter
-import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_processed_manager.adapter.ProcessedPackageAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailParentSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
@@ -38,7 +38,9 @@ class ProcessedPackageManagerFragment : Fragment() {
     private val binding get() = _binding!!
     private val processedPackageManagerViewModel: ProcessedPackageManagerViewModel by viewModels()
     private val processedPackageSharedViewModel: ProcessedPackageSharedViewModel by activityViewModels()
+    private val emailParentSharedViewModel: EmailParentSharedViewModel by activityViewModels()
     private lateinit var processedPackageAdapter: ProcessedPackageAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -68,20 +70,20 @@ class ProcessedPackageManagerFragment : Fragment() {
 
     private fun showAddOptionsPopupMenu(view: View) {
         val popup = PopupMenu(requireContext(), view, R.style.CustomPopupMenu)
-        popup.menuInflater.inflate(R.menu.menu_add_options, popup.menu)
+        popup.menuInflater.inflate(R.menu.menu_processed_add_options, popup.menu)
         popup.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_add_from_file -> {
                     // Handle "Add .mbox from File"
-                    Log.d("PopupMenu", "Add .mbox from File selected")
-//                    selectMboxFile() // TODO import csv
+                    Log.d("PopupMenu", "Add .csv from File selected")
+                    selectCsvFile()
                     true
                 }
 
                 R.id.action_build_package -> {
                     // Handle "Build Package Within App"
-                    Log.d("PopupMenu", "Build Package Within App selected")
-//                    emailParentSharedViewModel.setViewPagerPosition(0)
+                    Log.d("PopupMenu", "Build and Process Package Within App")
+                    emailParentSharedViewModel.setViewPagerPosition(0)
                     true
                 }
 
@@ -94,11 +96,29 @@ class ProcessedPackageManagerFragment : Fragment() {
     private val filePickerResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
-//                // TODO import.csv (uri)
+                onCsvFileSelected(uri)
             }
         }
     }
 
+    private fun selectCsvFile() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "*/*"
+            addCategory(Intent.CATEGORY_OPENABLE)
+        }
+        filePickerResultLauncher.launch(intent)
+    }
+
+    private fun onCsvFileSelected(uri: Uri) {
+        lifecycleScope.launch {
+            val result = showPhishyConfirmationDialog()
+            if (!result.wasCancelled && result.packageName != null) {
+                processedPackageManagerViewModel.createAndSaveProcessedPackageFromCsvFile(uri, result.isPhishy, result.packageName)
+                processedPackageSharedViewModel.refreshAndLoadProcessedPackages()
+                Toast.makeText(context, "Processed package created successfully.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     private suspend fun showPhishyConfirmationDialog(): PhishyDialogResult = suspendCoroutine { cont ->
         val context = requireContext()
@@ -116,8 +136,8 @@ class ProcessedPackageManagerFragment : Fragment() {
         }
 
         val dialog = AlertDialog.Builder(context).apply {
-            setTitle("Confirm Email Package")
-            setMessage("Is this email package suspicious (phishy)?")
+            setTitle("Confirm Processed Package")
+            setMessage("Is this processed package phishing?")
             setView(input) // Add the input field to the dialog
             setPositiveButton("Yes") { _, _ ->
                 cont.resume(PhishyDialogResult(isPhishy = true, packageName = input.text.toString()))
@@ -140,7 +160,7 @@ class ProcessedPackageManagerFragment : Fragment() {
 
     private fun observeViewModel() {
         processedPackageSharedViewModel.processedPackages.observe(viewLifecycleOwner) { packages ->
-            Log.d("EmailsPackageManager", "Packages received: ${packages.size}")
+            Log.d("ProcessedPackageManagerFragment", "Packages received: ${packages.size}")
             processedPackageAdapter.setItems(packages)
         }
     }

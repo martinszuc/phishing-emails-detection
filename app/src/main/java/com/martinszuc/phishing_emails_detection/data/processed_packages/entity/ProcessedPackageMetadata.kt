@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.data.email_package.entity
+package com.martinszuc.phishing_emails_detection.data.processed_packages.entity
 
 data class ProcessedPackageMetadata(
     val fileName: String,

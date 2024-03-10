@@ -16,6 +16,21 @@ class FileManager(private val context: Context) {
         return file
     }
 
+    suspend fun saveTextToFileAndGetFileSize(textContent: String, directoryName: String, fileName: String): Long {
+        val directory = File(context.filesDir, directoryName).apply {
+            if (!exists()) mkdirs() // Create directory if it doesn't exist
+        }
+        val file = File(directory, fileName)
+
+        // Write the text content to the file
+        file.writeText(textContent)
+
+        // Return the size of the file
+        // Using a new File instance to ensure we're getting updated file metadata
+        return File(file.absolutePath).length()
+    }
+
+
     // Loads a file from a specified directory by its name
     fun loadFileFromDirectory(directoryName: String, fileName: String): File? {
         val directory = File(context.filesDir, directoryName)

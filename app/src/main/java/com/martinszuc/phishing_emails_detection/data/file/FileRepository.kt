@@ -3,6 +3,7 @@ package com.martinszuc.phishing_emails_detection.data.file
 import android.content.Context
 import android.net.Uri
 import com.martinszuc.phishing_emails_detection.utils.Constants
+import com.martinszuc.phishing_emails_detection.utils.StringUtils
 import java.io.File
 import java.text.DecimalFormat
 import javax.inject.Inject
@@ -13,6 +14,11 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
     // Save mbox content to a file within a specified directory
     fun saveMboxContent(mboxContent: String, directoryName: String = Constants.DIR_EMAIL_PACKAGES, fileName: String): File {
         return fileManager.saveTextToFile(mboxContent, directoryName, fileName)
+    }
+
+    // Save mbox content to a file within a specified directory
+    suspend fun saveTextToFileAndGetFileSize(mboxContent: String, directoryName: String = Constants.DIR_EMAIL_PACKAGES, fileName: String): Long {
+        return fileManager.saveTextToFileAndGetFileSize(mboxContent, directoryName, fileName)
     }
 
     // Load a file by name from a specified directory
@@ -86,4 +92,25 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
     fun deleteDirectory(directoryName: String): Boolean {
         return fileManager.removeDirectory(directoryName)
     }
+
+    fun copyCsvFromUri(uri: Uri, directoryName: String = Constants.OUTPUT_CSV_DIR, fileName: String): File? {
+        return copyFileFromUri(uri, directoryName, fileName)
+    }
+    fun countRowsInCsv(directoryName: String = Constants.OUTPUT_CSV_DIR, fileName: String): Int {
+        val csvContent = loadCsvContent(directoryName, fileName) ?: return 0
+        return StringUtils.countCsvRowsIgnoringEmptyLines(csvContent) - 1 // Subtract 1 for the header row
+    }
+    fun renameFile(directoryName: String, currentFileName: String, newFileName: String): File? {
+        val currentFile = fileManager.loadFileFromDirectory(directoryName, currentFileName)
+        if (currentFile != null && currentFile.exists()) {
+            val newFile = File(currentFile.parent, newFileName)
+            if (currentFile.renameTo(newFile)) {
+                return newFile
+            } else {
+                // Log or handle the failure to rename the file
+            }
+        }
+        return null
+    }
+
 }

@@ -59,14 +59,14 @@ class EmailPackageAdapter(
             }
             is EmailPackageViewHolder.PackageViewHolder -> {
                 val realPosition = position - 1 // Adjust for the add item at position 0
-                val item = items[realPosition]
-                holder.tvPackageName.text = item.packageName
-                holder.tvIsPhishy.text = if (item.isPhishy) "Phishing" else "Safe"
-                holder.tvCreationDate.text = StringUtils.formatTimestamp(item.creationDate)
-                holder.tvPackageSize.text = "Size: ${item.fileSize} bytes"
-                holder.tvNumberOfEmails.text = "Emails: ${item.numberOfEmails}"
+                val epackage = items[realPosition]
+                holder.tvPackageName.text = epackage.packageName
+                holder.tvIsPhishy.text = if (epackage.isPhishy) "Phishing" else "Safe"
+                holder.tvCreationDate.text = StringUtils.formatTimestamp(epackage.creationDate)
+                holder.tvPackageSize.text = "Size: ${StringUtils.formatBytes(epackage.fileSize)}"
+                holder.tvNumberOfEmails.text = "Emails: ${epackage.numberOfEmails}"
                 holder.btnDelete.setOnClickListener {
-                    onDeleteClicked(item.fileName)
+                    onDeleteClicked(epackage.fileName)
                 }
             }
         }

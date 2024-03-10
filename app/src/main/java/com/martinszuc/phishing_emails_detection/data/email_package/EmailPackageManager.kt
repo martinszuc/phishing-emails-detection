@@ -3,7 +3,6 @@ package com.martinszuc.phishing_emails_detection.data.email_package
 import android.net.Uri
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
-import com.martinszuc.phishing_emails_detection.data.email_package.entity.ProcessedPackageMetadata
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
@@ -24,30 +23,30 @@ class EmailPackageManager @Inject constructor(
         val emailBlobs = emailBlobLocalRepository.getEmailBlobsByIds(emailIds)
         val mboxStrings = emailBlobs.map { EmailUtils.formatToMbox(it) }
         val mboxContent = EmailUtils.mergeMboxStrings(mboxStrings)
-        val currentTimeFormatted =
-            StringUtils.formatTimestampForFilename(System.currentTimeMillis())
+        val currentTime = System.currentTimeMillis()
+        val currentTimeFormatted = StringUtils.formatTimestampForFilename(currentTime)
         val numberOfEmails = emailBlobs.size
         val filename =
             "${packageName}_${currentTimeFormatted}_${numberOfEmails}_${if (isPhishy) "phishy" else "safe"}.mbox"
-        val filesize = fileRepository.getFileSizeInBytes(Constants.DIR_EMAIL_PACKAGES, filename)
 
 
         // Save the package content to a file
-        val file = fileRepository.saveMboxContent(mboxContent, "email_packages", filename)
+        val filesize =
+            fileRepository.saveTextToFileAndGetFileSize(mboxContent, "email_packages", filename)
 
         // Update the manifest with new package metadata
         val metadata = EmailPackageMetadata(
             filename,
             isPhishy,
             packageName,
-            System.currentTimeMillis(),
+            currentTime,
             filesize,
             numberOfEmails
         )
         packageManifestManager.addPackageToManifest(metadata)
 
         // Return the file path
-        return file.absolutePath
+        return filename
     }
 
     suspend fun createAndSaveEmailPackageFromMbox(
@@ -55,8 +54,8 @@ class EmailPackageManager @Inject constructor(
         isPhishy: Boolean,
         packageName: String
     ): Boolean? {
-        val currentTimeFormatted =
-            StringUtils.formatTimestampForFilename(System.currentTimeMillis())
+        val currentTime = System.currentTimeMillis()
+        val currentTimeFormatted = StringUtils.formatTimestampForFilename(currentTime)
         // Initial temporary filename, without the email count
         val tempFilename =
             "${packageName}_${currentTimeFormatted}_${if (isPhishy) "phishy" else "safe"}.mbox"
@@ -85,7 +84,7 @@ class EmailPackageManager @Inject constructor(
                 fileName = finalFilename,
                 isPhishy = isPhishy,
                 packageName = packageName,
-                creationDate = System.currentTimeMillis(),
+                creationDate = currentTime,
                 fileSize = finalFile.length(),
                 numberOfEmails = numberOfEmails // Use the generic itemCount field for email count
             )

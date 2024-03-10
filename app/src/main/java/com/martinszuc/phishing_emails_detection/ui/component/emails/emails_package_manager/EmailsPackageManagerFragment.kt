@@ -73,7 +73,7 @@ class EmailsPackageManagerFragment : Fragment() {
 
     private fun showAddOptionsPopupMenu(view: View) {
         val popup = PopupMenu(requireContext(), view, R.style.CustomPopupMenu)
-        popup.menuInflater.inflate(R.menu.menu_add_options, popup.menu)
+        popup.menuInflater.inflate(R.menu.menu_epackage_add_options, popup.menu)
         popup.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_add_from_file -> {
