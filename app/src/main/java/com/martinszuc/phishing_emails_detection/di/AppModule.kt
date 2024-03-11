@@ -18,6 +18,7 @@ import com.martinszuc.phishing_emails_detection.data.model.Prediction
 import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageManifestManager
 import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageRepository
 import com.martinszuc.phishing_emails_detection.data.model.DataProcessing
+import com.martinszuc.phishing_emails_detection.data.model.Retraining
 import com.martinszuc.phishing_emails_detection.data.model.Training
 import com.martinszuc.phishing_emails_detection.data.model_manager.ModelManager
 import com.martinszuc.phishing_emails_detection.data.model_manager.ModelManifestManager
@@ -187,9 +188,15 @@ object AppModule {
     // If your Training class requires any dependencies, provide them here
     @Provides
     @Singleton
-    fun provideTraining(@ApplicationContext context: Context): Training {
+    fun provideTraining(): Training {
         // Adjust the Training class constructor as necessary
         return Training()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetraining(): Retraining {
+        return Retraining()
     }
 
 }
