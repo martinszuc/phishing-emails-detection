@@ -1,30 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".ui.component.model_manager.ModelManagerFragment">
 
-    <TextView
-        android:id="@+id/tvSelectModel"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvSelectModel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/select_from_your_models"
+            android:layout_gravity="start"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerModelSelector"
+            android:background="@color/md_theme_dark_inversePrimary"
+            android:popupBackground="@color/md_theme_dark_primaryContainer"
+            android:outlineAmbientShadowColor="@color/md_theme_dark_primary"
+            android:outlineSpotShadowColor="@color/md_theme_dark_primary"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/select_from_your_models"
-        android:layout_gravity="start"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_marginBottom="8dp"/>
+        android:src="@drawable/ic_refresh_arrow_round"
+        android:contentDescription="@string/refresh"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:visibility="visible"/>
 
-    <Spinner
-        android:id="@+id/spinnerModelSelector"
-        android:background="@color/md_theme_dark_inversePrimary"
-        android:popupBackground="@color/md_theme_dark_primaryContainer"
-        android:outlineAmbientShadowColor="@color/md_theme_dark_primary"
-        android:outlineSpotShadowColor="@color/md_theme_dark_primary"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"/>
-
-</LinearLayout>
+</FrameLayout>

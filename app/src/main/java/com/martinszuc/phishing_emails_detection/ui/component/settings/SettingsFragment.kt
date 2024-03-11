@@ -82,8 +82,20 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun copyModelToInternalStorage(directoryUri: Uri) {
         try {
+            // Obtain the DocumentFile for the source directory
             val sourceDirectory = DocumentFile.fromTreeUri(requireContext(), directoryUri)
-            sourceDirectory?.let { copyDocumentFileRecursively(it, requireContext().filesDir) }
+
+            // Create or get the "models" directory inside the app's internal storage
+            val modelsDir = File(requireContext().filesDir, "models")
+            if (!modelsDir.exists()) {
+                modelsDir.mkdirs() // Create the directory if it doesn't exist
+            }
+
+            // Proceed with the copying if the source directory is not null
+            sourceDirectory?.let {
+                // Adjust the destination to be the modelsDir instead of just filesDir
+                copyDocumentFileRecursively(it, modelsDir)
+            }
             Toast.makeText(context, "Model copied successfully", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             e.printStackTrace()

@@ -30,8 +30,23 @@ class ModelManagerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Observe model data from ViewModel
+        observeModels()
+
+        // Set up FAB click listener to refresh and load models
+        setupFabRefresh()
+
+    }
+
+    private fun observeModels() {
         modelManagerSharedViewModel.models.observe(viewLifecycleOwner) { models ->
             setupModelSpinner(models)
+        }
+    }
+
+    private fun setupFabRefresh() {
+        binding.fab.setOnClickListener {
+            modelManagerSharedViewModel.refreshAndLoadModels()
+            Toast.makeText(requireContext(), "Refreshing models...", Toast.LENGTH_SHORT).show()
         }
     }
 
