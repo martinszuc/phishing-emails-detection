@@ -73,6 +73,7 @@ class DataProcessingFragment : Fragment() {  // TODO already processed data to s
                 // Optionally, hide the icon after a delay or based on user action
 //                binding.ivCheck.postDelayed({ binding.ivCheck.visibility = View.GONE }, 2000)
                 processingStarted = false // Reset the flag after handling
+                binding.btnProcessEmails.isEnabled = false
             }
         }
     }

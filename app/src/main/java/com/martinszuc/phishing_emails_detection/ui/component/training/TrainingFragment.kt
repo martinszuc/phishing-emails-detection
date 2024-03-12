@@ -6,12 +6,14 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -83,6 +85,7 @@ class TrainingFragment : Fragment() {
             }
         }
     }
+
     private fun initBackFloatingActionButton() {
         val fab: ExtendedFloatingActionButton = binding.fabLeft
         // Implement FAB click action to proceed to the next step
@@ -128,15 +131,37 @@ class TrainingFragment : Fragment() {
         }
 
         trainingViewModel.isFinished.observe(viewLifecycleOwner) { isFinished ->
-            val ivCheck = binding.ivCheck
             if (isFinished) {
-                ivCheck.visibility = View.VISIBLE
+                // Show the dialog with options
+                showFinishTrainingDialog()
                 // Optionally, hide the ProgressBar when finished
                 binding.progressBar.visibility = View.GONE
             } else {
-                ivCheck.visibility = View.GONE
             }
         }
+    }
+
+    private fun showFinishTrainingDialog() {
+        val dialogView =
+            LayoutInflater.from(requireContext()).inflate(R.layout.dialog_finished_training, null)
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setCancelable(false) // Prevent the dialog from being dismissed by back press or touches outside
+            .create()
+
+        // Find and set up the buttons from the dialog layout
+        dialogView.findViewById<Button>(R.id.btnGoToModelManager).setOnClickListener {
+            dialog.dismiss()
+            // Navigate to ModelManagerFragment
+            val navController = findNavController()
+            navController.navigate(R.id.action_trainingFragment_to_modelManagerFragment) // Use the correct action ID
+        }
+
+        dialogView.findViewById<Button>(R.id.btnDismiss).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
 

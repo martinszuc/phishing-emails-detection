@@ -1,16 +1,23 @@
 package com.martinszuc.phishing_emails_detection.ui.component.retraining
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlRetrainingBinding
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentSharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningState
 import com.martinszuc.phishing_emails_detection.ui.component.training.adapter.TrainingSelectionAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
@@ -25,6 +32,7 @@ class RetrainingFragment : Fragment() {
     private val retrainingViewModel: RetrainingViewModel by activityViewModels()
     private val processedPackageSharedViewModel: ProcessedPackageSharedViewModel by activityViewModels()
     private val modelManagerSharedViewModel: ModelManagerSharedViewModel by activityViewModels()
+    private val machineLearningParentSharedViewModel: MachineLearningParentSharedViewModel by activityViewModels()
 
     private lateinit var trainingSelectionAdapter: TrainingSelectionAdapter
 
@@ -33,6 +41,8 @@ class RetrainingFragment : Fragment() {
         setupRecyclerView()
         setupModelSpinner()
         setupRetrainButton()
+        initBackFloatingActionButton()
+        setupObservers()
         return binding.root
     }
 
@@ -74,10 +84,62 @@ class RetrainingFragment : Fragment() {
         }
     }
 
+    private fun initBackFloatingActionButton() {
+        val fab: ExtendedFloatingActionButton = binding.fabLeft
+        // Implement FAB click action to proceed to the next step
+        fab.setOnClickListener {
+            machineLearningParentSharedViewModel.setState(MachineLearningState.DATA_PICKING)
+        }
+    }
+
     private fun observeProcessedPackages() {
         processedPackageSharedViewModel.processedPackages.observe(viewLifecycleOwner) { packages ->
             trainingSelectionAdapter.setItems(packages.toList())
         }
+    }
+
+    private fun setupObservers() {
+        retrainingViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            val progressBar = binding.progressBar
+            if (isLoading) {
+                progressBar.visibility = View.VISIBLE
+            } else {
+                progressBar.visibility = View.GONE
+            }
+        }
+
+        retrainingViewModel.isFinished.observe(viewLifecycleOwner) { isFinished ->
+            if (isFinished) {
+                // Show the dialog with options
+                showFinishTrainingDialog()
+                // Optionally, hide the ProgressBar when finished
+                binding.progressBar.visibility = View.GONE
+            } else {
+            }
+        }
+    }
+
+    private fun showFinishTrainingDialog() {
+        val dialogView =
+            LayoutInflater.from(requireContext()).inflate(R.layout.dialog_finished_training, null)
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setCancelable(true) // Prevent the dialog from being dismissed by back press or touches outside
+            .create()
+
+        // Find and set up the buttons from the dialog layout
+        dialogView.findViewById<Button>(R.id.btnGoToModelManager).setOnClickListener {
+            dialog.dismiss()
+            // Navigate to ModelManagerFragment
+            val navController = findNavController()
+            navController.navigate(R.id.action_trainingFragment_to_modelManagerFragment) // Use the correct action ID
+        }
+
+        dialogView.findViewById<Button>(R.id.btnDismiss).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     override fun onDestroyView() {

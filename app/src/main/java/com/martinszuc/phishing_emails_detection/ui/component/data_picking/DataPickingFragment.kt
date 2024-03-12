@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlDataPickingBinding
 import com.martinszuc.phishing_emails_detection.ui.component.data_picking.adapter.DataPickingSelectionAdapter
@@ -71,7 +72,7 @@ class DataPickingFragment : Fragment() {
     }
 
     private fun initFloatingActionButton() {
-        val fab: FloatingActionButton = binding.fab
+        val fab: ExtendedFloatingActionButton = binding.fab
 
         // Set an observer on the selectedEmails LiveData
         dataPickingViewModel.selectedPackages.observe(viewLifecycleOwner) { selectedPackages ->
@@ -91,6 +92,10 @@ class DataPickingFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+
+        // Clear selected packages
+        dataPickingViewModel.clearSelectedPackages()
+
         _binding = null
     }
 }

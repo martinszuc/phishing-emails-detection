@@ -67,7 +67,7 @@ chaquopy {
         buildPython("/home/mszuc/.pyenv/versions/jupyterlab_env/bin/python3.8")
         pip {
             install ("protobuf==3.20.0")
-            install ("tensorflow==2.1.0")
+            install ("tensorflow==2.1.0")               // TODO retraining retrained model fixed in tensorflow==2.2 https://github.com/tensorflow/tensorflow/issues/39221
             install ("numpy")
             install ("scipy")
             install ("scikit-learn")
@@ -119,15 +119,6 @@ dependencies {
 
     // Settings fragment preferences
     implementation("androidx.preference:preference-ktx:1.2.1")
-
-    // TensorFlow lite
-//    implementation("org.tensorflow:tensorflow-lite-task-vision-play-services:0.4.2")
-//    implementation("com.google.android.gms:play-services-tflite-gpu:16.2.0")
-//    implementation("org.tensorflow:tensorflow-lite:2.14.0")
-//    implementation("org.apache.lucene:lucene-analyzers-common:8.11.1")
-//    implementation("org.apache.lucene:lucene-core:8.11.1")
-
-
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:5.7.0")

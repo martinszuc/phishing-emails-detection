@@ -22,4 +22,8 @@ class DataPickingViewModel @Inject constructor(
             currentSelectedPackages + packageMetadata
         }
     }
+
+    fun clearSelectedPackages() {
+        _selectedPackages.value = setOf()
+    }
 }

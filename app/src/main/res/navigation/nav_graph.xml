@@ -20,29 +20,28 @@
         android:id="@+id/EmailsParentFragment"
         android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_parent.EmailsParentFragment"
         android:label="@string/title_emails"
-        tools:layout="@layout/fragment_emails_parent">
-    </fragment>
+        tools:layout="@layout/fragment_emails_parent"></fragment>
 
     <!-- Emails Detector Fragment -->
     <fragment
         android:id="@+id/EmailsDetectorFragment"
         android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_package_manager.EmailsPackageManagerFragment"
         android:label="@string/title_emails_detector"
-        tools:layout="@layout/fragment_email_package_manager"/>
+        tools:layout="@layout/fragment_email_package_manager" />
 
     <!-- Emails Import Fragment -->
     <fragment
         android:id="@+id/EmailsImportFragment"
         android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.EmailsImportFragment"
         android:label="@string/title_emails_import"
-        tools:layout="@layout/fragment_emails_import"/>
+        tools:layout="@layout/fragment_emails_import" />
 
     <!-- Emails Saved Fragment -->
     <fragment
         android:id="@+id/EmailsSavedFragment"
         android:name="com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.EmailsSavedFragment"
         android:label="@string/title_emails_saved"
-        tools:layout="@layout/fragment_emails_saved"/>
+        tools:layout="@layout/fragment_emails_saved" />
 
     <!-- Learning Fragment -->
     <fragment
@@ -51,12 +50,17 @@
         android:label="@string/title_learn"
         tools:layout="@layout/fragment_learning"/>
 
-    <!-- Training Fragment -->
-    <fragment
-        android:id="@+id/TrainingFragment"
-        android:name="com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentFragment"
-        android:label="@string/title_training"
-        tools:layout="@layout/fragment_machine_learning"/>
+        <!-- Training Fragment -->
+        <fragment
+            android:id="@+id/TrainingFragment"
+            android:name="com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentFragment"
+            android:label="@string/title_training"
+            tools:layout="@layout/fragment_machine_learning">
+            <action
+                android:id="@+id/action_trainingFragment_to_modelManagerFragment"
+                app:destination="@id/ModelManagerFragment" />
+        </fragment>
+
 
     <!-- Detector Fragment-->
     <fragment
