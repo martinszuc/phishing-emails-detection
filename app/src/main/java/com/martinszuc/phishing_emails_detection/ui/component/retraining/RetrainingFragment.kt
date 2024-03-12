@@ -9,12 +9,14 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.martinszuc.phishing_emails_detection.R
+import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlRetrainingBinding
 import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningState
@@ -22,6 +24,7 @@ import com.martinszuc.phishing_emails_detection.ui.component.training.adapter.Tr
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Date
 
 @AndroidEntryPoint
 class RetrainingFragment : Fragment() {
@@ -36,16 +39,23 @@ class RetrainingFragment : Fragment() {
 
     private lateinit var trainingSelectionAdapter: TrainingSelectionAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentMlRetrainingBinding.inflate(inflater, container, false)
         setupRecyclerView()
-        setupModelSpinner()
         setupRetrainButton()
         initBackFloatingActionButton()
         setupObservers()
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeModels()
+    }
     private fun setupRecyclerView() {
         trainingSelectionAdapter = TrainingSelectionAdapter { processedPackage, isChecked ->
             retrainingViewModel.togglePackageSelected(processedPackage)
@@ -57,24 +67,61 @@ class RetrainingFragment : Fragment() {
         observeProcessedPackages()
     }
 
-    private fun setupModelSpinner() {
-        val modelSpinner: Spinner = binding.modelSpinner
-        modelManagerSharedViewModel.models.observe(viewLifecycleOwner) { models ->
-            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, models.map { it.modelName })
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            modelSpinner.adapter = adapter
 
-            modelSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                    val selectedModel = models[position]
-                    retrainingViewModel.toggleSelectedModel(selectedModel)
+    private fun observeModels() {
+        modelManagerSharedViewModel.models.observe(viewLifecycleOwner) { models ->
+            setupModelSpinner(models)
+        }
+    }
+
+    private fun setupModelSpinner(models: List<ModelMetadata>) {
+        // Create a mutable list to modify the data
+        val spinnerModels = mutableListOf<ModelMetadata>().apply {
+            // Add a default "prompt" item at the beginning of the list
+            add(
+                ModelMetadata(
+                    "Please pick one of your models",
+                    Date(0)
+                )
+            ) // Date(0) just as a placeholder
+            addAll(models)
+        }
+
+        // Adapter setup with the modified list, using a custom layout if necessary
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            spinnerModels.map { it.modelName })
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerModelSelector.adapter = adapter
+
+        binding.spinnerModelSelector.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    // Ignore the default item selection
+                    if (position > 0) {
+                        val selectedModel = spinnerModels[position]
+                        retrainingViewModel.toggleSelectedModel(selectedModel)
+                        Toast.makeText(
+                            requireContext(),
+                            "Selected: ${selectedModel.modelName}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
-                    // This can be left empty or used to handle any cleanup if necessary when nothing is selected
+                    // Optional: Handle the case where nothing is selected
                 }
             }
-        }
+
+        // Initially set the spinner to show the default item
+        binding.spinnerModelSelector.setSelection(0)
     }
 
     private fun setupRetrainButton() {

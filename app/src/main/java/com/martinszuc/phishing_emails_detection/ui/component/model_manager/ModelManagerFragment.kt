@@ -9,10 +9,11 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.martinszuc.phishing_emails_detection.data.model_manager.ModelMetadata
+import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.databinding.FragmentModelManagerBinding
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Date
 
 @AndroidEntryPoint
 class ModelManagerFragment : Fragment() {
@@ -51,22 +52,37 @@ class ModelManagerFragment : Fragment() {
     }
 
     private fun setupModelSpinner(models: List<ModelMetadata>) {
-        // Ensure you're using the correct layout. Adjust R.layout.simple_spinner_item if needed.
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, models.map { it.modelName })
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) // Adjust this if you have a custom dropdown layout
+        // Create a mutable list to modify the data
+        val spinnerModels = mutableListOf<ModelMetadata>().apply {
+            // Add a default "prompt" item at the beginning of the list
+            add(ModelMetadata("Please pick one of your models", Date(0))) // Date(0) just as a placeholder
+            addAll(models)
+        }
+
+        // Adapter setup with the modified list, using a custom layout if necessary
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, spinnerModels.map { it.modelName })
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerModelSelector.adapter = adapter
 
         binding.spinnerModelSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedModel = models[position]
-                Toast.makeText(requireContext(), "Selected: ${selectedModel.modelName}", Toast.LENGTH_SHORT).show()
+                // Ignore the default item selection
+                if (position > 0) {
+                    val selectedModel = spinnerModels[position]
+                    modelManagerSharedViewModel.toggleSelectedModel(selectedModel)
+                    Toast.makeText(requireContext(), "Selected: ${selectedModel.modelName}", Toast.LENGTH_SHORT).show()
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
                 // Optional: Handle the case where nothing is selected
             }
         }
+
+        // Initially set the spinner to show the default item
+        binding.spinnerModelSelector.setSelection(0)
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

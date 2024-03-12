@@ -1,6 +1,7 @@
 package com.martinszuc.phishing_emails_detection.data.model_manager
 
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
+import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import java.io.File
 import java.util.Date

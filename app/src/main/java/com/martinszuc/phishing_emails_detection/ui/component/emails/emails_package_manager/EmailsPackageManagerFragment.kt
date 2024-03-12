@@ -25,7 +25,7 @@ import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.data_class.PhishyDialogResult
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailPackageManagerBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_package_manager.adapter.EmailPackageAdapter
-import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.EmailPackageSharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailPackageSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailParentSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch

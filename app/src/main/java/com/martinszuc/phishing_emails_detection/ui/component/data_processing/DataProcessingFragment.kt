@@ -108,6 +108,7 @@ class DataProcessingFragment : Fragment() {  // TODO already processed data to s
 
     override fun onDestroyView() {
         super.onDestroyView()
+        dataProcessingViewModel.clearIsFinished()
         _binding = null
     }
 }

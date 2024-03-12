@@ -5,18 +5,26 @@ import tensorflow as tf
 import utils_feature_extraction as ufe
 import utils_data_preparation as udp
 
-def predict_on_mbox(model_path, filepath):
+def predict_on_mbox(model_name, filename):
 
-    model_path = os.path.join(os.environ["HOME"], model_path)
+    model_path = os.path.join(os.environ["HOME"], 'models', model_name)
 
     # Load the trained model
     model = tf.keras.models.load_model(model_path)
 
+#
+    output_path = os.path.join(os.environ["HOME"], 'prediction_extracted')
+    mbox_path = os.path.join(os.environ["HOME"], 'prediction_emails', filename)
+
     # Load and preprocess mbox file
-    ufe.process_mbox_to_csv(filepath, "iso-8859-1", limit=200, is_phishy=None)
+    csv_filename = ufe.process_mbox_to_csv(mbox_path, "iso-8859-1", output_path, limit=200, is_phishy=None)
+
+    processed_csv_path = os.path.join(output_path, csv_filename)
+
 
     # Load features from the processed CSV
-    data = pd.read_csv(filepath + "-export.csv")
+    data = pd.read_csv(processed_csv_path)
+
     print(f"Number of emails processed: {data.shape[0]}")
     print("Sample of loaded data:")
     print(data.head())
@@ -43,19 +51,3 @@ def predict_on_mbox(model_path, filepath):
     # Make predictions
     predictions = model.predict(feature_dict)
     return predictions
-
-def main():
-    # Load the trained model
-    model_path = 'tf_model_saved'
-    model = tf.keras.models.load_model(model_path)
-
-    # Filepath to the mbox file
-    filepath = 'samples_res/emails-samples.mbox'
-
-    # Predict on the mbox file
-    predictions = predict_on_mbox(model, filepath)
-    print("Predictions:")
-    print(predictions)
-
-# if __name__ == '__main__':
-#     main()

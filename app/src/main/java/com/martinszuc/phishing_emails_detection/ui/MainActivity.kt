@@ -53,9 +53,7 @@ class MainActivity :
         setupBottomNav()
         setupAuthentication()
         setupModelSharedViewModel()
-        launchPython {
-            setupClassifier()
-        }
+        launchPython {}
     }
 
     private fun launchPython(onPythonStarted: () -> Unit) {
@@ -70,15 +68,6 @@ class MainActivity :
                     onPythonStarted()
                 }
             }
-        }
-    }
-
-
-    private fun setupClassifier() {
-        // Initialize Classifier in the background
-        lifecycleScope.launch {
-            prediction.initializePython()
-//            classifier.loadModel() // commented out until federated learning implementation
         }
     }
 

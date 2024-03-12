@@ -1,5 +1,6 @@
 package com.martinszuc.phishing_emails_detection.data.model_manager
 
+import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import java.util.Date
 
 import javax.inject.Inject

@@ -5,8 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.martinszuc.phishing_emails_detection.data.model.Retraining
-import com.martinszuc.phishing_emails_detection.data.model_manager.ModelMetadata
-import com.martinszuc.phishing_emails_detection.data.model_manager.ModelRepository
+import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.data.processed_packages.entity.ProcessedPackageMetadata
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,6 +55,7 @@ class RetrainingViewModel @Inject constructor(
             _selectedModel.value = modelMetadata
         }
     }
+
     fun startModelRetraining() {
         val phishingPackages = selectedPackages.value?.filter { it.isPhishy }?.map { it.fileName } ?: listOf()
         val safePackages = selectedPackages.value?.filter { !it.isPhishy }?.map { it.fileName } ?: listOf()

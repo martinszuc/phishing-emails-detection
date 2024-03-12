@@ -36,22 +36,4 @@ object EmailUtils {
         return mboxStrings.joinToString(separator = "\n\n")
     }
 
-    fun saveMboxToFile(context: Context, mboxContent: String, fileName: String = "emails.mbox"): File {
-        val file = File(context.filesDir, fileName)
-        file.writeText(mboxContent)
-        return file
-    }
-
-    fun exportEmailsToFile(context: Context, emailBlobs: List<EmailBlob>, fileName: String = "exportedEmails.mbox"): File {
-        // Convert each EmailBlob to an mbox string
-        val mboxStrings = emailBlobs.map { formatToMbox(it) }
-
-        // Merge the mbox strings into a single string
-        val mergedMbox = mergeMboxStrings(mboxStrings)
-
-        // Save the merged mbox string to a file and return the File object
-        return saveMboxToFile(context, mergedMbox, fileName)
-    }
-
-
 }

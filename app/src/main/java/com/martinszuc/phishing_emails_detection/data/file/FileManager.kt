@@ -2,6 +2,9 @@ package com.martinszuc.phishing_emails_detection.data.file
 
 import android.content.Context
 import android.net.Uri
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailBlob
+import com.martinszuc.phishing_emails_detection.utils.Constants
+import com.martinszuc.phishing_emails_detection.utils.emails.EmailUtils
 import java.io.File
 
 class FileManager(private val context: Context) {
@@ -105,5 +108,27 @@ class FileManager(private val context: Context) {
             directory.deleteRecursively()
         } else false
     }
+
+    fun saveMboxForPrediction(context: Context, mboxContent: String, fileName: String = "emails.mbox"): File {
+        val directory = File(context.filesDir, Constants.PREDICTION_MBOX_DIR).apply {
+            if (!exists()) mkdirs() // Create directory if it doesn't exist
+        }
+
+        val file = File(directory, fileName)
+        file.writeText(mboxContent)
+        return file
+    }
+
+    fun exportEmailsToFile(context: Context, emailBlobs: List<EmailBlob>, fileName: String = "exportedEmails.mbox"): File {
+        // Convert each EmailBlob to an mbox string
+        val mboxStrings = emailBlobs.map { EmailUtils.formatToMbox(it) }
+
+        // Merge the mbox strings into a single string
+        val mergedMbox = EmailUtils.mergeMboxStrings(mboxStrings)
+
+        // Save the merged mbox string to a file and return the File object
+        return saveMboxForPrediction(context, mergedMbox, fileName)
+    }
+
 
 }

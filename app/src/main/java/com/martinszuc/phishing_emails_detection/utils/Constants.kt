@@ -28,6 +28,7 @@ class Constants {
         const val OUTPUT_CSV_DIR = "extracted_csv"
         const val CSV_SAMPLES_DIR = "email_csv_samples"
         const val MODELS_DIR = "models"
+        const val PREDICTION_MBOX_DIR = "prediction_emails"
 
     }
 }

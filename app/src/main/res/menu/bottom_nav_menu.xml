@@ -22,7 +22,7 @@
     <item
         android:id="@+id/ModelManagerFragment"
         android:icon="@drawable/ic_cube_icon"
-        android:title="@string/title_learn" />
+        android:title="@string/model_manager_title" />
 
     <!-- Expanded menu Fragment -->
     <item

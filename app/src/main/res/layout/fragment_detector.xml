@@ -16,12 +16,29 @@
         android:layout_marginStart="6dp"
         android:layout_marginEnd="6dp"/>
 
+    <!-- Spinner for selecting ModelMetadata -->
+    <Spinner
+        android:id="@+id/spinnerModelSelector"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/selected_email_frame"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/md_theme_dark_inversePrimary"
+        android:popupBackground="@color/md_theme_dark_primaryContainer"
+        android:outlineAmbientShadowColor="@color/md_theme_dark_primary"
+        android:outlineSpotShadowColor="@color/md_theme_dark_primary"/>
+
+
     <Button
         android:id="@+id/emailSelectionButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/select_email"
-        app:layout_constraintTop_toBottomOf="@id/selected_email_frame"
+        app:layout_constraintTop_toBottomOf="@id/spinnerModelSelector"
         android:layout_marginTop="12dp"/>
 
     <Button
@@ -29,8 +46,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/detect_phishing"
-        app:layout_constraintTop_toBottomOf="@id/emailSelectionButton"
-        android:layout_marginTop="12dp"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"/>
 
     <ProgressBar
         android:id="@+id/loading_bar"
@@ -41,27 +58,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="150dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/classification_result"
-        app:layout_constraintTop_toBottomOf="@+id/emailSelectionButton"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="12dp"
-        android:layout_marginBottom="150dp" />
-
-    <TextView
-        android:id="@+id/text_result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/result_string"
-        app:layout_constraintTop_toBottomOf="@+id/emailSelectionButton"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="12dp"
-        android:layout_marginBottom="100dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

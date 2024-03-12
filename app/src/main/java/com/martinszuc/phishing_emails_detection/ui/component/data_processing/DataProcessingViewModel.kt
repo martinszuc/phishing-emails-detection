@@ -1,5 +1,6 @@
 package com.martinszuc.phishing_emails_detection.ui.component.data_processing
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,8 +23,8 @@ class DataProcessingViewModel @Inject constructor(
     private val _isProcessing = MutableLiveData<Boolean>()
     val isProcessing: LiveData<Boolean> = _isProcessing
 
-    private val _isFinishedProcessing = MutableLiveData<Boolean>()
-    val isFinishedProcessing: LiveData<Boolean> = _isFinishedProcessing
+    private val _isFinished = MutableLiveData<Boolean>()
+    val isFinishedProcessing: LiveData<Boolean> = _isFinished
 
     init {
         _isProcessing.value = false
@@ -50,7 +51,13 @@ class DataProcessingViewModel @Inject constructor(
                 processEmailPackage(metadata)
             }
             _isProcessing.postValue(false) // Indicate processing ends after all packages are processed
-            _isFinishedProcessing.postValue(true) // Indicate that processing is finished completely
+            _isFinished.postValue(true) // Indicate that processing is finished completely
         }
     }
+
+    fun clearIsFinished() {
+        Log.d("DetectorViewModel", "Deselecting all emails")
+        _isFinished.value = false
+    }
+
 }

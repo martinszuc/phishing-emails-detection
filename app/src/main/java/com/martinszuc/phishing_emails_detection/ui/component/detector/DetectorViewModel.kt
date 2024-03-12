@@ -9,8 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMinimalLocalRepository
+import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.data.model.Prediction
-import com.martinszuc.phishing_emails_detection.utils.emails.EmailUtils
+import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class DetectorViewModel @Inject constructor(
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
     private val emailBlobLocalRepository: EmailBlobLocalRepository,
+    private val fileRepository: FileRepository,
     private val prediction: Prediction,                                              // TODO notificaiton when model isnt loaded
     @ApplicationContext private val context: Context  // Injecting application context
 
@@ -36,6 +38,9 @@ class DetectorViewModel @Inject constructor(
 
     private val _classificationResult = MutableLiveData<Boolean>()
     val classificationResult: LiveData<Boolean> = _classificationResult
+
+    private val _selectedModel = MutableLiveData<ModelMetadata?>()
+    val selectedModel: LiveData<ModelMetadata?> = _selectedModel
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
@@ -48,6 +53,17 @@ class DetectorViewModel @Inject constructor(
         viewModelScope.launch {
             val latestEmail = getLatestEmailId()
             _selectedEmailId.value = latestEmail
+        }
+    }
+
+    fun toggleSelectedModel(modelMetadata: ModelMetadata) {
+        val currentSelectedModel = _selectedModel.value
+        if (currentSelectedModel == modelMetadata) {
+            // If the same model is selected again, deselect it
+//            _selectedModel.value = null
+        } else {
+            // Select the new model
+            _selectedModel.value = modelMetadata
         }
     }
 
@@ -70,12 +86,17 @@ class DetectorViewModel @Inject constructor(
         Log.d("DetectorViewModel", "Deselecting all emails")
         _selectedEmailId.value = null
     }
+    fun clearIsFinished() {
+        Log.d("DetectorViewModel", "Deselecting all emails")
+        _isFinished.value = false
+    }
 
 
     fun classifySelectedMinimalEmail() {
         val emailId = _selectedEmailId.value
-        if (emailId == null) {
-            Log.d("DetectorViewModel", "No email selected for processing")
+        val selectedModel = _selectedModel.value
+        if (emailId == null || selectedModel == null) {
+            Log.d("DetectorViewModel", "No email or model selected for processing")
             _classificationResult.postValue(false)
             return
         }
@@ -93,17 +114,17 @@ class DetectorViewModel @Inject constructor(
             }
 
             // Save mbox content to a file
-            val mboxFile = EmailUtils.saveMboxToFile(context, mboxContent, "email_$emailId.mbox")
-            Log.d("DetectorViewModel", "Mbox content saved to file: ${mboxFile.absolutePath}")
+            val mboxFile = fileRepository.saveMboxForPrediction(context, mboxContent, "email_$emailId.mbox")
+            Log.d("DetectorViewModel", "Mbox content saved to file: ${mboxFile.name}")
 
-            // Assuming the model path is a constant string "tf_saved_model"
-            val modelPath = "tf_model_saved"
-            Log.d("DetectorViewModel", "Preparing to classify email. Model path: $modelPath, Mbox file path: ${mboxFile.absolutePath}")
+            // Use the selected model name
+            val modelName = selectedModel.modelName
+            Log.d("DetectorViewModel", "Preparing to classify email. Model name: $modelName, Mbox file path: ${mboxFile.absolutePath}")
 
             // Perform classification using the saved file and model path
             Log.d("DetectorViewModel", "Classifying email from saved mbox file")
             val result = withContext(Dispatchers.IO) {
-                prediction.classify(modelPath, mboxFile.absolutePath)  // Updated to pass both modelPath and mboxFilePath
+                prediction.classify(modelName, mboxFile.name)  // Updated to pass both modelPath and mboxFilePath
             }
 
             // Check the first email prediction in the list to see if it's classified as phishing or not

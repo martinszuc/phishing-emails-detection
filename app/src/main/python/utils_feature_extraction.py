@@ -6,14 +6,6 @@ import csv
 from feature_finders import HTMLFormFinder, AttachmentFinder, FlashFinder, IFrameFinder, HTMLContentFinder, URLsFinder, ExternalResourcesFinder, JavascriptFinder, CssFinder, IPsInURLs, AtInURLs, EncodingFinder
 import utils_finders as utils
 
-import mailbox
-import pandas as pd
-import os
-import re
-import csv
-from feature_finders import HTMLFormFinder, AttachmentFinder, FlashFinder, IFrameFinder, HTMLContentFinder, URLsFinder, ExternalResourcesFinder, JavascriptFinder, CssFinder, IPsInURLs, AtInURLs, EncodingFinder
-import utils_finders as utils
-
 def process_mbox_to_csv(filepath, encoding, output_dir, is_phishy=True, limit=500):
     print(f"Processing file: {filepath}")
     print(f"Encoding: {encoding}, Output directory: {output_dir}, Is Phishy: {is_phishy}, Limit: {limit}")
@@ -60,10 +52,14 @@ def process_mbox_to_csv(filepath, encoding, output_dir, is_phishy=True, limit=50
             # pd.DataFrame(email_index).to_csv(index_csv_path, index=False, quoting=csv.QUOTE_ALL) #
             print(f"Data exported to {data_csv_path}")
             #print(f"Email index exported to {index_csv_path}")
+
+            saved_csv_filename = f"{base_filename}-export.csv"  # Assign the filename for return
         finally:
             mbox.close()  # Ensure the mbox file is closed properly
     except Exception as e:
         print(f"Error opening file {filepath}: {e}")
+
+    return saved_csv_filename
 
 
 
