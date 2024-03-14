@@ -9,4 +9,17 @@
         <!-- Set the custom drawable as the popup menu background -->
         <item name="android:popupBackground">@drawable/popup_menu_package_add_background</item>
     </style>
+
+    <style name="CustomBatchImportMaterialButton" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/black</item>
+        <item name="android:textColor">@color/md_theme_dark_onPrimaryContainer</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="strokeColor">@color/md_theme_dark_primary</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="icon">@drawable/ic_database_download</item>
+        <item name="iconGravity">textTop</item>
+        <item name="iconTint">@color/md_theme_dark_primary</item>
+    </style>
 </resources>

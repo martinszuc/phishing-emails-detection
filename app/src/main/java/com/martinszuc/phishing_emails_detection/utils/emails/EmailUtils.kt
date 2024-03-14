@@ -36,4 +36,18 @@ object EmailUtils {
         return mboxStrings.joinToString(separator = "\n\n")
     }
 
+    /**
+     * Extracts a header value from the raw email content based on the specified header name.
+     *
+     * @param emailContent The raw content of the email.
+     * @param headerName The name of the header to extract the value from.
+     * @return The value of the specified header, or null if the header is not found.
+     */
+    fun extractHeaderFromEmailContent(emailContent: String, headerName: String): String? {
+        val regexPattern = "$headerName: (.+)"
+        val regex = Regex(regexPattern, RegexOption.IGNORE_CASE)
+        val matchResult = regex.find(emailContent)
+        return matchResult?.groupValues?.get(1)?.trim()
+    }
 }
+

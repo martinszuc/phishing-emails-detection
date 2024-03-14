@@ -1,12 +1,15 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -54,8 +57,15 @@ class EmailsImportFragment : Fragment() {
         initEmailsImport()
         initSearchView()
         initObserveSelectedEmails()
+        initFetchEmailsButton()
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupObservers()
+        initLoadingSpinner()
     }
 
     private fun initObserveSelectedEmails() {
@@ -66,10 +76,34 @@ class EmailsImportFragment : Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // Observe load state changes
-        initLoadingSpinner()
+    private fun initFetchEmailsButton() {
+        binding.btnFetchEmails.setOnClickListener {
+            // Trigger email fetching here
+            emailMinimalSharedViewModel.getRemoteEmails()
+            binding.searchViewContainer.visibility = View.VISIBLE
+            it.visibility = View.GONE // Hide the button
+        }
+    }
+
+    private fun showBatchImportDialog(currentQuery: String) {
+        val input = EditText(context).apply {
+            inputType = InputType.TYPE_CLASS_NUMBER
+            hint = "Enter number of emails to import"
+        }
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle("Batch Import Emails")
+            setView(input)
+            setPositiveButton("Ok") { _, _ ->
+                val count = input.text.toString().toIntOrNull()
+                if (count != null) {
+                    emailsImportViewModel.fetchAndSaveEmailsBasedOnFilterAndLimit(currentQuery, count)
+                } else {
+                    Toast.makeText(context, "Please enter a valid number", Toast.LENGTH_SHORT).show()
+                }
+            }
+            setNegativeButton("Cancel", null)
+            show()
+        }
     }
 
     private fun initEmailsImport() {
@@ -82,8 +116,6 @@ class EmailsImportFragment : Fragment() {
         recyclerView.adapter = emailsImportAdapter
 
         recyclerView.visibility = View.VISIBLE
-        binding.searchView.visibility = View.VISIBLE
-
         observeEmailsFlow()
 
     }
@@ -155,6 +187,12 @@ class EmailsImportFragment : Fragment() {
                 return true
             }
         })
+
+        // Initialize batch download button listener
+        binding.btnBatchImport.setOnClickListener {
+            val currentQuery = binding.searchView.query.toString()
+            showBatchImportDialog(currentQuery)
+        }
     }
 
     private fun hideKeyboard() {
@@ -171,6 +209,37 @@ class EmailsImportFragment : Fragment() {
                     if (loadStates.refresh is LoadState.Loading) View.VISIBLE else View.GONE
                 Log.d("EmailImportFragment", "Load state changed: ${loadStates.refresh}")
             }
+        }
+    }
+
+    private fun setupObservers() {
+        emailsImportViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.loadingSpinner.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+
+        emailsImportViewModel.operationFinished.observe(viewLifecycleOwner) { isFinished ->
+            if (isFinished) {
+                showImportFinishedDialog(success = true)
+            }
+        }
+
+        // Assuming you have an observable or method to detect failure
+        emailsImportViewModel.operationFailed.observe(viewLifecycleOwner) { isFailed ->
+            if (isFailed) {
+                showImportFinishedDialog(success = false)
+            }
+        }
+    }
+
+    private fun showImportFinishedDialog(success: Boolean) {
+        val message = if (success) "Batch import finished successfully." else "Batch import failed."
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle(if (success) "Success" else "Failure")
+            setMessage(message)
+            setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            // Consider adding additional buttons/actions based on your app's flow
+            create()
+            show()
         }
     }
 }

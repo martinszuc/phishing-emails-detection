@@ -18,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.apache.commons.codec.binary.Base64
 import javax.inject.Inject
+import kotlin.math.min
 
 
 class GmailApiService @Inject constructor(
@@ -149,5 +150,103 @@ class GmailApiService @Inject constructor(
             null
         }
     }
+
+
+    suspend fun fetchFullEmailsBasedOnFilterAndLimit(
+        account: GoogleSignInAccount,
+        query: String,
+        limit: Int
+    ): List<EmailFull> = withContext(Dispatchers.IO) {
+        val emailFullList = mutableListOf<EmailFull>()
+        try {
+            val credential = GoogleAccountCredential.usingOAuth2(
+                context, listOf(Constants.GMAIL_READONLY_SCOPE)
+            ).setSelectedAccount(account.account)
+
+            val service = Gmail.Builder(transport, jsonFactory, credential)
+                .setApplicationName(Constants.APPLICATION_NAME)
+                .build()
+
+            var pageToken: String? = null
+            var emailsFetched = 0
+
+            while (emailsFetched < limit) {
+                val response = service.users().messages().list("me")
+                    .setQ(query)
+                    .setMaxResults(min(limit - emailsFetched, 100).toLong()) // Batch size per request
+                    .setPageToken(pageToken)
+                    .execute()
+
+                val messages = response.messages ?: break // Exit if no more messages
+
+                messages.forEach { message ->
+                    val emailId = message.id
+                    val email = service.users().messages().get("me", emailId).setFormat("full").execute()
+                    EmailFactory.createEmailFull(email)?.let {
+                        emailFullList.add(it)
+                        emailsFetched++
+                    }
+
+                    // Optionally, handle raw email content here as needed
+                }
+
+                pageToken = response.nextPageToken ?: break // Exit if at the last page
+            }
+        } catch (e: Exception) {
+            Log.e("GmailApiService", "Error fetching emails: ${e.message}")
+            // Handle exceptions appropriately
+        }
+        return@withContext emailFullList
+    }
+
+
+    suspend fun fetchEmailsAndBlobsBasedOnFilterAndLimit(
+        account: GoogleSignInAccount,
+        query: String,
+        limit: Int
+    ): List<Pair<EmailFull, ByteArray?>> = withContext(Dispatchers.IO) {
+        val emailsAndBlobsList = mutableListOf<Pair<EmailFull, ByteArray?>>()
+        try {
+            val credential = GoogleAccountCredential.usingOAuth2(
+                context, listOf(Constants.GMAIL_READONLY_SCOPE)
+            ).setSelectedAccount(account.account)
+
+            val service = Gmail.Builder(transport, jsonFactory, credential)
+                .setApplicationName(Constants.APPLICATION_NAME)
+                .build()
+
+            var pageToken: String? = null
+            var emailsFetched = 0
+
+            while (emailsFetched < limit) {
+                val response = service.users().messages().list("me")
+                    .setQ(query)
+                    .setMaxResults(min(limit - emailsFetched, 100).toLong())
+                    .setPageToken(pageToken)
+                    .execute()
+
+                val messages = response.messages ?: break
+
+                messages.forEach { message ->
+                    val emailId = message.id
+                    val fullEmail = service.users().messages().get("me", emailId).setFormat("full").execute()
+                    val rawEmail = service.users().messages().get("me", emailId).setFormat("raw").execute().raw?.let { Base64.decodeBase64(it) }
+
+                    EmailFactory.createEmailFull(fullEmail)?.let {
+                        emailsAndBlobsList.add(it to rawEmail)
+                        emailsFetched++
+                    }
+                }
+
+                pageToken = response.nextPageToken ?: break
+            }
+        } catch (e: Exception) {
+            Log.e("GmailApiService", "Error fetching emails and blobs: ${e.message}")
+        }
+        return@withContext emailsAndBlobsList
+    }
+
+
+
 
 }

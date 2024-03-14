@@ -10,14 +10,37 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- SearchView -->
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchView"
+        <!-- FrameLayout as the container for easier show/hide -->
+        <FrameLayout
+            android:id="@+id/searchViewContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="Search by subject"
-            android:visibility="gone"/>
+            android:visibility="gone">
 
+            <!-- Use LinearLayout for proper sizing and alignment -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- SearchView taking up most of the space -->
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/searchView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:queryHint="Search by subject" />
+
+                <!-- Button aligned to the end of the SearchView -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBatchImport"
+                    style="@style/CustomBatchImportMaterialButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Batch Import" />
+
+            </LinearLayout>
+        </FrameLayout>
         <!-- RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/emailSelectionRecyclerView"
@@ -33,10 +56,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"
+        android:indeterminateTint="@color/md_theme_dark_primary"
         android:progressTint="@color/md_theme_dark_primary"
-        android:indeterminateTint="@color/md_theme_dark_primary" />
-
+        android:visibility="gone" />
 
     <!-- Floating action button (FAB) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -44,9 +66,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:layout_marginBottom="72dp"
         android:layout_marginRight="16dp"
-        android:src="@drawable/ic_saved"
-        android:contentDescription="@string/submit" />
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/submit"
+        android:src="@drawable/ic_saved" />
 
+    <!-- Fetch Emails Button -->
+    <Button
+        android:id="@+id/btnFetchEmails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="100dp"
+        android:text="Fetch Gmails" />
 </FrameLayout>

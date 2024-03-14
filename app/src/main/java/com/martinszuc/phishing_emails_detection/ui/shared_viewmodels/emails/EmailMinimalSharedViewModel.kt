@@ -38,7 +38,6 @@ class EmailMinimalSharedViewModel @Inject constructor(
 
 
     init {
-        getRemoteEmails()
         getLocalEmails()
     }
 
