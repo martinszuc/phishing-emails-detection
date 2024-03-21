@@ -66,6 +66,17 @@ class EmailsImportFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
         initLoadingSpinner()
+        hideShowFetchEmailsButton()
+    }
+
+    private fun hideShowFetchEmailsButton() {
+        if (emailMinimalSharedViewModel.checkIfEmailsLoaded()) {
+            binding.btnFetchEmails.visibility = View.GONE
+            binding.searchViewContainer.visibility = View.VISIBLE
+        } else {
+            binding.btnFetchEmails.visibility = View.VISIBLE
+            binding.searchViewContainer.visibility = View.GONE
+        }
     }
 
     private fun initObserveSelectedEmails() {
@@ -223,7 +234,7 @@ class EmailsImportFragment : Fragment() {
             }
         }
 
-        // Assuming you have an observable or method to detect failure
+        // TODO Method to detect failure
         emailsImportViewModel.operationFailed.observe(viewLifecycleOwner) { isFailed ->
             if (isFailed) {
                 showImportFinishedDialog(success = false)

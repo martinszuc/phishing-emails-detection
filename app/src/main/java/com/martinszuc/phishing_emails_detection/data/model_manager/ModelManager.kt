@@ -11,7 +11,7 @@ class ModelManager @Inject constructor(
     private val modelManifestManager: ModelManifestManager,
     private val fileRepository: FileRepository
 ) {
-    fun createModel(modelName: String, creationDate: Date) {
+    fun addModelToManifest(modelName: String, creationDate: Date) {
         // Assume the model is already created and saved in its directory
         // Add model metadata to manifest
         val metadata = ModelMetadata(modelName, creationDate)

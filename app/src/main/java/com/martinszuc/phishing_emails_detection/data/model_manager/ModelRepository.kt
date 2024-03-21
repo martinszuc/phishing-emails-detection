@@ -15,6 +15,6 @@ class ModelRepository @Inject constructor(
 
     suspend fun addModel(modelName: String) {
         val creationDate = Date() // Capture the current date and time
-        modelManager.createModel(modelName, creationDate)
+        modelManager.addModelToManifest(modelName, creationDate)
     }
 }

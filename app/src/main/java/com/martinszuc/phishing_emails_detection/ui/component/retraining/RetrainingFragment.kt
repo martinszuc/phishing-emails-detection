@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -48,14 +47,15 @@ class RetrainingFragment : Fragment() {
         setupRecyclerView()
         setupRetrainButton()
         initBackFloatingActionButton()
-        setupObservers()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeModels()
+        observeLoading()
     }
+
     private fun setupRecyclerView() {
         trainingSelectionAdapter = TrainingSelectionAdapter { processedPackage, isChecked ->
             retrainingViewModel.togglePackageSelected(processedPackage)
@@ -145,7 +145,7 @@ class RetrainingFragment : Fragment() {
         }
     }
 
-    private fun setupObservers() {
+    private fun observeLoading() {
         retrainingViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             val progressBar = binding.progressBar
             if (isLoading) {

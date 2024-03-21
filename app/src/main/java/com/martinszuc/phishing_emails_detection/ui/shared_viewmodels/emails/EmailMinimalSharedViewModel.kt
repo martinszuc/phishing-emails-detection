@@ -36,6 +36,8 @@ class EmailMinimalSharedViewModel @Inject constructor(
     private val _remoteEmailsFlow = MutableStateFlow<PagingData<EmailMinimal>>(PagingData.empty())
     val remoteEmailsFlow: Flow<PagingData<EmailMinimal>> = _remoteEmailsFlow.asStateFlow()
 
+    private val _emailsLoaded = MutableLiveData<Boolean>(false)
+    val emailsLoaded: LiveData<Boolean> = _emailsLoaded
 
     init {
         getLocalEmails()
@@ -54,6 +56,7 @@ class EmailMinimalSharedViewModel @Inject constructor(
         viewModelScope.launch {
             val pagingData = emailMinimalRemoteRepository.getEmails().cachedIn(viewModelScope).first()
             _remoteEmailsFlow.value = pagingData
+            _emailsLoaded.value = true
         }
     }
 
@@ -81,8 +84,6 @@ class EmailMinimalSharedViewModel @Inject constructor(
         }
     }
 
-    // Remote
-
-
+    fun checkIfEmailsLoaded() = emailsLoaded.value ?: false
 
 }
