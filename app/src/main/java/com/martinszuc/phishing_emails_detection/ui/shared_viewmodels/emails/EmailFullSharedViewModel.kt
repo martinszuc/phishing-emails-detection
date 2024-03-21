@@ -27,7 +27,7 @@ class EmailFullSharedViewModel  @Inject constructor(
     val isLoading = MutableLiveData<Boolean>()
 
     private val _localEmailsFlow = MutableStateFlow<PagingData<EmailFull>>(PagingData.empty())
-    val localEmailsFlow: Flow<PagingData<EmailFull>> = _localEmailsFlow.asStateFlow()
+    val localEmailsFlow: Flow<PagingData<EmailFull>> = _localEmailsFlow.asStateFlow().cachedIn(viewModelScope)
 
     init {
         getEmails()
