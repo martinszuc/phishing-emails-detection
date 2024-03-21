@@ -6,6 +6,7 @@ import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailBlo
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailFullLocalRepository
+import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMinimalLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.remote.api.GmailApiService
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.utils.emails.EmailFactory
@@ -17,6 +18,7 @@ class EmailFullRemoteRepository @Inject constructor(
     private val apiService: GmailApiService,
     private val emailBlobLocalRepository: EmailBlobLocalRepository,
     private val emailFullLocalRepository: EmailFullLocalRepository,
+    private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
     private val authenticationRepository: AuthenticationRepository
 ) {
     suspend fun getEmailsFullByIds(emailIds: List<String>): List<EmailFull> {
@@ -61,13 +63,16 @@ class EmailFullRemoteRepository @Inject constructor(
                 // Save the full email
                 emailFullLocalRepository.insertAllEmailsFull(listOf(emailFull))
 
+                // Convert and save the minimal email
+                val emailMinimal = EmailFactory.createEmailMinimalFromFull(emailFull)
+                emailMinimalLocalRepository.insert(emailMinimal)
+
                 // Save the raw email blob with the ID from the full email
                 if (rawBlob != null) {
-                    val emailContent = String(rawBlob, Charsets.UTF_8)
                     val emailBlob = EmailBlob(
                         id = emailFull.id,
                         blob = rawBlob,
-                        senderEmail = EmailFactory.parseHeader(emailContent, "From") ?: Constants.SENDER_UNKNOWN,
+                        senderEmail = EmailFactory.parseHeader(String(rawBlob, Charsets.UTF_8), "From") ?: Constants.SENDER_UNKNOWN,
                         timestamp = emailFull.internalDate
                     )
                     emailBlobLocalRepository.insert(emailBlob)
@@ -77,6 +82,7 @@ class EmailFullRemoteRepository @Inject constructor(
             Log.e("EmailFullRemoteRepo", "Google SignIn Account is null, aborting fetch and save process")
         }
     }
+
 
 
 

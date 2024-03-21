@@ -17,6 +17,8 @@ import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_fu
 
 object EmailFactory {
 
+
+
     // Minimal
     fun createEmailMinimal(email: Message): EmailMinimal {
         return EmailMinimal(
@@ -25,6 +27,16 @@ object EmailFactory {
             subject = email.payload.headers.find { it.name == "Subject" }?.value ?: "",
             body = email.snippet, // TODO set the body correctly
             timestamp = email.internalDate
+        )
+    }
+
+    fun createEmailMinimalFromFull(emailFull: EmailFull): EmailMinimal {
+        return EmailMinimal(
+            id = emailFull.id,
+            sender = emailFull.payload.headers.find { it.name.equals("From", ignoreCase = true) }?.value ?: "",
+            subject = emailFull.payload.headers.find { it.name.equals("Subject", ignoreCase = true) }?.value ?: "",
+            body = emailFull.snippet,
+            timestamp = emailFull.internalDate
         )
     }
 

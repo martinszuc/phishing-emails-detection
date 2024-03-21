@@ -53,7 +53,7 @@ class EmailsImportFragment : Fragment() {
         _binding = FragmentEmailsImportBinding.inflate(inflater, container, false)
 
         initUserAccount()
-        initFloatingActionButton()
+        initImportFAB()
         initEmailsImport()
         initSearchView()
         initObserveSelectedEmails()
@@ -158,7 +158,7 @@ class EmailsImportFragment : Fragment() {
         _binding = null
     }
 
-    private fun initFloatingActionButton() {
+    private fun initImportFAB() {
         val fab: FloatingActionButton = binding.fab
 
         // Set an observer on the selectedEmails LiveData
