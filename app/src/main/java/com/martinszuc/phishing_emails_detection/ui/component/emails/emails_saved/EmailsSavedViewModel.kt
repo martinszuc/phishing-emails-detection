@@ -96,4 +96,12 @@ class EmailsSavedViewModel @Inject constructor(
             }
         }
     }
+
+    fun resetSelectionMode() {
+        _isSelectionMode.value = false
+        _selectedEmails.value = emptySet()
+        firstSelectedEmailId = null
+        _listOfEmailsBeforeSelection.value = listOf()
+    }
+
 }

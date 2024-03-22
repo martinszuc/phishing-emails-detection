@@ -15,7 +15,7 @@ class EmailPackageManager @Inject constructor(
     private val fileRepository: FileRepository,
     private val packageManifestManager: PackageManifestManager
 ) {
-    suspend fun createEmailPackage(
+    suspend fun createEmailPackage(             // TODO need to write individual mbox into all at once not enough memory
         emailIds: List<String>,
         isPhishy: Boolean,
         packageName: String

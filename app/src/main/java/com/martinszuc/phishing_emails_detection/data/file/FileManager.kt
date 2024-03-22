@@ -119,16 +119,5 @@ class FileManager(private val context: Context) {
         return file
     }
 
-    fun exportEmailsToFile(context: Context, emailBlobs: List<EmailBlob>, fileName: String = "exportedEmails.mbox"): File {
-        // Convert each EmailBlob to an mbox string
-        val mboxStrings = emailBlobs.map { EmailUtils.formatToMbox(it) }
-
-        // Merge the mbox strings into a single string
-        val mergedMbox = EmailUtils.mergeMboxStrings(mboxStrings)
-
-        // Save the merged mbox string to a file and return the File object
-        return saveMboxForPrediction(context, mergedMbox, fileName)
-    }
-
 
 }

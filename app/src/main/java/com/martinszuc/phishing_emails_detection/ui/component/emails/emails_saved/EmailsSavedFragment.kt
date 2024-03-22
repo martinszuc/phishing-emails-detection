@@ -182,6 +182,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d("EmailsSavedFragment", "onDestroyView called")
+        emailsSavedViewModel.resetSelectionMode()
         _binding = null
     }
 

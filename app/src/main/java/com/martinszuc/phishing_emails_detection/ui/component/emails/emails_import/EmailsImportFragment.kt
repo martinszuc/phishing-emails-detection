@@ -243,12 +243,11 @@ class EmailsImportFragment : Fragment() {
     }
 
     private fun showImportFinishedDialog(success: Boolean) {
-        val message = if (success) "Batch import finished successfully." else "Batch import failed."
+        val message = if (success) "Import finished successfully." else "Import failed."
         AlertDialog.Builder(requireContext()).apply {
             setTitle(if (success) "Success" else "Failure")
             setMessage(message)
             setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-            // Consider adding additional buttons/actions based on your app's flow
             create()
             show()
         }

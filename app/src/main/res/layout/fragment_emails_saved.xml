@@ -9,11 +9,37 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchView"
+        <!-- FrameLayout as the container for easier show/hide -->
+        <FrameLayout
+            android:id="@+id/searchViewContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="Search by subject" />
+            android:visibility="visible">
+
+            <!-- Use LinearLayout for proper sizing, alignment, and centering children vertically -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"> <!-- Add this line -->
+
+                <!-- SearchView taking up most of the space, now centered vertically -->
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/searchView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:queryHint="Search by subject" />
+
+                <!-- Button aligned to the end of the SearchView, also centered vertically -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBatchSave"
+                    style="@style/CustomBatchImportMaterialButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Batch Save" />
+            </LinearLayout>
+        </FrameLayout>
 
         <TextView
             android:id="@+id/empty_saved_textview"
@@ -57,7 +83,7 @@
         android:layout_gravity="end|bottom"
         android:src="@drawable/ic_saved"
         android:contentDescription="@string/submit"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:visibility="gone"/>
 </FrameLayout>
