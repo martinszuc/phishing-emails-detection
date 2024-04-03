@@ -1,8 +1,6 @@
 package com.martinszuc.phishing_emails_detection.utils.emails
 
-import android.content.Context
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailBlob
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

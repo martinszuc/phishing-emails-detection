@@ -1,15 +1,12 @@
 package com.martinszuc.phishing_emails_detection.ui.component.data_picking.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
-import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.databinding.ItemAddPackageBinding
-import com.martinszuc.phishing_emails_detection.databinding.ItemPackageEmailCheckboxBinding
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
+import com.martinszuc.phishing_emails_detection.databinding.ItemAddPackageBinding
 import com.martinszuc.phishing_emails_detection.databinding.ItemDualButtonDataPickingBinding
+import com.martinszuc.phishing_emails_detection.databinding.ItemPackageEmailCheckboxBinding
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
 
 class DataPickingSelectionAdapter(

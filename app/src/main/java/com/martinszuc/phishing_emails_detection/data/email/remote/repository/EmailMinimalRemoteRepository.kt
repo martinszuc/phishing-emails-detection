@@ -6,11 +6,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.martinszuc.phishing_emails_detection.data.auth.AccountManager
-import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
+import com.martinszuc.phishing_emails_detection.data.email.remote.api.GmailApiService
 import com.martinszuc.phishing_emails_detection.data.email.remote.api.datasource.GmailPagingSource
 import com.martinszuc.phishing_emails_detection.data.email.remote.api.datasource.SearchGmailPagingSource
-import com.martinszuc.phishing_emails_detection.data.email.remote.api.GmailApiService
+import com.martinszuc.phishing_emails_detection.utils.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import javax.inject.Inject

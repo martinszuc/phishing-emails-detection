@@ -10,9 +10,9 @@ import com.martinszuc.phishing_emails_detection.data.email.local.db.dao.EmailMin
 import com.martinszuc.phishing_emails_detection.data.email.local.db.dao.SubjectDao
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailBlob
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMboxMetadata
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.Subject
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.utils.Converters
 
 /**

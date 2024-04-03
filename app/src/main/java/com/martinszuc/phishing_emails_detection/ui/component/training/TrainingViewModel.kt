@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.martinszuc.phishing_emails_detection.data.processed_packages.entity.ProcessedPackageMetadata
 import com.martinszuc.phishing_emails_detection.data.model.Training
 import com.martinszuc.phishing_emails_detection.data.model_manager.ModelRepository
+import com.martinszuc.phishing_emails_detection.data.processed_packages.entity.ProcessedPackageMetadata
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

@@ -2,9 +2,7 @@ package com.martinszuc.phishing_emails_detection.ui.component.webview
 
 import android.os.Bundle
 import android.util.Log
-import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
-import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.ActivityWebViewBinding
 
 /**

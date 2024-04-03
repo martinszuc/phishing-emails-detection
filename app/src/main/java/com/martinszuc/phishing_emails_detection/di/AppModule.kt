@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
 import com.martinszuc.phishing_emails_detection.data.auth.AccountManager
 import com.martinszuc.phishing_emails_detection.data.auth.UserRepository
-import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMboxLocalRepository
@@ -14,14 +13,15 @@ import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageR
 import com.martinszuc.phishing_emails_detection.data.email_package.PackageManifestManager
 import com.martinszuc.phishing_emails_detection.data.file.FileManager
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
-import com.martinszuc.phishing_emails_detection.data.model.Prediction
-import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageManifestManager
-import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageRepository
 import com.martinszuc.phishing_emails_detection.data.model.DataProcessing
+import com.martinszuc.phishing_emails_detection.data.model.Prediction
 import com.martinszuc.phishing_emails_detection.data.model.Retraining
 import com.martinszuc.phishing_emails_detection.data.model.Training
 import com.martinszuc.phishing_emails_detection.data.model_manager.ModelManifestManager
 import com.martinszuc.phishing_emails_detection.data.model_manager.ModelRepository
+import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageManifestManager
+import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageRepository
+import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,7 +1,5 @@
 package com.martinszuc.phishing_emails_detection.data.model
 
-import com.chaquo.python.Python
-import com.chaquo.python.PyObject
 import android.util.Log
 import com.martinszuc.phishing_emails_detection.data.python.PythonSingleton
 import javax.inject.Inject
