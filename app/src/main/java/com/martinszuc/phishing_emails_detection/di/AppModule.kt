@@ -10,7 +10,7 @@ import com.martinszuc.phishing_emails_detection.data.email.local.repository.Emai
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMboxLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.remote.api.GmailApiService
 import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageRepository
-import com.martinszuc.phishing_emails_detection.data.email_package.PackageManifestManager
+import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageManifestManager
 import com.martinszuc.phishing_emails_detection.data.file.FileManager
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.data.model.DataProcessing
@@ -123,8 +123,8 @@ object AppModule {
     // Provide PackageManifestManager
     @Provides
     @Singleton
-    fun providePackageManifestManager(@ApplicationContext context: Context): PackageManifestManager {
-        return PackageManifestManager(context)
+    fun providePackageManifestManager(@ApplicationContext context: Context): EmailPackageManifestManager {
+        return EmailPackageManifestManager(context)
     }
 
     // Provide EmailPackageRepository
@@ -132,10 +132,10 @@ object AppModule {
     @Singleton
     fun provideEmailPackageRepository(
         emailMboxLocalRepository: EmailMboxLocalRepository,
-        packageManifestManager: PackageManifestManager,
+        emailPackageManifestManager: EmailPackageManifestManager,
         fileRepository: FileRepository
     ): EmailPackageRepository {
-        return EmailPackageRepository(emailMboxLocalRepository, fileRepository, packageManifestManager)
+        return EmailPackageRepository(emailMboxLocalRepository, fileRepository, emailPackageManifestManager)
     }
 
     // Provide MachineLearningUtils

@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
-import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
+import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMboxLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMinimalLocalRepository
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.data.model.Prediction
@@ -26,9 +26,9 @@ import javax.inject.Inject
 @HiltViewModel
 class DetectorViewModel @Inject constructor(
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
-    private val emailBlobLocalRepository: EmailBlobLocalRepository,
+    private val emailMboxLocalRepository: EmailMboxLocalRepository,
     private val fileRepository: FileRepository,
-    private val prediction: Prediction,                                              // TODO notificaiton when model isnt loaded
+    private val prediction: Prediction,                                              // TODO notification when model isn't loaded
     @ApplicationContext private val context: Context  // Injecting application context
 
 ) : ViewModel() {
@@ -40,7 +40,6 @@ class DetectorViewModel @Inject constructor(
     val classificationResult: LiveData<Boolean> = _classificationResult
 
     private val _selectedModel = MutableLiveData<ModelMetadata?>()
-    val selectedModel: LiveData<ModelMetadata?> = _selectedModel
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
@@ -86,6 +85,7 @@ class DetectorViewModel @Inject constructor(
         Log.d("DetectorViewModel", "Deselecting all emails")
         _selectedEmailId.value = null
     }
+
     fun clearIsFinished() {
         Log.d("DetectorViewModel", "Deselecting all emails")
         _isFinished.value = false
@@ -105,9 +105,11 @@ class DetectorViewModel @Inject constructor(
             _isLoading.postValue(true)
             Log.d("DetectorViewModel", "Fetching mbox content for email ID: $emailId")
 
-            val mboxContent = emailBlobLocalRepository.getMboxById(emailId)
-            if (mboxContent.isEmpty()) {
-                Log.d("DetectorViewModel", "Mbox content is empty")
+            val mboxContent = emailMboxLocalRepository.fetchMboxContentById("$emailId.mbox")
+
+            // Check if mboxContent is either null or empty
+            if (mboxContent.isNullOrEmpty()) {
+                Log.d("DetectorViewModel", "Mbox content is empty or not available")
                 _classificationResult.postValue(false)
                 _isLoading.postValue(false)
                 return@launch
@@ -124,7 +126,7 @@ class DetectorViewModel @Inject constructor(
             // Perform classification using the saved file and model path
             Log.d("DetectorViewModel", "Classifying email from saved mbox file")
             val result = withContext(Dispatchers.IO) {
-                prediction.classify(modelName, mboxFile.name)  // Updated to pass both modelPath and mboxFilePath
+                prediction.classify(modelName, mboxFile.name)  // Assume this method correctly handles classification
             }
 
             // Check the first email prediction in the list to see if it's classified as phishing or not
@@ -137,4 +139,5 @@ class DetectorViewModel @Inject constructor(
             Log.d("DetectorViewModel", "Classification result for the first email: $isPhishing")
         }
     }
+
 }

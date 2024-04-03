@@ -13,7 +13,7 @@ import javax.inject.Inject
 class EmailPackageRepository @Inject constructor(
     private val emailMboxLocalRepository: EmailMboxLocalRepository,
     private val fileRepository: FileRepository,
-    private val packageManifestManager: PackageManifestManager
+    private val emailPackageManifestManager: EmailPackageManifestManager
 ) {
     private val logTag = "EmailPackageRepository"
 
@@ -47,7 +47,7 @@ class EmailPackageRepository @Inject constructor(
 
         val fileSize = fileRepository.getFileSizeInBytes(Constants.DIR_EMAIL_PACKAGES, finalFilename)
         val metadata = EmailPackageMetadata(finalFilename, isPhishy, packageName, currentTime, fileSize, numberOfEmails)
-        packageManifestManager.addEntryToManifest(metadata)
+        emailPackageManifestManager.addEntryToManifest(metadata)
         Log.d(logTag, "Package metadata added for $finalFilename")
 
         return finalFilename
@@ -78,7 +78,7 @@ class EmailPackageRepository @Inject constructor(
 
         val fileSize = fileRepository.getFileSizeInBytes(Constants.DIR_EMAIL_PACKAGES, finalFilename)
         val metadata = EmailPackageMetadata(finalFilename, isPhishy, packageName, currentTime, fileSize, numberOfEmails)
-        packageManifestManager.addEntryToManifest(metadata)
+        emailPackageManifestManager.addEntryToManifest(metadata)
         Log.d(logTag, "Package metadata added for $finalFilename")
 
         return true
@@ -86,7 +86,7 @@ class EmailPackageRepository @Inject constructor(
 
     fun loadEmailPackagesMetadata(): List<EmailPackageMetadata> {
         Log.d(logTag, "Loading email packages metadata")
-        return packageManifestManager.loadManifest()
+        return emailPackageManifestManager.loadManifest()
     }
 
     fun loadEmailPackageContent(fileName: String): String? {
@@ -96,7 +96,7 @@ class EmailPackageRepository @Inject constructor(
 
     fun deleteEmailPackage(fileName: String) {
         Log.d(logTag, "Deleting email package: $fileName")
-        packageManifestManager.removePackageFromManifest(fileName)
+        emailPackageManifestManager.removePackageFromManifest(fileName)
         fileRepository.deleteFile(Constants.DIR_EMAIL_PACKAGES, fileName)
         Log.d(logTag, "$fileName deleted successfully")
     }

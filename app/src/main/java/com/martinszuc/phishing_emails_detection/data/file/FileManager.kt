@@ -30,15 +30,6 @@ class FileManager(private val context: Context) {
         file.appendText("$text\n\n")
     }
 
-    fun appendTextToFile(directoryName: String, fileName: String, text: String) {
-        val dir = File(context.filesDir, directoryName)
-        if (!dir.exists()) {
-            dir.mkdirs()
-        }
-        val file = File(dir, fileName)
-        file.appendText("$text\n\n")
-    }
-
     suspend fun saveTextToFileAndGetFileSize(textContent: String, directoryName: String, fileName: String): Long {
         val directory = File(context.filesDir, directoryName).apply {
             if (!exists()) mkdirs() // Create directory if it doesn't exist
