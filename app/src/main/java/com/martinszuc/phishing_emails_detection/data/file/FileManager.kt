@@ -2,21 +2,41 @@ package com.martinszuc.phishing_emails_detection.data.file
 
 import android.content.Context
 import android.net.Uri
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailBlob
 import com.martinszuc.phishing_emails_detection.utils.Constants
-import com.martinszuc.phishing_emails_detection.utils.emails.EmailUtils
 import java.io.File
 
 class FileManager(private val context: Context) {
 
-    // Saves text content to a file within a specific directory in the app's internal storage
-    fun saveTextToFile(textContent: String, directoryName: String, fileName: String): File {
-        val directory = File(context.filesDir, directoryName).apply {
-            if (!exists()) mkdirs() // Create directory if it doesn't exist
-        }
+    fun getAppDirectory(): File {
+        // Assuming files are stored in the app's internal storage directory
+        return context.filesDir
+    }
+
+    fun saveTextToFile(mboxContent: String, directoryName: String, fileName: String): File {
+        val directory = File(getAppDirectory(), directoryName)
+        if (!directory.exists()) directory.mkdirs()
+
         val file = File(directory, fileName)
-        file.writeText(textContent)
+        file.writeText(mboxContent)
         return file
+    }
+
+    fun appendMboxToFile(directoryName: String, fileName: String, text: String) {
+        val dir = File(context.filesDir, directoryName)
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+        val file = File(dir, fileName)
+        file.appendText("$text\n\n")
+    }
+
+    fun appendTextToFile(directoryName: String, fileName: String, text: String) {
+        val dir = File(context.filesDir, directoryName)
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+        val file = File(dir, fileName)
+        file.appendText("$text\n\n")
     }
 
     suspend fun saveTextToFileAndGetFileSize(textContent: String, directoryName: String, fileName: String): Long {

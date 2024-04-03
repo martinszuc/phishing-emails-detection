@@ -33,6 +33,7 @@ import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detai
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.adapter.EmailsSavedAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailFullSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailMinimalSharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailParentSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -47,6 +48,7 @@ import kotlin.coroutines.suspendCoroutine
 class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismissListener {
     private var _binding: FragmentEmailsSavedBinding? = null
     private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()
+    private val emailParentSharedViewModel: EmailParentSharedViewModel by activityViewModels()
     private val emailFullSharedViewModel: EmailFullSharedViewModel by activityViewModels()
     private val emailsSavedViewModel: EmailsSavedViewModel by activityViewModels()
     private val emailDetailsCombined = MediatorLiveData<Pair<EmailMinimal?, EmailFull?>>()
@@ -98,7 +100,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
                 binding.gotoSavedEmailsButton.visibility = View.VISIBLE
                 binding.gotoSavedEmailsButton.setOnClickListener {
                     // Navigate to the emails import fragment
-                    viewPager?.currentItem = 1
+                    emailParentSharedViewModel.setViewPagerPosition(0)
                 }
             } else {
                 // If the emails flow is not empty, hide the TextView and Button and show SearchView

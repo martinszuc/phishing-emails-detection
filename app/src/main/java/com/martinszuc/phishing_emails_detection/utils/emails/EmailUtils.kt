@@ -32,6 +32,7 @@ object EmailUtils {
         // Return the formatted mbox string
         return mboxHeader + emailContent + "\n"
     }
+
     fun mergeMboxStrings(mboxStrings: List<String>): String {
         return mboxStrings.joinToString(separator = "\n\n")
     }

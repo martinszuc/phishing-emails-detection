@@ -9,7 +9,6 @@ import javax.inject.Inject
 
 class FileRepository @Inject constructor(private val fileManager: FileManager) {
 
-
     // Save mbox content to a file within a specified directory
     fun saveMboxContent(
         mboxContent: String,
@@ -153,6 +152,10 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
         fileName: String = "emails.mbox"
     ): File {
         return fileManager.saveMboxForPrediction(context, mboxContent, fileName)
+    }
+
+    fun appendMboxContent(directoryName: String = Constants.DIR_EMAIL_PACKAGES, fileName: String, mboxContent: String) {
+        fileManager.appendMboxToFile(directoryName, fileName, mboxContent)
     }
 
 }

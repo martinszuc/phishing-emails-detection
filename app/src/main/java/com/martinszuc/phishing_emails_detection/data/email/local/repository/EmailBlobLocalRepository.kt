@@ -25,22 +25,13 @@ class EmailBlobLocalRepository @Inject constructor(
         return EmailUtils.formatToMbox(emailBlob)
     }
 
+    suspend fun getBlobById(id: String): EmailBlob? {
+        return emailBlobDao.getEmailBlob(id)
+    }
+
     suspend fun deleteEmailBlob(id: String) {
         database.withTransaction {
             emailBlobDao.deleteEmailBlob(id)
         }
     }
-
-    suspend fun getMboxesByIds(ids: List<String>): List<String> {
-        return ids.mapNotNull { id ->
-            emailBlobDao.getEmailBlob(id)?.let { EmailUtils.formatToMbox(it) }
-        }
-    }
-
-    suspend fun getEmailBlobsByIds(ids: List<String>): List<EmailBlob> {
-        return ids.mapNotNull { id ->
-            emailBlobDao.getEmailBlob(id)
-        }
-    }
-
 }

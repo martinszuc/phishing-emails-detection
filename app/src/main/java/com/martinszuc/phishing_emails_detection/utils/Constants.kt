@@ -29,6 +29,7 @@ class Constants {
         const val CSV_SAMPLES_DIR = "email_csv_samples"
         const val MODELS_DIR = "models"
         const val PREDICTION_MBOX_DIR = "prediction_emails"
+        const val MBOX_FILES_DIR = "email_mbox_files"
 
     }
 }

@@ -8,6 +8,7 @@ import com.martinszuc.phishing_emails_detection.data.auth.UserRepository
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
+import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMboxLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.remote.api.GmailApiService
 import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageManager
 import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageRepository
@@ -111,6 +112,16 @@ object AppModule {
         return EmailBlobLocalRepository(appDatabase)
     }
 
+    // Provide EmailBlobLocalRepository
+    @Provides
+    @Singleton
+    fun provideEmailMboxLocalRepository(
+        appDatabase: AppDatabase,
+        fileRepository: FileRepository
+    ): EmailMboxLocalRepository {
+        return EmailMboxLocalRepository(appDatabase, fileRepository)
+    }
+
     // Provide PackageManifestManager
     @Provides
     @Singleton
@@ -122,11 +133,11 @@ object AppModule {
     @Provides
     @Singleton
     fun provideEmailPackageManager(
-        emailBlobLocalRepository: EmailBlobLocalRepository,
+        emailMboxLocalRepository: EmailMboxLocalRepository,
         fileRepository: FileRepository,
         packageManifestManager: PackageManifestManager
     ): EmailPackageManager {
-        return EmailPackageManager(emailBlobLocalRepository, fileRepository, packageManifestManager)
+        return EmailPackageManager(emailMboxLocalRepository, fileRepository, packageManifestManager)
     }
 
     // Provide EmailPackageRepository
@@ -147,6 +158,7 @@ object AppModule {
         // You may need to adjust the parameters according to the constructor of MachineLearningUtils
         return DataProcessing()
     }
+
     @Provides
     @Singleton
     fun provideProcessedPackageManifestManager(@ApplicationContext context: Context): ProcessedPackageManifestManager {
@@ -161,6 +173,7 @@ object AppModule {
     ): ProcessedPackageRepository {
         return ProcessedPackageRepository(processedPackageManifestManager, fileRepository)
     }
+
     @Provides
     @Singleton
     fun provideModelManifestManager(@ApplicationContext context: Context): ModelManifestManager {

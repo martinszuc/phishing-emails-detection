@@ -2,50 +2,56 @@ package com.martinszuc.phishing_emails_detection.data.email_package
 
 import android.net.Uri
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
+import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMboxLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
-import com.martinszuc.phishing_emails_detection.utils.emails.EmailUtils
 import java.io.File
 import javax.inject.Inject
 
 class EmailPackageManager @Inject constructor(
-    private val emailBlobLocalRepository: EmailBlobLocalRepository,
+    private val emailMboxLocalRepository: EmailMboxLocalRepository,
     private val fileRepository: FileRepository,
     private val packageManifestManager: PackageManifestManager
 ) {
-    suspend fun createEmailPackage(             // TODO need to write individual mbox into all at once not enough memory
+    suspend fun createEmailPackage(
         emailIds: List<String>,
         isPhishy: Boolean,
         packageName: String
     ): String {
-        val emailBlobs = emailBlobLocalRepository.getEmailBlobsByIds(emailIds)
-        val mboxStrings = emailBlobs.map { EmailUtils.formatToMbox(it) }
-        val mboxContent = EmailUtils.mergeMboxStrings(mboxStrings)
         val currentTime = System.currentTimeMillis()
         val currentTimeFormatted = StringUtils.formatTimestampForFilename(currentTime)
-        val numberOfEmails = emailBlobs.size
-        val filename =
-            "${packageName}_${currentTimeFormatted}_${numberOfEmails}_${if (isPhishy) "phishy" else "safe"}.mbox"
+        val filename = "${packageName}_${currentTimeFormatted}_${if (isPhishy) "phishy" else "safe"}.mbox"
 
+        // Initialize package file and metadata
+        var numberOfEmails = 0
 
-        // Save the package content to a file
-        val filesize =
-            fileRepository.saveTextToFileAndGetFileSize(mboxContent, "email_packages", filename)
+        emailIds.forEach { emailId ->
+            // Fetch the formatted mbox string directly
+            val emailMbox = emailMboxLocalRepository.fetchMboxContentById(emailId + ".mbox")
+            emailMbox?.let {
+                fileRepository.appendMboxContent(
+                    Constants.DIR_EMAIL_PACKAGES,
+                    filename,
+                    it // Use the fetched mbox content
+                )
+                numberOfEmails++
+            }
+        }
 
-        // Update the manifest with new package metadata
+        val fileSize = fileRepository.getFileSizeInBytes(Constants.DIR_EMAIL_PACKAGES, filename)
+
         val metadata = EmailPackageMetadata(
-            filename,
-            isPhishy,
-            packageName,
-            currentTime,
-            filesize,
-            numberOfEmails
+            fileName = filename,
+            isPhishy = isPhishy,
+            packageName = packageName,
+            creationDate = currentTime,
+            fileSize = fileSize,
+            numberOfEmails = numberOfEmails
         )
         packageManifestManager.addPackageToManifest(metadata)
 
-        // Return the file path
         return filename
     }
 

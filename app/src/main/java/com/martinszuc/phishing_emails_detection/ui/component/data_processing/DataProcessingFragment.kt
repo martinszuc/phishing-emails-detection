@@ -15,6 +15,7 @@ import com.martinszuc.phishing_emails_detection.databinding.FragmentMlDataProces
 import com.martinszuc.phishing_emails_detection.ui.component.data_picking.DataPickingViewModel
 import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningState
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,6 +26,7 @@ class DataProcessingFragment : Fragment() {  // TODO already processed data to s
     private val dataProcessingViewModel: DataProcessingViewModel by viewModels()
     private val dataPickingViewModel: DataPickingViewModel by activityViewModels()
     private val machineLearningParentSharedViewModel: MachineLearningParentSharedViewModel by activityViewModels()
+    private val processedPackageSharedViewModel: ProcessedPackageSharedViewModel by activityViewModels()
 
     private var processingStarted = false
 
@@ -70,8 +72,13 @@ class DataProcessingFragment : Fragment() {  // TODO already processed data to s
                 // Show the check icon if processing has finished and was started by the button press
                 binding.ivCheck.visibility = View.VISIBLE
                 binding.fab.visibility = View.VISIBLE
+
                 // Optionally, hide the icon after a delay or based on user action
 //                binding.ivCheck.postDelayed({ binding.ivCheck.visibility = View.GONE }, 2000)
+
+                processedPackageSharedViewModel.refreshAndLoadProcessedPackages()
+
+
                 processingStarted = false // Reset the flag after handling
                 binding.btnProcessEmails.isEnabled = false
             }
