@@ -22,28 +22,31 @@ class EmailPackageManager @Inject constructor(
     ): String {
         val currentTime = System.currentTimeMillis()
         val currentTimeFormatted = StringUtils.formatTimestampForFilename(currentTime)
-        val filename = "${packageName}_${currentTimeFormatted}_${if (isPhishy) "phishy" else "safe"}.mbox"
-
-        // Initialize package file and metadata
+        // Use a temporary filename initially
+        val tempFilename =
+            "${packageName}_${currentTimeFormatted}_temp_${if (isPhishy) "phishy" else "safe"}.mbox"
         var numberOfEmails = 0
 
+        // Append the mbox content for each emailId and count emails
         emailIds.forEach { emailId ->
-            // Fetch the formatted mbox string directly
             val emailMbox = emailMboxLocalRepository.fetchMboxContentById(emailId + ".mbox")
             emailMbox?.let {
-                fileRepository.appendMboxContent(
-                    Constants.DIR_EMAIL_PACKAGES,
-                    filename,
-                    it // Use the fetched mbox content
-                )
+                fileRepository.appendMboxContent(Constants.DIR_EMAIL_PACKAGES, tempFilename, it)
                 numberOfEmails++
             }
         }
 
-        val fileSize = fileRepository.getFileSizeInBytes(Constants.DIR_EMAIL_PACKAGES, filename)
+        // Final filename with the correct number of emails
+        val finalFilename =
+            "${packageName}_${currentTimeFormatted}_${numberOfEmails}_${if (isPhishy) "phishy" else "safe"}.mbox"
+        // Rename the temporary file to the final filename
+        fileRepository.renameFile(Constants.DIR_EMAIL_PACKAGES, tempFilename, finalFilename)
+
+        val fileSize =
+            fileRepository.getFileSizeInBytes(Constants.DIR_EMAIL_PACKAGES, finalFilename)
 
         val metadata = EmailPackageMetadata(
-            fileName = filename,
+            fileName = finalFilename,
             isPhishy = isPhishy,
             packageName = packageName,
             creationDate = currentTime,
@@ -52,8 +55,9 @@ class EmailPackageManager @Inject constructor(
         )
         packageManifestManager.addPackageToManifest(metadata)
 
-        return filename
+        return finalFilename
     }
+
 
     suspend fun createAndSaveEmailPackageFromMbox(
         uri: Uri,

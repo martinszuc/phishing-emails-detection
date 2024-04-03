@@ -3,7 +3,6 @@ package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_proc
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageManager
 import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -12,7 +11,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ProcessedPackageManagerViewModel @Inject constructor(
     private val processedPackageRepository: ProcessedPackageRepository,
-    private val processedPackageManager: ProcessedPackageManager
 ) : ViewModel() {
 
     // LiveData to observe processed packages
@@ -27,7 +25,7 @@ class ProcessedPackageManagerViewModel @Inject constructor(
     fun createAndSaveProcessedPackageFromCsvFile(uri: Uri, isPhishy: Boolean, packageName: String) {
         viewModelScope.launch {
             try {
-                processedPackageManager.createAndAddProcessedPackageFromCsv(
+                processedPackageRepository.createAndAddProcessedPackageFromCsv(
                     uri,
                     isPhishy,
                     packageName
