@@ -12,12 +12,6 @@ class ProcessedPackageRepository @Inject constructor(
     private val processedPackageManifestManager: ProcessedPackageManifestManager,
     private val fileRepository: FileRepository
 ) {
-    suspend fun refreshProcessedPackages() {
-        val outputCsvDirPath = fileRepository.getFilePath("", Constants.OUTPUT_CSV_DIR) ?: return
-        val outputCsvDir = File(outputCsvDirPath)
-        processedPackageManifestManager.refreshManifestFromDirectory(outputCsvDir)
-    }
-
     fun createAndAddProcessedPackageFromCsv(uri: Uri, isPhishy: Boolean, packageName: String) {
         val tempFileName = "temp_$packageName.csv"
         val copiedFile = fileRepository.copyCsvFromUri(uri, Constants.OUTPUT_CSV_DIR, tempFileName)
@@ -40,17 +34,24 @@ class ProcessedPackageRepository @Inject constructor(
                 val metadata = ProcessedPackageMetadata(
                     fileName, isPhishy, packageName, creationDate, fileSize, numberOfRows
                 )
-                processedPackageManifestManager.addPackageToManifest(metadata)
+                processedPackageManifestManager.addEntryToManifest(metadata)
             }
         }
     }
 
     fun loadProcessedPackagesMetadata(): List<ProcessedPackageMetadata> =
-        processedPackageManifestManager.refreshManifest()
+        processedPackageManifestManager.loadManifest()
 
     fun deleteProcessedPackage(fileName: String) {
         processedPackageManifestManager.removePackageFromManifest(fileName)
         fileRepository.deleteCsvFile(Constants.OUTPUT_CSV_DIR, fileName)
+    }
+
+    suspend fun refreshProcessedPackagesFromDir() {
+        val packagesDirPath = fileRepository.getFilePath("", Constants.OUTPUT_CSV_DIR) ?: return
+        val packagesDir = File(packagesDirPath)
+
+        processedPackageManifestManager.refreshManifestFromDirectory(packagesDir)
     }
 
 }

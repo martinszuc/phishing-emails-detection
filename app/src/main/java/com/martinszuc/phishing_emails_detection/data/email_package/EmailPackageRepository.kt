@@ -47,7 +47,7 @@ class EmailPackageRepository @Inject constructor(
 
         val fileSize = fileRepository.getFileSizeInBytes(Constants.DIR_EMAIL_PACKAGES, finalFilename)
         val metadata = EmailPackageMetadata(finalFilename, isPhishy, packageName, currentTime, fileSize, numberOfEmails)
-        packageManifestManager.addPackageToManifest(metadata)
+        packageManifestManager.addEntryToManifest(metadata)
         Log.d(logTag, "Package metadata added for $finalFilename")
 
         return finalFilename
@@ -78,7 +78,7 @@ class EmailPackageRepository @Inject constructor(
 
         val fileSize = fileRepository.getFileSizeInBytes(Constants.DIR_EMAIL_PACKAGES, finalFilename)
         val metadata = EmailPackageMetadata(finalFilename, isPhishy, packageName, currentTime, fileSize, numberOfEmails)
-        packageManifestManager.addPackageToManifest(metadata)
+        packageManifestManager.addEntryToManifest(metadata)
         Log.d(logTag, "Package metadata added for $finalFilename")
 
         return true

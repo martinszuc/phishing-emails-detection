@@ -3,33 +3,23 @@ package com.martinszuc.phishing_emails_detection.data.email_package
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.martinszuc.phishing_emails_detection.data.AbstractManifestManager
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
 import java.io.File
 import javax.inject.Inject
 
-class PackageManifestManager @Inject constructor(private val context: Context) {
+class PackageManifestManager @Inject constructor(context: Context) :
+    AbstractManifestManager<EmailPackageMetadata>(context) {
 
-    private val gson = Gson()
-    private val manifestFile = File(context.filesDir, "emailPackageManifest.json")
+    override val manifestFileName = "emailPackageManifest.json"
 
-    fun loadManifest(): List<EmailPackageMetadata> {
-        if (!manifestFile.exists()) return emptyList()
-        val json = manifestFile.readText()
-        return gson.fromJson(json, object : TypeToken<List<EmailPackageMetadata>>() {}.type)
-    }
+    override fun getTypeToken() = object : TypeToken<List<EmailPackageMetadata>>() {}
 
-    fun addPackageToManifest(metadata: EmailPackageMetadata) {
-        val currentManifest = loadManifest().toMutableList()
-        currentManifest.add(metadata)
-        manifestFile.writeText(gson.toJson(currentManifest))
+    override fun refreshManifestFromDirectory(directory: File) {
+        // No operation
     }
 
     fun removePackageFromManifest(fileName: String) {
-        val currentManifest = loadManifest().toMutableList()
-        val packageToRemove = currentManifest.firstOrNull { it.fileName == fileName }
-        if (packageToRemove != null) {
-            currentManifest.remove(packageToRemove)
-            manifestFile.writeText(gson.toJson(currentManifest))
-        }
+        removeEntryFromManifest { it.fileName == fileName }
     }
 }

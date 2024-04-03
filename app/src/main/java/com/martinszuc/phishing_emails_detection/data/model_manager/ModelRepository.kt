@@ -19,13 +19,13 @@ class ModelRepository @Inject constructor(
     fun addModelToManifest(modelName: String) {
         val creationDate = Date()
         val metadata = ModelMetadata(modelName, creationDate)
-        modelManifestManager.addModelToManifest(metadata)
+        modelManifestManager.addEntryToManifest(metadata)
     }
 
     suspend fun refreshModelsFromDir() {
         val ModelsDirPath = fileRepository.getFilePath("", Constants.MODELS_DIR) ?: return
         val modelsDir = File(ModelsDirPath)
 
-        modelManifestManager.refreshModelsFromDir(modelsDir)
+        modelManifestManager.refreshManifestFromDirectory(modelsDir)
     }
 }

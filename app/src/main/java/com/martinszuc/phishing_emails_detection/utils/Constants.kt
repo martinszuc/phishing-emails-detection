@@ -7,6 +7,7 @@ package com.martinszuc.phishing_emails_detection.utils
 class Constants {
     companion object {
 
+
         const val GMAIL_PAGER_PREFETCH = 7
         const val GMAIL_PAGER_INIT = 10
         const val GMAIL_PAGER_PAGE = 7
@@ -21,15 +22,14 @@ class Constants {
         const val PHISHING_INFO_LINK = "https://consumer.ftc.gov/articles/how-recognize-and-avoid-phishing-scams"
 
         // GmailApiService constants
-
         const val SENDER_UNKNOWN = "unknown@sender.com"
 
+        // Directories
         const val DIR_EMAIL_PACKAGES = "email_packages"
         const val OUTPUT_CSV_DIR = "extracted_csv"
-        const val CSV_SAMPLES_DIR = "email_csv_samples"
         const val MODELS_DIR = "models"
         const val PREDICTION_MBOX_DIR = "prediction_emails"
         const val MBOX_FILES_DIR = "email_mbox_files"
-
+        const val MANIFESTS_DIR = "manifests"
     }
 }

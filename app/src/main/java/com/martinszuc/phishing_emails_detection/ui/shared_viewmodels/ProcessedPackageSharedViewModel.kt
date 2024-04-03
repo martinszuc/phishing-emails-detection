@@ -24,7 +24,7 @@ class ProcessedPackageSharedViewModel @Inject constructor(
 
     fun refreshAndLoadProcessedPackages() {
         viewModelScope.launch {
-            processedPackageRepository.refreshProcessedPackages()
+            processedPackageRepository.refreshProcessedPackagesFromDir()
 
             // After refreshing the manifest, load the processed packages metadata
             val packages = processedPackageRepository.loadProcessedPackagesMetadata()

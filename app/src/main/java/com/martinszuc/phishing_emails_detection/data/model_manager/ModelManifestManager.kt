@@ -1,42 +1,31 @@
 package com.martinszuc.phishing_emails_detection.data.model_manager
+
 import android.content.Context
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.martinszuc.phishing_emails_detection.data.AbstractManifestManager
 import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import java.io.File
 import java.util.Date
 import javax.inject.Inject
 
-class ModelManifestManager @Inject constructor(private val context: Context) {
-    private val gson = Gson()
-    private val manifestFile = File(context.filesDir, "modelManifest.json")
+class ModelManifestManager @Inject constructor(context: Context) :
+    AbstractManifestManager<ModelMetadata>(context) {
 
-    fun loadManifest(): List<ModelMetadata> {
-        if (!manifestFile.exists()) return emptyList()
-        val json = manifestFile.readText()
-        return gson.fromJson(json, object : TypeToken<List<ModelMetadata>>() {}.type)
-    }
+    override val manifestFileName: String = "modelManifest.json"
 
-    fun addModelToManifest(metadata: ModelMetadata) {
-        val currentManifest = loadManifest().toMutableList()
-        currentManifest.add(metadata)
-        manifestFile.writeText(gson.toJson(currentManifest))
-    }
+    override fun getTypeToken(): TypeToken<List<ModelMetadata>> = object : TypeToken<List<ModelMetadata>>() {}
 
-    fun refreshModelsFromDir(modelsDir: File) {
-        // Filter to get only directories, not files
-        val modelDirs = modelsDir.listFiles { file -> file.isDirectory }
+    override fun refreshManifestFromDirectory(directory: File) {
+        val modelDirs = directory.listFiles { file -> file.isDirectory }
 
-        val newManifest = modelDirs?.map { dir ->
-            // The directory name is used as the model's name
+        val newManifest = modelDirs?.mapNotNull { dir ->
+            // Assuming the directory name is used as the model's name
+            // and the directory's last modified date as the creation date
             val modelName = dir.name
-            // Use the directory's last modified date as the creation date
             val creationDate = Date(dir.lastModified())
             ModelMetadata(modelName, creationDate)
         } ?: emptyList()
 
-        manifestFile.writeText(gson.toJson(newManifest))
+        saveManifest(newManifest)
     }
 }
-
-
