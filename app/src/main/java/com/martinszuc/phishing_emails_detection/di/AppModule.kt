@@ -10,7 +10,6 @@ import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMboxLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.remote.api.GmailApiService
-import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageManager
 import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageRepository
 import com.martinszuc.phishing_emails_detection.data.email_package.PackageManifestManager
 import com.martinszuc.phishing_emails_detection.data.file.FileManager
@@ -21,7 +20,6 @@ import com.martinszuc.phishing_emails_detection.data.processed_packages.Processe
 import com.martinszuc.phishing_emails_detection.data.model.DataProcessing
 import com.martinszuc.phishing_emails_detection.data.model.Retraining
 import com.martinszuc.phishing_emails_detection.data.model.Training
-import com.martinszuc.phishing_emails_detection.data.model_manager.ModelManager
 import com.martinszuc.phishing_emails_detection.data.model_manager.ModelManifestManager
 import com.martinszuc.phishing_emails_detection.data.model_manager.ModelRepository
 import dagger.Module
@@ -129,26 +127,15 @@ object AppModule {
         return PackageManifestManager(context)
     }
 
-    // Provide EmailPackageManager
-    @Provides
-    @Singleton
-    fun provideEmailPackageManager(
-        emailMboxLocalRepository: EmailMboxLocalRepository,
-        fileRepository: FileRepository,
-        packageManifestManager: PackageManifestManager
-    ): EmailPackageManager {
-        return EmailPackageManager(emailMboxLocalRepository, fileRepository, packageManifestManager)
-    }
-
     // Provide EmailPackageRepository
     @Provides
     @Singleton
     fun provideEmailPackageRepository(
-        emailPackageManager: EmailPackageManager,
+        emailMboxLocalRepository: EmailMboxLocalRepository,
         packageManifestManager: PackageManifestManager,
         fileRepository: FileRepository
     ): EmailPackageRepository {
-        return EmailPackageRepository(emailPackageManager, packageManifestManager, fileRepository)
+        return EmailPackageRepository(emailMboxLocalRepository, fileRepository, packageManifestManager)
     }
 
     // Provide MachineLearningUtils
@@ -182,20 +169,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideModelManager(
-        modelManifestManager: ModelManifestManager,
-        fileRepository: FileRepository // Ensure you are providing FileRepository elsewhere in your DI setup
-    ): ModelManager {
-        return ModelManager(modelManifestManager, fileRepository)
-    }
-
-    @Provides
-    @Singleton
     fun provideModelRepository(
-        modelManager: ModelManager,
-        modelManifestManager: ModelManifestManager
+        modelManifestManager: ModelManifestManager,
+        fileRepository: FileRepository
     ): ModelRepository {
-        return ModelRepository(modelManager, modelManifestManager)
+        return ModelRepository(modelManifestManager, fileRepository)
     }
 
     // If your Training class requires any dependencies, provide them here

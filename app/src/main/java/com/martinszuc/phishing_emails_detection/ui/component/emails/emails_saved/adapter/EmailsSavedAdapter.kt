@@ -55,9 +55,7 @@ class EmailsSavedAdapter(
             }
 
             holder.itemView.setOnClickListener {
-                email?.let {
-                    onEmailClicked(it.id)
-                }
+                onEmailClicked(email.id)
             }
 
             // Checkboxes codes

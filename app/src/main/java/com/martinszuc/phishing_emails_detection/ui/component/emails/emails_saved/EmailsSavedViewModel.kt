@@ -89,7 +89,7 @@ class EmailsSavedViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val filePath = emailPackageRepository.createAndSaveEmailPackage(emailIds, isPhishy, packageName)
+                val filePath = emailPackageRepository.createEmailPackage(emailIds, isPhishy, packageName)
 
             } catch (e: Exception) {
                 // Handle any errors that might occur during the package creation process.

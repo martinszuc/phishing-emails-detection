@@ -41,7 +41,7 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
     }
 
     fun loadMboxContent(
-        directoryName: String = Constants.DIR_EMAIL_PACKAGES,
+        directoryName: String,
         fileName: String
     ): String? {
         return fileManager.readFileContent(directoryName, fileName)

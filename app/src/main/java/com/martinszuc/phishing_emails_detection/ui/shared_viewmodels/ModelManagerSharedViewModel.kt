@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.martinszuc.phishing_emails_detection.data.model_manager.ModelManager
 import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.data.model_manager.ModelRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +12,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ModelManagerSharedViewModel @Inject constructor(
-    private val modelManager: ModelManager,
     private val modelRepository: ModelRepository
     ) : ViewModel() {
 
@@ -29,7 +27,7 @@ class ModelManagerSharedViewModel @Inject constructor(
 
     fun refreshAndLoadModels() {
         viewModelScope.launch {
-            modelManager.refreshModelsFromDir()
+            modelRepository.refreshModelsFromDir()
             val models = modelRepository.loadModelsMetadata()
             _models.postValue(models)
         }

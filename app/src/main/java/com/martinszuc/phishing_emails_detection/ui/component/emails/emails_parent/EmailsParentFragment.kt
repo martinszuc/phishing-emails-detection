@@ -70,7 +70,7 @@ class EmailsParentFragment : Fragment() {
                 }
 
                 2 -> {
-                    tab.text = "@ Packages"
+                    tab.text = "Packaged"
                     tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_box_package)
                 }
                 3 -> {
