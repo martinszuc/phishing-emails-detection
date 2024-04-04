@@ -2,8 +2,8 @@ package com.martinszuc.phishing_emails_detection.data.email_package
 
 import android.content.Context
 import com.google.gson.reflect.TypeToken
-import com.martinszuc.phishing_emails_detection.data.AbstractManifestManager
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractManifestManager
 import java.io.File
 import javax.inject.Inject
 

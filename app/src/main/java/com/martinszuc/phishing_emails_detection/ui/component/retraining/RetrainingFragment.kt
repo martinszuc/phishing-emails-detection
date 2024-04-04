@@ -56,8 +56,13 @@ class RetrainingFragment : Fragment() {
         observeLoading()
     }
 
+    override fun onResume() {
+        super.onResume()
+        processedPackageSharedViewModel.refreshAndLoadProcessedPackages()
+    }
+
     private fun setupRecyclerView() {
-        trainingSelectionAdapter = TrainingSelectionAdapter { processedPackage, isChecked ->
+        trainingSelectionAdapter = TrainingSelectionAdapter { processedPackage, _ ->
             retrainingViewModel.togglePackageSelected(processedPackage)
         }
         with(binding) {
@@ -161,7 +166,6 @@ class RetrainingFragment : Fragment() {
                 showFinishTrainingDialog()
                 // Optionally, hide the ProgressBar when finished
                 binding.progressBar.visibility = View.GONE
-            } else {
             }
         }
     }

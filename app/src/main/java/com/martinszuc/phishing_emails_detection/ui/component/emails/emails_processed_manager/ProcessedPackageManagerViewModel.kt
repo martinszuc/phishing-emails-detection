@@ -1,39 +1,54 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_processed_manager
 
 import android.net.Uri
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.MutableLiveData
 import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageRepository
+import com.martinszuc.phishing_emails_detection.data.processed_packages.entity.ProcessedPackageMetadata
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProcessedPackageManagerViewModel @Inject constructor(
     private val processedPackageRepository: ProcessedPackageRepository,
-) : ViewModel() {
+) : AbstractBaseViewModel() { // Extend AbstractBaseViewModel
 
-    // LiveData to observe processed packages
-    // Example: val processedPackages = MutableLiveData<List<ProcessedPackageMetadata>>()
+    val processedPackages = MutableLiveData<List<ProcessedPackageMetadata>>()
 
     fun deleteProcessedPackage(fileName: String) {
-        viewModelScope.launch {
+        launchDataLoad(execution = {
             processedPackageRepository.deleteProcessedPackage(fileName)
-            // Update LiveData
-        }
+            // Potentially update processedPackages LiveData here
+        }, onSuccess = {
+            // Optionally handle success, e.g., by refreshing the list of processed packages
+        }, onFailure = { e ->
+            // Handle any errors
+        })
     }
+
     fun createAndSaveProcessedPackageFromCsvFile(uri: Uri, isPhishy: Boolean, packageName: String) {
-        viewModelScope.launch {
-            try {
-                processedPackageRepository.createAndAddProcessedPackageFromCsv(
-                    uri,
-                    isPhishy,
-                    packageName
-                )
-            } catch (e: Exception) {
-                // Handle any errors
-            }
-        }
+        launchDataLoad(execution = {
+            processedPackageRepository.createAndAddProcessedPackageFromCsv(
+                uri,
+                isPhishy,
+                packageName
+            )
+            // Optionally update LiveData or perform additional actions after successful creation
+        }, onSuccess = {
+            // Optionally handle success, e.g., by updating LiveData or notifying the user
+        }, onFailure = { e ->
+            // Handle any errors
+        })
     }
-    // Add other methods as necessary, for example, to load processed packages metadata
+
+    // Implement other methods as necessary, for example, to load processed packages metadata
+    fun loadProcessedPackages() {
+        launchDataLoad(execution = {
+            processedPackageRepository.loadProcessedPackagesMetadata()
+        }, onSuccess = { packages ->
+            processedPackages.postValue(packages)
+        }, onFailure = { e ->
+            // Handle errors, possibly updating a LiveData to notify the UI
+        })
+    }
 }

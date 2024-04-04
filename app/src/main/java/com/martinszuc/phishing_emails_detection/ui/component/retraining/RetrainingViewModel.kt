@@ -1,23 +1,22 @@
 package com.martinszuc.phishing_emails_detection.ui.component.retraining
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.martinszuc.phishing_emails_detection.data.model.Retraining
 import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.data.processed_packages.entity.ProcessedPackageMetadata
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private const val logTag = "RetrainingViewModel"
 
 @HiltViewModel
 class RetrainingViewModel @Inject constructor(
     private val retraining: Retraining
-        // Add other dependencies if needed
-) : ViewModel() {
+) : AbstractBaseViewModel() { // Extend BaseViewModel
 
     private val _selectedPackages = MutableLiveData<Set<ProcessedPackageMetadata>>(setOf())
     val selectedPackages: LiveData<Set<ProcessedPackageMetadata>> = _selectedPackages
@@ -27,13 +26,6 @@ class RetrainingViewModel @Inject constructor(
 
     private val _selectedModel = MutableLiveData<ModelMetadata?>()
     val selectedModel: LiveData<ModelMetadata?> = _selectedModel
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _isFinished = MutableLiveData<Boolean>()
-    val isFinished: LiveData<Boolean> = _isFinished
-
 
     fun togglePackageSelected(processedPackage: ProcessedPackageMetadata) {
         val currentSelectedPackages = _selectedPackages.value.orEmpty()
@@ -46,14 +38,7 @@ class RetrainingViewModel @Inject constructor(
     }
 
     fun toggleSelectedModel(modelMetadata: ModelMetadata) {
-        val currentSelectedModel = _selectedModel.value
-        if (currentSelectedModel == modelMetadata) {
-            // If the same model is selected again, deselect it
-//            _selectedModel.value = null
-        } else {
-            // Select the new model
-            _selectedModel.value = modelMetadata
-        }
+        _selectedModel.value = if (_selectedModel.value == modelMetadata) null else modelMetadata
     }
 
     fun startModelRetraining() {
@@ -62,33 +47,22 @@ class RetrainingViewModel @Inject constructor(
         val selectedModelName = selectedModel.value?.modelName
 
         if (phishingPackages.isNotEmpty() && safePackages.isNotEmpty() && selectedModelName != null) {
-            val phishingFilename = phishingPackages.first() // Consider how you want to handle multiple files
-            val safeFilename = safePackages.first() // Consider how you want to handle multiple files
-
-            viewModelScope.launch(Dispatchers.IO) {
-                _isLoading.postValue(true) // Notify UI that the retraining process has started
-                _isFinished.postValue(false)
-
-                try {
-                    retraining.retrainModel(
-                        Constants.OUTPUT_CSV_DIR,
-                        safeFilename,
-                        phishingFilename,
-                        selectedModelName
-                    )
-
-                    // Here, instead of adding a new model, you might update the model info in the repository
-                    // modelRepository.updateModel(selectedModelName)
-                } finally {
-                    _isLoading.postValue(false) // Notify UI that the retraining process has ended
-                    _isFinished.postValue(true)
-                }
-            }
+            launchDataLoad(execution = {
+                retraining.retrainModel(
+                    Constants.OUTPUT_CSV_DIR,
+                    phishingPackages.joinToString(","),
+                    safePackages.joinToString(","),
+                    selectedModelName
+                )
+            }, onSuccess = {
+                // Handle success if needed
+            }, onFailure = { e ->
+                Log.e(logTag, "Error during model retraining: ${e.message}")
+            })
         } else {
-            // Optionally handle case where there are not both phishing and safe packages selected
-            // or when no model is selected
+            // Handle case where the required data is not available
+            Log.e(logTag, "Invalid input for retraining")
+            _operationFailed.postValue(true)
         }
     }
-
-
 }

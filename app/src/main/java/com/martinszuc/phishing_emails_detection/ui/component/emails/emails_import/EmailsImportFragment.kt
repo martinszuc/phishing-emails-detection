@@ -66,22 +66,27 @@ class EmailsImportFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
         initLoadingSpinner()
-        hideShowFetchEmailsButton()
+        setupObservers()
+        setupEmailsLoadedObserver()
     }
 
-    private fun hideShowFetchEmailsButton() {
-        if (emailMinimalSharedViewModel.checkIfEmailsLoaded()) {
-            binding.btnFetchEmails.visibility = View.GONE
-            binding.searchViewContainer.visibility = View.VISIBLE
-        } else {
-            binding.btnFetchEmails.visibility = View.VISIBLE
-            binding.searchViewContainer.visibility = View.GONE
+    private fun setupEmailsLoadedObserver() {
+        emailMinimalSharedViewModel.emailsLoaded.observe(viewLifecycleOwner) { emailsLoaded ->
+            if (emailsLoaded) {
+                // Emails have been loaded
+                binding.searchViewContainer.visibility = View.VISIBLE
+                binding.btnFetchEmails.visibility = View.GONE
+            } else {
+                // No emails loaded yet
+                binding.searchViewContainer.visibility = View.GONE
+                binding.btnFetchEmails.visibility = View.VISIBLE
+            }
         }
     }
 
     private fun initObserveSelectedEmails() {
         // Observe selected emails LiveData to update UI accordingly
-        emailsImportViewModel.selectedEmails.observe(viewLifecycleOwner) { selectedEmails ->
+        emailsImportViewModel.selectedEmails.observe(viewLifecycleOwner) {
             // Notify the adapter that the selection state has changed
             emailsImportAdapter.notifyDataSetChanged() // This triggers a UI refresh
         }
@@ -228,7 +233,7 @@ class EmailsImportFragment : Fragment() {
             binding.loadingSpinner.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
-        emailsImportViewModel.operationFinished.observe(viewLifecycleOwner) { isFinished ->
+        emailsImportViewModel.isFinished.observe(viewLifecycleOwner) { isFinished ->
             if (isFinished) {
                 showImportFinishedDialog(success = true)
             }

@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.data
+package com.martinszuc.phishing_emails_detection.ui.base
 
 import android.content.Context
 import com.google.gson.Gson

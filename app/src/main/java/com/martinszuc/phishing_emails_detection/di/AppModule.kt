@@ -9,8 +9,8 @@ import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMboxLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.remote.api.GmailApiService
-import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageRepository
 import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageManifestManager
+import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageRepository
 import com.martinszuc.phishing_emails_detection.data.file.FileManager
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.data.model.DataProcessing

@@ -3,15 +3,12 @@ package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_impo
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailFullLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMinimalLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.remote.repository.EmailFullRemoteRepository
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -23,23 +20,14 @@ class EmailsImportViewModel @Inject constructor(
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
     private val emailFullLocalRepository: EmailFullLocalRepository,
     private val emailFullRemoteRepository: EmailFullRemoteRepository
-) : ViewModel() {
+) : AbstractBaseViewModel() {
 
-    private val _isSelectionMode = MutableLiveData<Boolean>(false)
+    private val _isSelectionMode = MutableLiveData(false)
     val isSelectionMode: LiveData<Boolean> = _isSelectionMode
 
     private val _listOfEmailsBeforeSelection = MutableLiveData<List<EmailMinimal>>(listOf())
     private val _selectedEmails = MutableLiveData<List<EmailMinimal>>(listOf())
     val selectedEmails: LiveData<List<EmailMinimal>> = _selectedEmails
-
-    private val _isLoading = MutableLiveData<Boolean>(false)
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _operationFinished = MutableLiveData<Boolean>(false)
-    val operationFinished: LiveData<Boolean> = _operationFinished
-
-    private val _operationFailed = MutableLiveData<Boolean>(false)
-    val operationFailed: LiveData<Boolean> = _operationFailed
 
     private var firstSelectedEmail: EmailMinimal? = null
 
@@ -53,29 +41,29 @@ class EmailsImportViewModel @Inject constructor(
     }
 
     fun importSelectedEmails() {
-        _isLoading.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val selectedEmailsList = selectedEmails.value ?: emptyList()
-                if (selectedEmailsList.isNotEmpty()) {
-                    val fullEmails = emailFullRemoteRepository.getEmailsFullByIds(selectedEmailsList.map { it.id })
-                    emailFullLocalRepository.insertAllEmailsFull(fullEmails)
-                    selectedEmailsList.forEach { email ->
-                        emailFullRemoteRepository.fetchAndSaveRawEmail(email.id)
-                    }
-                    emailMinimalLocalRepository.insertAll(selectedEmailsList)
-                    _operationFinished.postValue(true)
-                } else {
-                    _operationFailed.postValue(true)
+        launchDataLoad(execution = {
+            val selectedEmailsList = selectedEmails.value ?: emptyList()
+            if (selectedEmailsList.isNotEmpty()) {
+                val fullEmails = emailFullRemoteRepository.getEmailsFullByIds(selectedEmailsList.map { it.id })
+                emailFullLocalRepository.insertAllEmailsFull(fullEmails)
+                selectedEmailsList.forEach { email ->
+                    emailFullRemoteRepository.fetchAndSaveRawEmail(email.id)
                 }
-            } catch (e: Exception) {
-                Log.e("EmailsImportViewModel", "Error during import: ${e.message}")
-                _operationFailed.postValue(true)
-            } finally {
-                _isLoading.postValue(false)
-                _selectedEmails.postValue(emptyList())
+                emailMinimalLocalRepository.insertAll(selectedEmailsList)
+            } else {
+                throw Exception("No packages selected")
             }
-        }
+        }, onFailure = { e ->
+            Log.e("EmailsImportViewModel", "Error during import: ${e.message}")
+        })
+    }
+
+    fun fetchAndSaveEmailsBasedOnFilterAndLimit(query: String, limit: Int) {
+        launchDataLoad(execution = {
+            emailFullRemoteRepository.fetchAndSaveEmailsBasedOnFilterAndLimit(query, limit)
+        }, onFailure = { e ->
+            Log.e("EmailsImportViewModel", "Error fetching and saving emails: ${e.message}")
+        })
     }
 
     private fun addToSelectedEmails(selected: List<EmailMinimal>) {
@@ -101,21 +89,6 @@ class EmailsImportViewModel @Inject constructor(
                 addToSelectedEmails(_listOfEmailsBeforeSelection.value!!.slice(range))
                 _isSelectionMode.value = false
                 firstSelectedEmail = null
-            }
-        }
-    }
-
-    fun fetchAndSaveEmailsBasedOnFilterAndLimit(query: String, limit: Int) {
-        _isLoading.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                emailFullRemoteRepository.fetchAndSaveEmailsBasedOnFilterAndLimit(query, limit)
-                _operationFinished.postValue(true)
-            } catch (e: Exception) {
-                Log.e("EmailsImportViewModel", "Error fetching and saving emails: ${e.message}")
-                _operationFailed.postValue(true)
-            } finally {
-                _isLoading.postValue(false)
             }
         }
     }

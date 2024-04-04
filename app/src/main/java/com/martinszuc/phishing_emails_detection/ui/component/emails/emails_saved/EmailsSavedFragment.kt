@@ -178,7 +178,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Observe load state changes
-        initLoadingSpinner()
+        initLoadingSpinner() // TODO not used currently
     }
 
     override fun onDestroyView() {
@@ -281,15 +281,15 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
     private fun initLoadingSpinner() {
         // Observing the loading state of both emails to control the spinner
         emailMinimalSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoadingMinimal ->
-            updateLoadingSpinner(isLoadingMinimal || emailFullSharedViewModel.isLoading.value == true)
+            updateLoadingSpinner(isLoadingMinimal)
         }
 
         emailFullSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoadingFull ->
-            updateLoadingSpinner(isLoadingFull || emailMinimalSharedViewModel.isLoading.value == true)
+            updateLoadingSpinner(isLoadingFull)
         }
     }
 
     private fun updateLoadingSpinner(show: Boolean) {
-        binding.loadingSpinner.visibility = if (show) View.VISIBLE else View.GONE
+        binding.loadingSpinner.visibility = if (show) View.GONE else View.VISIBLE
     }
 }

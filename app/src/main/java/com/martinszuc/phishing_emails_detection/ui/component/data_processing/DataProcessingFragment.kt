@@ -51,8 +51,8 @@ class DataProcessingFragment : Fragment() {  // TODO already processed data to s
             }
         }
 
-        dataProcessingViewModel.isProcessing.observe(viewLifecycleOwner) { isProcessing ->
-            if (isProcessing) {
+        dataProcessingViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
                 // Show the loading spinner and text
                 binding.progressBar.visibility = View.VISIBLE
                 binding.tvLoading.visibility = View.VISIBLE
@@ -67,17 +67,13 @@ class DataProcessingFragment : Fragment() {  // TODO already processed data to s
             }
         }
 
-        dataProcessingViewModel.isFinishedProcessing.observe(viewLifecycleOwner) { isFinished ->
+        dataProcessingViewModel.isFinished.observe(viewLifecycleOwner) { isFinished ->
             if (isFinished && processingStarted) {
                 // Show the check icon if processing has finished and was started by the button press
                 binding.ivCheck.visibility = View.VISIBLE
                 binding.fab.visibility = View.VISIBLE
 
-                // Optionally, hide the icon after a delay or based on user action
-//                binding.ivCheck.postDelayed({ binding.ivCheck.visibility = View.GONE }, 2000)
-
                 processedPackageSharedViewModel.refreshAndLoadProcessedPackages()
-
 
                 processingStarted = false // Reset the flag after handling
                 binding.btnProcessEmails.isEnabled = false

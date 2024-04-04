@@ -54,6 +54,11 @@ class TrainingFragment : Fragment() {
         binding.rvProcessedPackages.adapter = trainingSelectionAdapter
     }
 
+    override fun onResume() {
+        super.onResume()
+        processedPackageSharedViewModel.refreshAndLoadProcessedPackages()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeProcessedPackages()

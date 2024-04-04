@@ -2,12 +2,10 @@ package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_save
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailFullLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageRepository
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -18,9 +16,9 @@ import javax.inject.Inject
 class EmailsSavedViewModel @Inject constructor(
     private val emailFullLocalRepository: EmailFullLocalRepository,
     private val emailPackageRepository: EmailPackageRepository
-) : ViewModel() {
+) : AbstractBaseViewModel() { // Extend AbstractBaseViewModel
 
-    private val _isSelectionMode = MutableLiveData<Boolean>(false)
+    private val _isSelectionMode = MutableLiveData(false)
     val isSelectionMode: LiveData<Boolean> = _isSelectionMode
 
     private val _listOfEmailsBeforeSelection = MutableLiveData<List<String>>(listOf())
@@ -68,33 +66,22 @@ class EmailsSavedViewModel @Inject constructor(
     }
 
     fun clearDatabase() {
-        viewModelScope.launch {
+        launchDataLoad(execution = {
             emailFullLocalRepository.clearAll()
-        }
+        })
     }
+
     fun loadSelectedEmailPackageContent(fileName: String) {
-        viewModelScope.launch {
-            val packageContent = emailPackageRepository.loadEmailPackageContent(fileName)
-            packageContent?.let {
-                // Update the UI with the content or process it as needed
-            } ?: run {
-                // Handle the case where the file does not exist or an error occurred
-            }
-        }
+        launchDataLoad(execution = {
+            emailPackageRepository.loadEmailPackageContent(fileName)
+        })
     }
 
     fun createEmailPackageFromSelected(isPhishy: Boolean, packageName: String) {
-        // Assuming _selectedEmails holds the list of email IDs to be packaged
         val emailIds = _selectedEmails.value?.toList() ?: return
-
-        viewModelScope.launch {
-            try {
-                val filePath = emailPackageRepository.createEmailPackage(emailIds, isPhishy, packageName)
-
-            } catch (e: Exception) {
-                // Handle any errors that might occur during the package creation process.
-            }
-        }
+        launchDataLoad(execution = {
+            emailPackageRepository.createEmailPackage(emailIds, isPhishy, packageName)
+        })
     }
 
     fun resetSelectionMode() {

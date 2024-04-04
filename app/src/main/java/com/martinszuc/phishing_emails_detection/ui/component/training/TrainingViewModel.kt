@@ -2,11 +2,11 @@ package com.martinszuc.phishing_emails_detection.ui.component.training
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.martinszuc.phishing_emails_detection.data.model.Training
 import com.martinszuc.phishing_emails_detection.data.model_manager.ModelRepository
 import com.martinszuc.phishing_emails_detection.data.processed_packages.entity.ProcessedPackageMetadata
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,17 +17,10 @@ import javax.inject.Inject
 class TrainingViewModel @Inject constructor(
     private val training: Training,
     private val modelRepository: ModelRepository
-    // Add other dependencies if needed
-) : ViewModel() {
+) : AbstractBaseViewModel() { // Extend AbstractBaseViewModel
 
     private val _selectedPackages = MutableLiveData<Set<ProcessedPackageMetadata>>(setOf())
     val selectedPackages: LiveData<Set<ProcessedPackageMetadata>> = _selectedPackages
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _isFinished = MutableLiveData<Boolean>()
-    val isFinished: LiveData<Boolean> = _isFinished
 
     fun togglePackageSelected(processedPackage: ProcessedPackageMetadata) {
         val currentSelectedPackages = _selectedPackages.value.orEmpty()
@@ -68,6 +61,7 @@ class TrainingViewModel @Inject constructor(
             }
         } else {
             // Optionally handle case where there are not both phishing and safe packages selected
+            _operationFailed.postValue(true)
         }
     }
 

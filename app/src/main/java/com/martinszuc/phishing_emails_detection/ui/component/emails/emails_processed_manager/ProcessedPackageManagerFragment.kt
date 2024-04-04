@@ -125,7 +125,7 @@ class ProcessedPackageManagerFragment : Fragment() {
         val input = EditText(context)
         input.inputType = InputType.TYPE_CLASS_TEXT
         input.hint = "Enter package name"
-        input.setOnEditorActionListener { v, actionId, event ->
+        input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 // Show a Toast message
                 Toast.makeText(context, "Please select if the package is phishing or safe.", Toast.LENGTH_LONG).show()
