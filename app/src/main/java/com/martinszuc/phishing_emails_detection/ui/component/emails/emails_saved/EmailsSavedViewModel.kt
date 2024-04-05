@@ -1,8 +1,10 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailFullLocalRepository
+import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMinimalLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageRepository
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,8 +17,11 @@ import javax.inject.Inject
 @HiltViewModel
 class EmailsSavedViewModel @Inject constructor(
     private val emailFullLocalRepository: EmailFullLocalRepository,
-    private val emailPackageRepository: EmailPackageRepository
-) : AbstractBaseViewModel() { // Extend AbstractBaseViewModel
+    private val emailPackageRepository: EmailPackageRepository,
+    private val emailMinimalLocalRepository: EmailMinimalLocalRepository
+) : AbstractBaseViewModel() {
+
+    private val logTag = "EmailsImportViewModel"
 
     private val _isSelectionMode = MutableLiveData(false)
     val isSelectionMode: LiveData<Boolean> = _isSelectionMode
@@ -81,6 +86,21 @@ class EmailsSavedViewModel @Inject constructor(
         val emailIds = _selectedEmails.value?.toList() ?: return
         launchDataLoad(execution = {
             emailPackageRepository.createEmailPackage(emailIds, isPhishy, packageName)
+        })
+    }
+
+    fun createEmailPackageFromLatest(isPhishy: Boolean, packageName: String, limit: Int) {
+        launchDataLoad(execution = {
+            // Fetch the latest email IDs
+            val latestEmailIds = emailMinimalLocalRepository.fetchLatestEmailIds(limit)
+            // Create the email package with these IDs
+            if (latestEmailIds.isNotEmpty()) {
+                emailPackageRepository.createEmailPackage(latestEmailIds, isPhishy, packageName)
+            } else {
+                Log.e(logTag, "No latest emails found to package")
+            }
+        }, onFailure = { e ->
+            Log.e(logTag, "Error during package creation: ${e.message}")
         })
     }
 

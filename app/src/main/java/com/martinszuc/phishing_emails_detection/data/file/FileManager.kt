@@ -7,6 +7,8 @@ import java.io.File
 
 class FileManager(private val context: Context) {
 
+    private val logTag = "FileManager"
+
     fun getAppDirectory(): File {
         // Assuming files are stored in the app's internal storage directory
         return context.filesDir
@@ -128,6 +130,18 @@ class FileManager(private val context: Context) {
         val file = File(directory, fileName)
         file.writeText(mboxContent)
         return file
+    }
+
+    // In FileManager.kt
+    fun deleteAllFilesInDirectory(directoryName: String) {
+        val directory = File(context.filesDir, directoryName)
+        if (directory.exists() && directory.isDirectory) {
+            directory.listFiles()?.forEach { file ->
+                if (file.isFile) {
+                    file.delete()
+                }
+            }
+        }
     }
 
 

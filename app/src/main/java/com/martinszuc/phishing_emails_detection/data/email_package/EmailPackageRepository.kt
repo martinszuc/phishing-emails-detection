@@ -50,6 +50,7 @@ class EmailPackageRepository @Inject constructor(
         emailPackageManifestManager.addEntryToManifest(metadata)
         Log.d(logTag, "Package metadata added for $finalFilename")
 
+        fileRepository.clearDirectory(Constants.MBOX_FILES_DIR)
         return finalFilename
     }
 

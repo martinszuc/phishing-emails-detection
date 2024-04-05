@@ -60,5 +60,11 @@ class EmailMinimalLocalRepository@Inject constructor(
             emailMinimalDao.getLatestEmail()?.id
         }
     }
+
+    suspend fun fetchLatestEmailIds(limit: Int): List<String> {
+        return withContext(Dispatchers.IO) {
+            emailMinimalDao.fetchLatestEmailIds(limit)
+        }
+    }
 }
 

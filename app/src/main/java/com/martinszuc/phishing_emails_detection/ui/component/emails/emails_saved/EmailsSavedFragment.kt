@@ -10,7 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -70,8 +72,15 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
         setupEmailDetailsObserver()
         initObserveSelectedEmails()
         initFloatingActionButton() // TODO number of emails saved in the snackbar
+        initBatchPackageButton()
 
         return binding.root
+    }
+
+    private fun initBatchPackageButton() {
+        binding.btnBatchSave.setOnClickListener {
+            showCreatePackageDialog()
+        }
     }
 
     override fun onDialogDismissed() {
@@ -173,6 +182,42 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
         dialog.show()
     }
 
+    private fun showCreatePackageDialog() {
+        val context = requireContext()
+        val packageNameInput = EditText(context).apply {
+            hint = "Enter package name"
+        }
+        val emailCountInput = EditText(context).apply {
+            inputType = InputType.TYPE_CLASS_NUMBER
+            hint = "Enter number of emails to include"
+        }
+        val isPhishyCheckbox = CheckBox(context).apply {
+            text = "Is this package phishing?"
+        }
+        val layout = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(packageNameInput)
+            addView(emailCountInput)
+            addView(isPhishyCheckbox)
+        }
+
+        AlertDialog.Builder(context).apply {
+            setTitle("Create Email Package")
+            setView(layout)
+            setPositiveButton("Create") { _, _ ->
+                val packageName = packageNameInput.text.toString()
+                val limit = emailCountInput.text.toString().toIntOrNull() ?: 0
+                val isPhishy = isPhishyCheckbox.isChecked
+                if (packageName.isNotBlank() && limit > 0) {
+                    emailsSavedViewModel.createEmailPackageFromLatest(isPhishy, packageName, limit)
+                } else {
+                    Toast.makeText(context, "Invalid package name or email count", Toast.LENGTH_SHORT).show()
+                }
+            }
+            setNegativeButton("Cancel", null)
+            show()
+        }
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

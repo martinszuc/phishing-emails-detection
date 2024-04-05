@@ -32,6 +32,9 @@ interface EmailMinimalDao {
     suspend fun updateEmail(id: String, sender: String, subject: String, body: String, timestamp: Long, isPhishing: Boolean?)
     @Query("DELETE FROM email_minimal")
     suspend fun clearAll()
+    @Query("SELECT id FROM email_minimal ORDER BY timestamp DESC LIMIT :limit")
+    suspend fun fetchLatestEmailIds(limit: Int): List<String>
+
 
     @Transaction
     suspend fun upsert(email: EmailMinimal) {

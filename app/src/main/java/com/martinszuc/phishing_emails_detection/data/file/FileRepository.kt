@@ -2,12 +2,16 @@ package com.martinszuc.phishing_emails_detection.data.file
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
 import java.io.File
 import javax.inject.Inject
 
 class FileRepository @Inject constructor(private val fileManager: FileManager) {
+
+    private val logTag = "FileRepository"
+
 
     // Save mbox content to a file within a specified directory
     fun saveMboxContent(
@@ -88,6 +92,12 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
         fileName: String
     ): String? {
         return fileManager.readFileContent(directoryName, fileName)
+    }
+
+    // In FileRepository.kt
+    fun clearDirectory(directoryName: String) {
+        Log.d(logTag, "Clearing directory: $directoryName")
+        fileManager.deleteAllFilesInDirectory(directoryName)
     }
 
     // List all CSV files within a specified directory
