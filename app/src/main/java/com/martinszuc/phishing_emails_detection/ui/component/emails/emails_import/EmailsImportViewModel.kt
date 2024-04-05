@@ -9,6 +9,8 @@ import com.martinszuc.phishing_emails_detection.data.email.local.repository.Emai
 import com.martinszuc.phishing_emails_detection.data.email.remote.repository.EmailFullRemoteRepository
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -60,7 +62,9 @@ class EmailsImportViewModel @Inject constructor(
 
     fun fetchAndSaveEmailsBasedOnFilterAndLimit(query: String, limit: Int) {
         launchDataLoad(execution = {
-            emailFullRemoteRepository.fetchAndSaveEmailsBasedOnFilterAndLimit(query, limit)
+            withContext(Dispatchers.IO) {
+                emailFullRemoteRepository.fetchAndSaveEmailsBasedOnFilterAndLimit(query, limit)
+            }
         }, onFailure = { e ->
             Log.e("EmailsImportViewModel", "Error fetching and saving emails: ${e.message}")
         })

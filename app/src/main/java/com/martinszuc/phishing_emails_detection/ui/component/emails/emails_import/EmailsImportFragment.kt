@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
  */
 
 @AndroidEntryPoint
-class EmailsImportFragment : Fragment() {
+    class EmailsImportFragment : Fragment() {                       // TODO better loading screen when batch downloading
     private var _binding: FragmentEmailsImportBinding? = null
     private val emailsImportViewModel: EmailsImportViewModel by viewModels()
     private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()
@@ -234,12 +234,11 @@ class EmailsImportFragment : Fragment() {
         }
 
         emailsImportViewModel.isFinished.observe(viewLifecycleOwner) { isFinished ->
-            if (isFinished) {
+            if (isFinished && emailsImportViewModel.hasStarted.value == true) {
                 showImportFinishedDialog(success = true)
             }
         }
 
-        // TODO Method to detect failure
         emailsImportViewModel.operationFailed.observe(viewLifecycleOwner) { isFailed ->
             if (isFailed) {
                 showImportFinishedDialog(success = false)
