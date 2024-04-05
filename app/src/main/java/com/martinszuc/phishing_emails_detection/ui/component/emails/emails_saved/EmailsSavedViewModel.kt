@@ -76,12 +76,6 @@ class EmailsSavedViewModel @Inject constructor(
         })
     }
 
-    fun loadSelectedEmailPackageContent(fileName: String) {
-        launchDataLoad(execution = {
-            emailPackageRepository.loadEmailPackageContent(fileName)
-        })
-    }
-
     fun createEmailPackageFromSelected(isPhishy: Boolean, packageName: String) {
         val emailIds = _selectedEmails.value?.toList() ?: return
         launchDataLoad(execution = {

@@ -12,7 +12,6 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
 
     private val logTag = "FileRepository"
 
-
     // Save mbox content to a file within a specified directory
     fun saveMboxContent(
         mboxContent: String,
@@ -20,15 +19,6 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
         fileName: String
     ): File {
         return fileManager.saveTextToFile(mboxContent, directoryName, fileName)
-    }
-
-    // Save mbox content to a file within a specified directory
-    suspend fun saveTextToFileAndGetFileSize(
-        mboxContent: String,
-        directoryName: String = Constants.DIR_EMAIL_PACKAGES,
-        fileName: String
-    ): Long {
-        return fileManager.saveTextToFileAndGetFileSize(mboxContent, directoryName, fileName)
     }
 
     // Load a file by name from a specified directory
@@ -49,15 +39,6 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
         fileName: String
     ): String? {
         return fileManager.readFileContent(directoryName, fileName)
-    }
-
-    // Get the size of the file in MB
-    fun getFileSizeInMB(
-        directoryName: String = Constants.DIR_EMAIL_PACKAGES,
-        fileName: String
-    ): Long {
-        val file = fileManager.loadFileFromDirectory(directoryName, fileName)
-        return file?.length() ?: 0L
     }
 
     // Get the size of the file in bytes
@@ -100,34 +81,9 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
         fileManager.deleteAllFilesInDirectory(directoryName)
     }
 
-    // List all CSV files within a specified directory
-    fun listCsvFilesInDirectory(directoryName: String = Constants.OUTPUT_CSV_DIR): List<File>? {
-        return fileManager.listFilesInDirectory(directoryName)
-            ?.filter { it.name.endsWith("-export.csv") }
-    }
-
-    // Save processed CSV content to a file within a specified directory
-    fun saveCsvContent(
-        csvContent: String,
-        directoryName: String = Constants.OUTPUT_CSV_DIR,
-        fileName: String
-    ): File {
-        return fileManager.saveTextToFile(csvContent, directoryName, fileName)
-    }
-
     // Delete a CSV file from a specified directory
     fun deleteCsvFile(directoryName: String = Constants.OUTPUT_CSV_DIR, fileName: String) {
         fileManager.deleteFile(directoryName, fileName)
-    }
-
-    // Method to list all directories within the app's internal storage
-    fun listAllDirectories(): List<File> {
-        return fileManager.getAllDirectories()
-    }
-
-    // Method to delete a specific directory by name
-    fun deleteDirectory(directoryName: String): Boolean {
-        return fileManager.removeDirectory(directoryName)
     }
 
     fun copyCsvFromUri(
@@ -164,7 +120,11 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
         return fileManager.saveMboxForPrediction(context, mboxContent, fileName)
     }
 
-    fun appendMboxContent(directoryName: String = Constants.DIR_EMAIL_PACKAGES, fileName: String, mboxContent: String) {
+    fun appendMboxContent(
+        directoryName: String = Constants.DIR_EMAIL_PACKAGES,
+        fileName: String,
+        mboxContent: String
+    ) {
         fileManager.appendMboxToFile(directoryName, fileName, mboxContent)
     }
 

@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:background="?attr/selectableItemBackground"
-                    android:contentDescription="@string/delete"
+                    android:contentDescription="@string/delete_email_package"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
                     android:src="@android:drawable/ic_delete" />

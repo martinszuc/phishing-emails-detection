@@ -16,20 +16,61 @@
             android:id="@+id/tvSelectModel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/select_from_your_models"
             android:layout_gravity="start"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp"
+            android:text="@string/select_from_your_models"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <Spinner
             android:id="@+id/spinnerModelSelector"
-            android:background="@color/md_theme_dark_inversePrimary"
-            android:popupBackground="@color/md_theme_dark_primaryContainer"
-            android:outlineAmbientShadowColor="@color/md_theme_dark_primary"
-            android:outlineSpotShadowColor="@color/md_theme_dark_primary"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            android:background="@color/md_theme_dark_inversePrimary"
+            android:popupBackground="@color/md_theme_dark_primaryContainer" />
+
+        <!-- Horizontal LinearLayout for buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnExtractSendWeights"
+                android:layout_width="120dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/ic_upload_icon"
+                android:padding="16dp"
+                android:text="@string/extract_send_weights"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btnLoadFromServer"
+                android:layout_width="120dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/ic_download_icon"
+                android:padding="16dp"
+                android:text="@string/load_from_server"
+                android:layout_marginStart="8dp"/>
+
+        </LinearLayout>
+
+
+        <!-- Small button at the bottom for deleting the model -->
+        <Button
+            android:id="@+id/btnDeleteModel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/delete"
+            android:backgroundTint="@color/md_theme_dark_errorContainer"
+            android:drawableLeft="@drawable/recycle_bin_icon"
+            android:textColor="@color/black"/>
 
     </LinearLayout>
 
@@ -37,10 +78,10 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_refresh_arrow_round"
-        android:contentDescription="@string/refresh"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
-        android:visibility="visible"/>
+        android:contentDescription="@string/refresh"
+        android:src="@drawable/ic_refresh_arrow_round"
+        android:visibility="visible" />
 
 </FrameLayout>

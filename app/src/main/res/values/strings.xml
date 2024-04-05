@@ -75,7 +75,7 @@
     <string name="data_processing_fragment">Data Processing Fragment</string>
     <string name="retraining_fragment">Retraining fragment</string>
     <string name="training_fragment">Training Fragment</string>
-    <string name="delete">delete email package</string>
+    <string name="delete_email_package">delete email package</string>
     <string name="refresh">Refresh</string>
     <string name="add_new_package">Add new package</string>
     <string name="loading">Extracting features</string>
@@ -90,4 +90,7 @@
     <string name="model_manager_title">Model Manager</string>
     <string name="batch_import_description">Batch import emails</string>
     <string name="batch_import_string">Batch Import E-mails</string>
+    <string name="load_from_server">Load from Server</string>
+    <string name="extract_send_weights">Extract and Send Weights</string>
+    <string name="delete">Delete</string>
 </resources>

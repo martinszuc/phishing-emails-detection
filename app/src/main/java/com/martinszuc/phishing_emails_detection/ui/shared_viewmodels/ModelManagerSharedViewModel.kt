@@ -16,9 +16,6 @@ class ModelManagerSharedViewModel @Inject constructor(
     private val _models = MutableLiveData<List<ModelMetadata>>()
     val models: LiveData<List<ModelMetadata>> = _models
 
-    private val _selectedModel = MutableLiveData<ModelMetadata>()
-    val selectedModel: LiveData<ModelMetadata> = _selectedModel
-
     init {
         refreshAndLoadModels()
     }
@@ -31,9 +28,5 @@ class ModelManagerSharedViewModel @Inject constructor(
             },
             onSuccess = { models -> _models.postValue(models) }
         )
-    }
-
-    fun toggleSelectedModel(modelMetadata: ModelMetadata) {
-        _selectedModel.value = if (_selectedModel.value == modelMetadata) null else modelMetadata
     }
 }

@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.databinding.FragmentModelManagerBinding
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
@@ -19,6 +20,7 @@ import java.util.Date
 class ModelManagerFragment : Fragment() {
     private var _binding: FragmentModelManagerBinding? = null
     private val modelManagerSharedViewModel: ModelManagerSharedViewModel by activityViewModels()
+    private val modelManagerViewModel: ModelManagerViewModel by viewModels()
 
     private val binding get() = _binding!!
 
@@ -52,10 +54,8 @@ class ModelManagerFragment : Fragment() {
     }
 
     private fun setupModelSpinner(models: List<ModelMetadata>) {
-        // Create a mutable list to modify the data
         val spinnerModels = mutableListOf<ModelMetadata>().apply {
-            // Add a default "prompt" item at the beginning of the list
-            add(ModelMetadata("Please pick one of your models", Date(0))) // Date(0) just as a placeholder
+            add(ModelMetadata("Please pick one of your models", Date(0))) // Placeholder
             addAll(models)
         }
 
@@ -69,7 +69,7 @@ class ModelManagerFragment : Fragment() {
                 // Ignore the default item selection
                 if (position > 0) {
                     val selectedModel = spinnerModels[position]
-                    modelManagerSharedViewModel.toggleSelectedModel(selectedModel)
+                    modelManagerViewModel.toggleSelectedModel(selectedModel)
                     Toast.makeText(requireContext(), "Selected: ${selectedModel.modelName}", Toast.LENGTH_SHORT).show()
                 }
             }
