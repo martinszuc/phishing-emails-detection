@@ -4,6 +4,10 @@ import android.util.Log
 import com.martinszuc.phishing_emails_detection.data.python.PythonSingleton
 import javax.inject.Inject
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 class Retraining @Inject constructor() {
 
     private val TAG = "ModelRetraining"
