@@ -25,13 +25,13 @@ class WeightManager @Inject constructor() {
         return weightsJson
     }
 
-    fun updateModelWithNewWeights(modelName: String, weightsJson: String) {
-        Log.d(TAG, "Updating model at: $modelName with new weights")
+    fun updateModelWithNewWeights(modelName: String, tempWeightsFilePath: String) {
+        Log.d(TAG, "Updating model at: $modelName with new weights from file: $tempWeightsFilePath")
 
         val python = PythonSingleton.instance
         val pythonScript = python.getModule("utils_weights")
 
-        pythonScript.callAttr("deserialize_and_load_model_weights", modelName, weightsJson)
-        Log.d(TAG, "Model $modelName updated with new weights")
+        pythonScript.callAttr("deserialize_and_load_model_weights", modelName, tempWeightsFilePath)
+        Log.d(TAG, "Model $modelName updated with new weights from file")
     }
 }

@@ -17,8 +17,10 @@ import com.martinszuc.phishing_emails_detection.data.model.DataProcessing
 import com.martinszuc.phishing_emails_detection.data.model.Prediction
 import com.martinszuc.phishing_emails_detection.data.model.Retraining
 import com.martinszuc.phishing_emails_detection.data.model.Training
+import com.martinszuc.phishing_emails_detection.data.model.WeightManager
 import com.martinszuc.phishing_emails_detection.data.model_manager.ModelManifestManager
 import com.martinszuc.phishing_emails_detection.data.model_manager.ModelRepository
+import com.martinszuc.phishing_emails_detection.data.model_manager.retrofit.ModelWeightsService
 import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageManifestManager
 import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageRepository
 import com.martinszuc.phishing_emails_detection.utils.Constants
@@ -171,9 +173,11 @@ object AppModule {
     @Singleton
     fun provideModelRepository(
         modelManifestManager: ModelManifestManager,
-        fileRepository: FileRepository
+        fileRepository: FileRepository,
+        modelWeightsService: ModelWeightsService, // Add this parameter
+        weightManager: WeightManager // Ensure this parameter is here if needed by ModelRepository
     ): ModelRepository {
-        return ModelRepository(modelManifestManager, fileRepository)
+        return ModelRepository(modelManifestManager, fileRepository, modelWeightsService, weightManager)
     }
 
     // If your Training class requires any dependencies, provide them here
@@ -188,6 +192,12 @@ object AppModule {
     @Singleton
     fun provideRetraining(): Retraining {
         return Retraining()
+    }
+
+    @Provides
+    @Singleton
+    fun provideWeightManager(): WeightManager {
+        return WeightManager()
     }
 
 }

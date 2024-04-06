@@ -1,7 +1,9 @@
 package com.martinszuc.phishing_emails_detection.ui.component.model_manager
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.martinszuc.phishing_emails_detection.data.model.WeightManager
 import com.martinszuc.phishing_emails_detection.data.model_manager.ModelRepository
 import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
@@ -10,13 +12,45 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ModelManagerViewModel @Inject constructor(
-    private val modelRepository: ModelRepository
+    private val modelRepository: ModelRepository,
+    private val weightManager: WeightManager
 ) : AbstractBaseViewModel() {
+
+    private val logTag = "ModelManagerViewModel"
+
 
     private val _selectedModel = MutableLiveData<ModelMetadata>()
     val selectedModel: LiveData<ModelMetadata> = _selectedModel
 
     fun toggleSelectedModel(modelMetadata: ModelMetadata) {
         _selectedModel.value = if (_selectedModel.value == modelMetadata) null else modelMetadata
+    }
+
+    fun uploadModelWeights() {
+        _selectedModel.value?.let { model ->
+            launchDataLoad(execution = {
+                // Extract weights as JSON using WeightManager
+                val weightsJson = weightManager.extractModelWeights(model.modelName)
+                // Upload extracted weights JSON
+                modelRepository.uploadModelWeights(model.modelName, weightsJson)
+            }, onSuccess = {
+                Log.d(logTag, "Model weights uploaded successfully for model: ${model.modelName}")
+            }, onFailure = { exception ->
+                Log.e(logTag, "Error uploading model weights: ${exception.message}")
+            })
+        } ?: Log.e(logTag, "No model selected for uploading weights.")
+    }
+
+
+    fun downloadAndUpdateModelWeights() {
+        _selectedModel.value?.let { model ->
+            launchDataLoad(execution = {
+                modelRepository.downloadModelWeights(model.modelName)
+            }, onSuccess = {
+                Log.d(logTag, "Model weights updated successfully for model: ${model.modelName}")
+            }, onFailure = { exception ->
+                Log.e(logTag, "Error downloading or updating model weights: ${exception.message}")
+            })
+        } ?: Log.e(logTag, "No model selected for downloading weights.")
     }
 }

@@ -5,6 +5,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
 /**
  * Authored by matoszuc@gmail.com
@@ -34,15 +35,9 @@ object StringUtils {
         return sdf.format(Date(timestamp))
     }
 
-    fun parseTimestampFromFilename(dateTimeStr: String): Date {
+    private fun parseTimestampFromFilename(dateTimeStr: String): Date {
         val format = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
         return format.parse(dateTimeStr) ?: Date()
-    }
-
-    fun generateModelDirectoryName(modelName: String): String {
-        val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
-        val dateStr = dateFormat.format(Date())
-        return "${modelName}_${dateStr}"
     }
 
     fun parseCsvFilename(file: File): ProcessedPackageMetadata? {
@@ -69,14 +64,10 @@ object StringUtils {
         }
     }
 
-
-    fun parseModelNameFromFilename(filename: String): String {
-        val regex = Regex("/([^/]+)/[^/]+_phishy-export\\.csv$")
-        return regex.find(filename)?.groups?.get(1)?.value ?: "defaultModelName"
-    }
+    fun generateClientId(): String = UUID.randomUUID().toString()
 
     fun countCsvRowsIgnoringEmptyLines(csvContent: String?): Int {
-        if (csvContent == null || csvContent.isEmpty()) {
+        if (csvContent.isNullOrEmpty()) {
             return 0 // Return 0 if the CSV content is null or empty
         }
 

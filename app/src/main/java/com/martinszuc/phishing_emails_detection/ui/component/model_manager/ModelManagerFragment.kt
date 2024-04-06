@@ -24,20 +24,20 @@ class ModelManagerFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentModelManagerBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Observe model data from ViewModel
         observeModels()
-
-        // Set up FAB click listener to refresh and load models
         setupFabRefresh()
-
+        setupButtonListeners()
     }
 
     private fun observeModels() {
@@ -53,6 +53,34 @@ class ModelManagerFragment : Fragment() {
         }
     }
 
+    private fun setupButtonListeners() {
+        binding.btnExtractSendWeights.setOnClickListener {
+            // Check if a model is selected before attempting to upload weights
+            modelManagerViewModel.selectedModel.value?.let { modelMetadata ->
+                modelManagerViewModel.uploadModelWeights()
+                Toast.makeText(
+                    requireContext(),
+                    "Uploading weights for ${modelMetadata.modelName}...",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } ?: Toast.makeText(requireContext(), "Please select a model first", Toast.LENGTH_SHORT)
+                .show()
+        }
+
+        binding.btnLoadFromServer.setOnClickListener {
+            // Check if a model is selected before attempting to download weights
+            modelManagerViewModel.selectedModel.value?.let { modelMetadata ->
+                modelManagerViewModel.downloadAndUpdateModelWeights()
+                Toast.makeText(
+                    requireContext(),
+                    "Downloading weights for ${modelMetadata.modelName}...",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } ?: Toast.makeText(requireContext(), "Please select a model first", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
     private fun setupModelSpinner(models: List<ModelMetadata>) {
         val spinnerModels = mutableListOf<ModelMetadata>().apply {
             add(ModelMetadata("Please pick one of your models", Date(0))) // Placeholder
@@ -60,24 +88,37 @@ class ModelManagerFragment : Fragment() {
         }
 
         // Adapter setup with the modified list, using a custom layout if necessary
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, spinnerModels.map { it.modelName })
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            spinnerModels.map { it.modelName })
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerModelSelector.adapter = adapter
 
-        binding.spinnerModelSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                // Ignore the default item selection
-                if (position > 0) {
-                    val selectedModel = spinnerModels[position]
-                    modelManagerViewModel.toggleSelectedModel(selectedModel)
-                    Toast.makeText(requireContext(), "Selected: ${selectedModel.modelName}", Toast.LENGTH_SHORT).show()
+        binding.spinnerModelSelector.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    // Ignore the default item selection
+                    if (position > 0) {
+                        val selectedModel = spinnerModels[position]
+                        modelManagerViewModel.toggleSelectedModel(selectedModel)
+                        Toast.makeText(
+                            requireContext(),
+                            "Selected: ${selectedModel.modelName}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    // Optional: Handle the case where nothing is selected
                 }
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Optional: Handle the case where nothing is selected
-            }
-        }
 
         // Initially set the spinner to show the default item
         binding.spinnerModelSelector.setSelection(0)

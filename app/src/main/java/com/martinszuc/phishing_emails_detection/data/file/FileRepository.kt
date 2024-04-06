@@ -58,6 +58,12 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
         return fileManager.copyFileFromUri(uri, directoryName, fileName)
     }
 
+    // In FileRepository.kt
+    fun saveTemporaryWeights(weightsContent: String, fileName: String = "temp_weights.json"): File {
+        // This will overwrite the file each time it's called
+        return fileManager.saveTextToFile(weightsContent, "", fileName)
+    }
+
     fun countEmailsInMbox(file: File): Int {
         return fileManager.countEmailsInMbox(file)
     }
@@ -75,7 +81,6 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
         return fileManager.readFileContent(directoryName, fileName)
     }
 
-    // In FileRepository.kt
     fun clearDirectory(directoryName: String) {
         Log.d(logTag, "Clearing directory: $directoryName")
         fileManager.deleteAllFilesInDirectory(directoryName)
