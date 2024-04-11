@@ -64,7 +64,11 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
     ): View {
         Log.d("EmailsSavedFragment", "onCreateView called")
         _binding = FragmentEmailsSavedBinding.inflate(inflater, container, false)
+                return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initEmailsSaved()
         initSearchView()
         initEmptyTextAndButton()
@@ -73,8 +77,14 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
         initObserveSelectedEmails()
         initFloatingActionButton() // TODO number of emails saved in the snackbar
         initBatchPackageButton()
+        initLoadingSpinner()
+    }
 
-        return binding.root
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("EmailsSavedFragment", "onDestroyView called")
+        emailsSavedViewModel.resetSelectionMode()
+        _binding = null
     }
 
     private fun initBatchPackageButton() {
@@ -219,20 +229,6 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
         }
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // Observe load state changes
-        initLoadingSpinner() // TODO not used currently
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d("EmailsSavedFragment", "onDestroyView called")
-        emailsSavedViewModel.resetSelectionMode()
-        _binding = null
-    }
-
     private fun initEmailsSaved() {
         // Initialize RecyclerView and Adapter
         val recyclerView: RecyclerView = binding.emailSelectionRecyclerView
@@ -324,11 +320,6 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
     }
 
     private fun initLoadingSpinner() {
-        // Observing the loading state of both emails to control the spinner
-        emailMinimalSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoadingMinimal ->
-            updateLoadingSpinner(isLoadingMinimal)
-        }
-
         emailFullSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoadingFull ->
             updateLoadingSpinner(isLoadingFull)
         }
