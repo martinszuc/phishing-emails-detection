@@ -19,6 +19,7 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31"
         android:enableOnBackInvokedCallback="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true">              <!-- If you're targeting Android 10 (API level 29) or above and want to opt-out of scoped storage for some reason. will not be supported in future Android versions. -->
         <activity
             android:name=".ui.MainActivity"

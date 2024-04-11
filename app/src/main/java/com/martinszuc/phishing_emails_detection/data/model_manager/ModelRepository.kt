@@ -3,13 +3,14 @@ package com.martinszuc.phishing_emails_detection.data.model_manager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.martinszuc.phishing_emails_detection.data.data_class.Resource
-import com.martinszuc.phishing_emails_detection.data.data_class.WeightData
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.data.model.WeightManager
 import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.data.model_manager.retrofit.ModelWeightsService
 import com.martinszuc.phishing_emails_detection.utils.Constants
-import com.martinszuc.phishing_emails_detection.utils.StringUtils
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.util.Date
 import javax.inject.Inject
@@ -26,20 +27,28 @@ class ModelRepository @Inject constructor(
     private val _downloadResult = MutableLiveData<Resource<File>>()
     val downloadResult: LiveData<Resource<File>> = _downloadResult
 
-    suspend fun uploadModelWeights(modelName: String, weightsJson: String) {
-        try {
-            val clientId = StringUtils.generateClientId() // Implement this to generate or retrieve a unique client ID
-            val response = modelWeightsService.uploadWeights(WeightData(clientId, weightsJson))
+    suspend fun uploadCompressedWeights(clientId: String, fileName: String): Resource<String> {
+        val file = fileRepository.loadFileFromDirectory(Constants.WEIGHTS_DIR, fileName)
 
-            if (response.isSuccessful) {
-                _uploadResult.postValue(Resource.Success("Upload successful"))
-            } else {
-                _uploadResult.postValue(Resource.Error("Upload failed: ${response.errorBody()?.string()}", null))
+        file?.let { safeFile ->
+            val requestBody = safeFile.asRequestBody("application/gzip".toMediaTypeOrNull())
+            val filePart = MultipartBody.Part.createFormData("weights_file", safeFile.name, requestBody)
+            val clientIdPart = MultipartBody.Part.createFormData("client_id", clientId)
+
+            return try {
+                val response = modelWeightsService.uploadWeights(clientIdPart, filePart)
+                if (response.isSuccessful) {
+                    Resource.Success("Upload successful")
+                } else {
+                    Resource.Error("Upload failed: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Resource.Error("Error during upload: ${e.message}")
             }
-        } catch (e: Exception) {
-            _uploadResult.postValue(Resource.Error("Network error: ${e.message}", null))
-        }
+        } ?: return Resource.Error("Error: File not found or could not be loaded.")
     }
+
+
 
     suspend fun downloadModelWeights(modelName: String) {
         try {

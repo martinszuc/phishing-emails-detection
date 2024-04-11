@@ -1,8 +1,9 @@
-import pandas as pd
-import os
 import numpy as np
+import os
+import pandas as pd
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
+
 
 def load_datasets(resources_dir, safe_filename, phishing_filename):
     """Load datasets from specified paths and combine them."""

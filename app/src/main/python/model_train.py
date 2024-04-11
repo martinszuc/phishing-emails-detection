@@ -1,7 +1,9 @@
 import os
 import tensorflow as tf
+
 import utils_data_preparation as udp
 import utils_model as um
+
 
 def train_and_evaluate_model(resources_dir, safe_filename, phishing_filename, model_save_dir):
     """

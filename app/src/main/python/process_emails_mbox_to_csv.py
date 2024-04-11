@@ -1,7 +1,9 @@
 # process_emails_mbox_to_csv.py
-import sys
 import os
+import sys
+
 import utils_feature_extraction as ufe
+
 
 def process_mbox_to_csv(resources_dir, mbox_filename, output_dir, encoding, limit, is_phishy):
     mbox_path = os.path.join(os.environ["HOME"], resources_dir, mbox_filename)

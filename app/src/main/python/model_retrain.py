@@ -1,7 +1,9 @@
 import os
 import tensorflow as tf
+
 import utils_data_preparation as udp
 import utils_model as um
+
 
 def retrain_model(model, train_dataset, epochs=10):
     """

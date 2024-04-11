@@ -1,9 +1,8 @@
 import re
-import logging
 from bs4 import BeautifulSoup
-import urllib.request as urllib
-from functools import lru_cache
+
 from utils_config import Config
+
 
 def getpayload(msg):
     return __getpayload_rec__(msg, payloadresult="")

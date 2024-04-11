@@ -1,7 +1,6 @@
 package com.martinszuc.phishing_emails_detection.data.model
 
 import android.util.Log
-import com.martinszuc.phishing_emails_detection.data.model_manager.ModelRepository
 import com.martinszuc.phishing_emails_detection.data.python.PythonSingleton
 import javax.inject.Inject
 
@@ -19,10 +18,10 @@ class WeightManager @Inject constructor() {
         val python = PythonSingleton.instance
         val pythonScript = python.getModule("utils_weights")
 
-        val weightsJson = pythonScript.callAttr("serialize_model_weights", modelName).toString()
+        val weightsFileName = pythonScript.callAttr("serialize_model_weights", modelName).toString()
         Log.d(TAG, "Weights extracted for $modelName")
 
-        return weightsJson
+        return weightsFileName
     }
 
     fun updateModelWithNewWeights(modelName: String, tempWeightsFilePath: String) {

@@ -1,7 +1,8 @@
-import os
-import shutil
 import email
 import mailbox
+import os
+import shutil
+
 
 def clear_directory(directory):
     """Removes all files and folders in the specified directory."""

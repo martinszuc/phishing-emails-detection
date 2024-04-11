@@ -4,6 +4,9 @@ import android.content.Context
 import android.net.Uri
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.util.zip.GZIPOutputStream
 
 class FileManager(private val context: Context) {
 
@@ -12,6 +15,28 @@ class FileManager(private val context: Context) {
     fun getAppDirectory(): File {
         // Assuming files are stored in the app's internal storage directory
         return context.filesDir
+    }
+
+    fun saveBinaryToFile(content: ByteArray, directoryName: String, fileName: String): File {
+        val directory = File(getAppDirectory(), directoryName)
+        if (!directory.exists()) directory.mkdirs()
+
+        val file = File(directory, fileName)
+        file.writeBytes(content)
+        return file
+    }
+
+    fun compressFile(directoryName: String, originalFileName: String, compressedFileName: String): String {
+        val originalFile = File(context.filesDir, directoryName + File.separator + originalFileName)
+        val compressedFile = File(context.filesDir, directoryName + File.separator + compressedFileName)
+
+        GZIPOutputStream(FileOutputStream(compressedFile)).use { output ->
+            FileInputStream(originalFile).use { input ->
+                input.copyTo(output)
+            }
+        }
+
+        return compressedFile.name
     }
 
     fun saveTextToFile(mboxContent: String, directoryName: String, fileName: String): File {

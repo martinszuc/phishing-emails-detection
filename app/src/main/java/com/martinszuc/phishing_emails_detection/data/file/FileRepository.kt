@@ -12,6 +12,15 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
 
     private val logTag = "FileRepository"
 
+    fun compressAndReturnName(directoryName: String, fileName: String): String {
+        val originalFile = fileManager.loadFileFromDirectory(directoryName, fileName)
+        originalFile?.let {
+            val compressedFileName = "${fileName.split(".")[0]}.gz"
+            // Assuming `compressFile` is a method in FileManager that compresses the file and returns the path
+            return fileManager.compressFile(directoryName, fileName, compressedFileName)
+        } ?: throw Exception("Original file for compression not found: $fileName")
+    }
+
     // Save mbox content to a file within a specified directory
     fun saveMboxContent(
         mboxContent: String,
@@ -20,6 +29,11 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
     ): File {
         return fileManager.saveTextToFile(mboxContent, directoryName, fileName)
     }
+    fun saveTemporaryWeights(weightsContent: ByteArray, fileName: String = "temp_weights.gz"): File {
+        val tempFile = fileManager.saveBinaryToFile(weightsContent, "", fileName)
+        return tempFile
+    }
+
 
     // Load a file by name from a specified directory
     fun loadFileFromDirectory(

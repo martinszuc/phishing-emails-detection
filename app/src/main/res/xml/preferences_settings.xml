@@ -28,11 +28,15 @@
             app:layout="@layout/preference_layout"
             android:summary="Select a folder containing the model"/>
 
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Server settings">
+
         <Preference
-            app:key="load_model_h5"
-            app:title="Load .h5 model"
+            app:key="check_connection"
+            app:title="Check server connection"
             app:layout="@layout/preference_layout"
-            android:summary="Select a file containing the model"/>
+            android:summary="Verify connectivity of federated server."/>
 
     </PreferenceCategory>
 

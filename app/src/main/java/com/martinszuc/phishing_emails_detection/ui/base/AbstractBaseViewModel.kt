@@ -1,6 +1,8 @@
 package com.martinszuc.phishing_emails_detection.ui.base
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,7 +28,11 @@ abstract class AbstractBaseViewModel : ViewModel() {
     protected val _hasStarted = MutableLiveData<Boolean>()
     val hasStarted: LiveData<Boolean> = _hasStarted
 
-    protected fun <T> launchDataLoad(execution: suspend () -> T, onSuccess: (T) -> Unit = {}, onFailure: (Exception) -> Unit = {}) {
+    protected fun <T> launchDataLoad(
+        execution: suspend () -> T,
+        onSuccess: (T) -> Unit = {},
+        onFailure: (Exception) -> Unit = {}
+    ) {
         _hasStarted.postValue(true) // Indicate that the operation has started
         _isLoading.postValue(true)
         viewModelScope.launch {
@@ -86,5 +92,11 @@ abstract class AbstractBaseViewModel : ViewModel() {
     // Additional method to reset hasStarted state
     fun clearHasStarted() {
         _hasStarted.postValue(false)
+    }
+
+    fun showToast(message: String, context: Context) {
+        viewModelScope.launch(Dispatchers.Main) {
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        }
     }
 }

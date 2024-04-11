@@ -1,9 +1,10 @@
-from tensorflow.keras.models import Sequential
+import numpy as np
+from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc, \
+    precision_score, recall_score, f1_score
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.layers import DenseFeatures
-from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc, precision_score, recall_score, f1_score
-import numpy as np
-import tensorflow as tf
+from tensorflow.keras.models import Sequential
+
 
 def build_model(feature_columns):
     feature_layer = DenseFeatures(feature_columns)

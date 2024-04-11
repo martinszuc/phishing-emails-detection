@@ -1,10 +1,14 @@
-import mailbox
-import pandas as pd
-import os
-import re
 import csv
-from feature_finders import HTMLFormFinder, AttachmentFinder, FlashFinder, IFrameFinder, HTMLContentFinder, URLsFinder, ExternalResourcesFinder, JavascriptFinder, CssFinder, IPsInURLs, AtInURLs, EncodingFinder
+import mailbox
+import os
+import pandas as pd
+import re
+
 import utils_finders as utils
+from feature_finders import HTMLFormFinder, AttachmentFinder, FlashFinder, IFrameFinder, \
+    HTMLContentFinder, URLsFinder, ExternalResourcesFinder, JavascriptFinder, CssFinder, IPsInURLs, \
+    AtInURLs, EncodingFinder
+
 
 def process_mbox_to_csv(filepath, encoding, output_dir, is_phishy=True, limit=500):
     print(f"Processing file: {filepath}")

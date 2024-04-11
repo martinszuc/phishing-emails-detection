@@ -1,7 +1,9 @@
 import re
 from abc import ABC, abstractmethod
-from utils_config import Config
+
 import utils_finders as utils
+from utils_config import Config
+
 
 class FeatureFinder(ABC):
 

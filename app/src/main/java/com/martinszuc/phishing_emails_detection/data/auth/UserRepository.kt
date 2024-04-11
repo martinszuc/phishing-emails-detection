@@ -1,6 +1,7 @@
 package com.martinszuc.phishing_emails_detection.data.auth
 
 import android.content.Context
+import com.martinszuc.phishing_emails_detection.utils.StringUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 /**
@@ -17,6 +18,7 @@ class UserRepository @Inject constructor(@ApplicationContext private val context
     companion object {
         private const val PREF_FILE_NAME = "AuthPreference"
         private const val IS_LOGGED_IN_KEY = "isLoggedIn"
+        private const val USER_ID_KEY = "userId"
     }
 
     private val sharedPref = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE)
@@ -35,5 +37,32 @@ class UserRepository @Inject constructor(@ApplicationContext private val context
      */
     fun saveLoginState(isLoggedIn: Boolean) {
         sharedPref.edit().putBoolean(IS_LOGGED_IN_KEY, isLoggedIn).apply()
+    }
+
+    /**
+     * Retrieves the user's unique ID.
+     *
+     * If a unique ID doesn't exist, it generates a new one, saves it, and then returns it.
+     *
+     * @return [String] representing the user's unique ID.
+     */
+    fun getUserId(): String {
+        // Check if the user ID already exists
+        var userId = sharedPref.getString(USER_ID_KEY, null)
+        if (userId.isNullOrEmpty()) {
+            // If not, generate a new one
+            userId = StringUtils.generateClientId()
+            saveUserId(userId)
+        }
+        return userId
+    }
+
+    /**
+     * Saves the user's unique ID in SharedPreferences.
+     *
+     * @param userId [String] representing the user's unique ID to be saved.
+     */
+    private fun saveUserId(userId: String) {
+        sharedPref.edit().putString(USER_ID_KEY, userId).apply()
     }
 }

@@ -3,17 +3,24 @@ package com.martinszuc.phishing_emails_detection.ui.component.model_manager
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.martinszuc.phishing_emails_detection.data.auth.UserRepository
+import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.data.model.WeightManager
 import com.martinszuc.phishing_emails_detection.data.model_manager.ModelRepository
 import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
+import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class ModelManagerViewModel @Inject constructor(
     private val modelRepository: ModelRepository,
-    private val weightManager: WeightManager
+    private val weightManager: WeightManager,
+    private val userRepository: UserRepository,
+    private val fileRepository: FileRepository
 ) : AbstractBaseViewModel() {
 
     private val logTag = "ModelManagerViewModel"
@@ -29,10 +36,21 @@ class ModelManagerViewModel @Inject constructor(
     fun uploadModelWeights() {
         _selectedModel.value?.let { model ->
             launchDataLoad(execution = {
-                // Extract weights as JSON using WeightManager
-                val weightsJson = weightManager.extractModelWeights(model.modelName)
-                // Upload extracted weights JSON
-                modelRepository.uploadModelWeights(model.modelName, weightsJson)
+                withContext(Dispatchers.IO){
+                    _isLoading.postValue(true)
+                    // Get user ID
+                    val clientId = userRepository.getUserId()
+
+                    // Extract weights filename
+                    val weightsFilename = weightManager.extractModelWeights(model.modelName)
+
+                    // Compress weights file and get path
+                    val compressedFileName =
+                        fileRepository.compressAndReturnName(Constants.WEIGHTS_DIR, weightsFilename)
+
+                    // Upload the compressed weights
+                    modelRepository.uploadCompressedWeights(clientId, compressedFileName)
+                }
             }, onSuccess = {
                 Log.d(logTag, "Model weights uploaded successfully for model: ${model.modelName}")
             }, onFailure = { exception ->
@@ -45,7 +63,9 @@ class ModelManagerViewModel @Inject constructor(
     fun downloadAndUpdateModelWeights() {
         _selectedModel.value?.let { model ->
             launchDataLoad(execution = {
-                modelRepository.downloadModelWeights(model.modelName)
+                withContext(Dispatchers.IO) {
+                    modelRepository.downloadModelWeights(model.modelName)
+                }
             }, onSuccess = {
                 Log.d(logTag, "Model weights updated successfully for model: ${model.modelName}")
             }, onFailure = { exception ->

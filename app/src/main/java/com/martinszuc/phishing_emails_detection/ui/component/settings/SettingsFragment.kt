@@ -14,6 +14,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.EmailsSavedViewModel
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.FederatedServerSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.user.AccountSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -27,11 +28,12 @@ import java.io.FileOutputStream
 class SettingsFragment : PreferenceFragmentCompat() {
     private val emailsSavedViewModel: EmailsSavedViewModel by activityViewModels()
     private val accountSharedViewModel: AccountSharedViewModel by activityViewModels()
+    private val federatedServerSharedViewModel: FederatedServerSharedViewModel by activityViewModels()
 
     private lateinit var directoryPickerLauncher: ActivityResultLauncher<Intent> // Android 13 doesnt need explicit permissions to read external storage files. Android 10 and older do.
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.preferences, rootKey)
+        setPreferencesFromResource(R.xml.preferences_settings, rootKey)
 
         // Initialize the directory picker launcher
         directoryPickerLauncher = registerForActivityResult(
@@ -42,6 +44,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     copyModelToInternalStorage(uri)
                 }
             }
+        }
+
+        federatedServerSharedViewModel.isServerOperational.observe(this) { status ->
+            // Update UI with server status
+            updateServerStatusUI(status)
         }
     }
 
@@ -63,9 +70,25 @@ class SettingsFragment : PreferenceFragmentCompat() {
             "learn_phishing" -> {
                 openLearnPhishingFragment()
             }
+            "check_connection" -> {
+                federatedServerSharedViewModel.checkServerConnection()
+            }
+
 
         }
         return super.onPreferenceTreeClick(preference)
+    }
+
+    private fun updateServerStatusUI(isOperational: Boolean) {
+        // Find the preference item for displaying server status
+        val preference = findPreference<Preference>("check_connection")
+        preference?.icon = if (isOperational) {
+            // Server is operational, set green flag icon
+            requireContext().getDrawable(R.drawable.ic_green_checkmark_line)
+        } else {
+            // Server is not operational, set red flag icon
+            requireContext().getDrawable(R.drawable.ic_red_x_line)
+        }
     }
 
     private fun openLearnPhishingFragment() {

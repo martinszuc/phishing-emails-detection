@@ -31,5 +31,7 @@ class Constants {
         const val PREDICTION_MBOX_DIR = "prediction_emails"
         const val MBOX_FILES_DIR = "email_mbox_files"
         const val MANIFESTS_DIR = "manifests"
+        const val WEIGHTS_DIR = "weights"
+
     }
 }

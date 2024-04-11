@@ -1,9 +1,11 @@
 import numpy as np
-import pandas as pd
 import os
+import pandas as pd
 import tensorflow as tf
-import utils_feature_extraction as ufe
+
 import utils_data_preparation as udp
+import utils_feature_extraction as ufe
+
 
 def predict_on_mbox(model_name, filename):
 
