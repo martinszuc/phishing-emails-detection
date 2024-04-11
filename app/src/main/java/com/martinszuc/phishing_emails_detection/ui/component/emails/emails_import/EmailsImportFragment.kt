@@ -45,11 +45,13 @@ import kotlinx.coroutines.launch
 
     private val binding get() = _binding!!
 
+    private val logTag = "EmailImportFragment"
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("EmailImportFragment", "onCreateView called")
+        Log.d(logTag, "onCreateView called")
         _binding = FragmentEmailsImportBinding.inflate(inflater, container, false)
 
         initUserAccount()
@@ -66,7 +68,6 @@ import kotlinx.coroutines.launch
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
         initLoadingSpinner()
-        setupObservers()
         setupEmailsLoadedObserver()
     }
 
@@ -112,9 +113,13 @@ import kotlinx.coroutines.launch
             setPositiveButton("Ok") { _, _ ->
                 val count = input.text.toString().toIntOrNull()
                 if (count != null) {
-                    emailsImportViewModel.fetchAndSaveEmailsBasedOnFilterAndLimit(currentQuery, count)
+                    emailsImportViewModel.fetchAndSaveEmailsBasedOnFilterAndLimit(
+                        currentQuery,
+                        count
+                    )
                 } else {
-                    Toast.makeText(context, "Please enter a valid number", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Please enter a valid number", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
             setNegativeButton("Cancel", null)
@@ -153,13 +158,13 @@ import kotlinx.coroutines.launch
 
     private fun initUserAccount() {
         accountSharedViewModel.account.observe(viewLifecycleOwner) { account ->
-            Log.d("EmailImportFragment", "Account: $account")
+            Log.d(logTag, "Account: $account")
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("EmailImportFragment", "onDestroyView called")
+        Log.d(logTag, "onDestroyView called")
         _binding = null
     }
 
@@ -177,7 +182,6 @@ import kotlinx.coroutines.launch
 
         fab.setOnClickListener {
             emailsImportViewModel.importSelectedEmails()
-            Toast.makeText(context, "Emails successfully saved!", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -223,7 +227,7 @@ import kotlinx.coroutines.launch
             emailsImportAdapter.loadStateFlow.collectLatest { loadStates ->
                 binding.loadingSpinner.visibility =
                     if (loadStates.refresh is LoadState.Loading) View.VISIBLE else View.GONE
-                Log.d("EmailImportFragment", "Load state changed: ${loadStates.refresh}")
+                Log.d(logTag, "Load state changed: ${loadStates.refresh}")
             }
         }
     }
@@ -234,27 +238,21 @@ import kotlinx.coroutines.launch
         }
 
         emailsImportViewModel.isFinished.observe(viewLifecycleOwner) { isFinished ->
-            if (isFinished && emailsImportViewModel.hasStarted.value == true) {
-                showImportFinishedDialog(success = true)
+            if (isFinished) {
+                showImportFinishedToast(success = true)
             }
         }
 
         emailsImportViewModel.operationFailed.observe(viewLifecycleOwner) { isFailed ->
             if (isFailed) {
-                showImportFinishedDialog(success = false)
+                showImportFinishedToast(success = false)
             }
         }
     }
 
-    private fun showImportFinishedDialog(success: Boolean) {
+    private fun showImportFinishedToast(success: Boolean) {
         val message = if (success) "Import finished successfully." else "Import failed."
-        AlertDialog.Builder(requireContext()).apply {
-            setTitle(if (success) "Success" else "Failure")
-            setMessage(message)
-            setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-            create()
-            show()
-        }
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 }
 

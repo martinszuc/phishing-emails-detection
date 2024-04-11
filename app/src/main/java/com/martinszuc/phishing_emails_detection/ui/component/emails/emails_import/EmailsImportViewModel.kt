@@ -24,6 +24,7 @@ class EmailsImportViewModel @Inject constructor(
     private val emailFullRemoteRepository: EmailFullRemoteRepository
 ) : AbstractBaseViewModel() {
 
+    private val logTag = "EmailsImportViewModel"
     private val _isSelectionMode = MutableLiveData(false)
     val isSelectionMode: LiveData<Boolean> = _isSelectionMode
 
@@ -56,7 +57,7 @@ class EmailsImportViewModel @Inject constructor(
                 throw Exception("No packages selected")
             }
         }, onFailure = { e ->
-            Log.e("EmailsImportViewModel", "Error during import: ${e.message}")
+            Log.e(logTag, "Error during import: ${e.message}")
         })
     }
 
@@ -66,7 +67,7 @@ class EmailsImportViewModel @Inject constructor(
                 emailFullRemoteRepository.fetchAndSaveEmailsBasedOnFilterAndLimit(query, limit)
             }
         }, onFailure = { e ->
-            Log.e("EmailsImportViewModel", "Error fetching and saving emails: ${e.message}")
+            Log.e(logTag, "Error fetching and saving emails: ${e.message}")
         })
     }
 
