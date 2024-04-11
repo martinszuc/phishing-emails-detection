@@ -66,5 +66,11 @@ class EmailMinimalLocalRepository@Inject constructor(
             emailMinimalDao.fetchLatestEmailIds(limit)
         }
     }
+
+    suspend fun deleteEmailById(id: String) {
+        database.withTransaction {
+            emailMinimalDao.deleteById(id)
+        }
+    }
 }
 

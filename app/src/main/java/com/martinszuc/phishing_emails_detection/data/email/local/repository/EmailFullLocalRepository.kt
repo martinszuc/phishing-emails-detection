@@ -74,7 +74,7 @@ class EmailFullLocalRepository @Inject constructor(
     }
 
 
-    suspend fun deleteEmailFullById(id: String) {
+    suspend fun deleteEmailById(id: String) {
         database.withTransaction {
             emailFullDao.deleteEmailFullById(id)
         }

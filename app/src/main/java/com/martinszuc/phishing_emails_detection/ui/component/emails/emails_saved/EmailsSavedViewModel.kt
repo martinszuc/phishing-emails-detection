@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailFullLocalRepository
+import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMboxLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMinimalLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageRepository
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class EmailsSavedViewModel @Inject constructor(
     private val emailFullLocalRepository: EmailFullLocalRepository,
     private val emailPackageRepository: EmailPackageRepository,
-    private val emailMinimalLocalRepository: EmailMinimalLocalRepository
+    private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
+    private val emailMboxLocalRepository: EmailMboxLocalRepository
 ) : AbstractBaseViewModel() {
 
     private val logTag = "EmailsImportViewModel"
@@ -80,6 +82,11 @@ class EmailsSavedViewModel @Inject constructor(
         val emailIds = _selectedEmails.value?.toList() ?: return
         launchDataLoad(execution = {
             emailPackageRepository.createEmailPackage(emailIds, isPhishy, packageName)
+            emailIds.forEach { emailId ->
+                emailFullLocalRepository.deleteEmailById(emailId)
+                emailMinimalLocalRepository.deleteEmailById(emailId)
+                emailMboxLocalRepository.deleteEmailMboxById(emailId)
+            }
         })
     }
 

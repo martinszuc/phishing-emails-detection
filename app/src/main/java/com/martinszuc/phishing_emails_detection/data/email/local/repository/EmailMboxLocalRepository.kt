@@ -12,6 +12,7 @@ class EmailMboxLocalRepository @Inject constructor(
     private val database: AppDatabase,
     private val fileRepository: FileRepository
 ) {
+    private val logTag = "EmailMboxRepo"
     private val emailMboxMetadataDao = database.emailMboxDao()
 
     suspend fun saveEmailMbox(emailId: String, mboxContent: String, timestamp: Long) {
@@ -20,36 +21,39 @@ class EmailMboxLocalRepository @Inject constructor(
             fileRepository.saveMboxContent(mboxContent, Constants.MBOX_FILES_DIR, filename)
             val metadata = EmailMboxMetadata(id = filename, timestamp = timestamp)
             emailMboxMetadataDao.insert(metadata)
-            Log.d("EmailMboxRepo", "Saved mbox file and metadata successfully: $filename")
+            Log.d(logTag, "Saved mbox file and metadata successfully: $filename")
         } catch (e: Exception) {
-            Log.e("EmailMboxRepo", "Failed to save mbox file or metadata: $filename", e)
+            Log.e(logTag, "Failed to save mbox file or metadata: $filename", e)
         }
     }
 
     suspend fun fetchMboxContentById(id: String): String? {
         try {
             val metadata = emailMboxMetadataDao.getEmailMbox(id)
-            return metadata?.let {
+            return metadata.let {
                 fileRepository.loadMboxContent(Constants.MBOX_FILES_DIR, it.id).also {
-                    Log.d("EmailMboxRepo", "Fetched mbox content for id: $id")
+                    Log.d(logTag, "Fetched mbox content for id: $id")
                 }
             } ?: run {
-                Log.w("EmailMboxRepo", "No metadata found for id: $id")
+                Log.w(logTag, "No metadata found for id: $id")
                 null
             }
         } catch (e: Exception) {
-            Log.e("EmailMboxRepo", "Failed to fetch mbox content for id: $id", e)
+            Log.e(logTag, "Failed to fetch mbox content for id: $id", e)
             return null
         }
     }
 
-    suspend fun deleteEmailMbox(filename: String) {
+    suspend fun deleteEmailMboxById(emailId: String) {
+        val filename = "$emailId.mbox" // Construct the filename from the email ID
         try {
+            // Attempt to delete the file from the directory
             fileRepository.deleteFile(Constants.MBOX_FILES_DIR, filename)
-            emailMboxMetadataDao.deleteEmailMbox(filename)
-            Log.d("EmailMboxRepo", "Deleted mbox file and metadata: $filename")
+            // Attempt to delete the corresponding metadata from the database
+            emailMboxMetadataDao.deleteEmailMbox(filename) // Ensure this method accepts the filename as the identifier
+            Log.d(logTag, "Deleted mbox file and metadata: $filename")
         } catch (e: Exception) {
-            Log.e("EmailMboxRepo", "Failed to delete mbox file or metadata: $filename", e)
+            Log.e(logTag, "Failed to delete mbox file or metadata: $filename", e)
         }
     }
 
@@ -59,12 +63,12 @@ class EmailMboxLocalRepository @Inject constructor(
             mboxFiles?.forEach { file ->
                 // Assume file naming convention allows extraction of emailId, senderEmail, and timestamp
                 // For simplicity, not shown here. Requires parsing the filename or storing this data within the file.
-                Log.d("EmailMboxRepo", "Processing file during refresh: ${file.name}")
+                Log.d(logTag, "Processing file during refresh: ${file.name}")
                 // TODO: Implement the logic to parse the filename and store this data within the file.
             }
-            Log.d("EmailMboxRepo", "Refreshed database from files successfully")
+            Log.d(logTag, "Refreshed database from files successfully")
         } catch (e: Exception) {
-            Log.e("EmailMboxRepo", "Failed to refresh database from files", e)
+            Log.e(logTag, "Failed to refresh database from files", e)
         }
     }
 }
