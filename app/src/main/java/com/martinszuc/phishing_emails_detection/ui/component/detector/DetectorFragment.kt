@@ -52,7 +52,7 @@ class DetectorFragment : Fragment() {
         setupDetectButton()
         setupSelectedEmailWindow(view)
         observeModels()
-        binding.emailSelectionButton.setOnClickListener {
+        binding.frameSelectedEmail.setOnClickListener {
             openEmailSelectionBottomSheet()
         }
         observeIsFinishedLoading()
@@ -141,7 +141,7 @@ class DetectorFragment : Fragment() {
             // Add a default "prompt" item at the beginning of the list
             add(
                 ModelMetadata(
-                    "Please pick one of your models",
+                    getString(R.string.select_from_your_models_spinner),
                     Date(0)
                 )
             ) // Date(0) just as a placeholder
