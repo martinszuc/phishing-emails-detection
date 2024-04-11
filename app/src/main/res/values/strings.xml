@@ -93,4 +93,5 @@
     <string name="load_from_server">Load from Server</string>
     <string name="extract_send_weights">Extract and Send Weights</string>
     <string name="delete">Delete</string>
+    <string name="package_all">Package all</string>
 </resources>
