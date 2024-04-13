@@ -95,4 +95,8 @@
     <string name="delete">Delete</string>
     <string name="package_all">Package all</string>
     <string name="select_from_your_models_spinner">Select from your models:</string>
+    <string name="phishing_label_2">Phishing label</string>
+    <string name="confirm_big">CONFIRM</string>
+    <string name="cancel_big">CANCEL</string>
+    <string name="phishing_label_string">Phishing label</string>
 </resources>

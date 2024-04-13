@@ -8,9 +8,10 @@ import com.martinszuc.phishing_emails_detection.utils.StringUtils
 import java.io.File
 import javax.inject.Inject
 
-class FileRepository @Inject constructor(private val fileManager: FileManager) {
+private const val logTag = "FileRepository"
 
-    private val logTag = "FileRepository"
+
+class FileRepository @Inject constructor(private val fileManager: FileManager) {
 
     fun compressAndReturnName(directoryName: String, fileName: String): String {
         val originalFile = fileManager.loadFileFromDirectory(directoryName, fileName)

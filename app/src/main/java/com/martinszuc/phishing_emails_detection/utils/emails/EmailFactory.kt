@@ -1,5 +1,6 @@
 package com.martinszuc.phishing_emails_detection.utils.emails
 
+import android.util.Base64
 import android.util.Log
 import com.google.api.services.gmail.model.Message
 import com.google.api.services.gmail.model.MessagePart
@@ -10,6 +11,7 @@ import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_fu
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Header
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Part
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Payload
+import java.nio.charset.StandardCharsets
 
 /**
  * Authored by matoszuc@gmail.com
@@ -65,27 +67,30 @@ object EmailFactory {
      * @param email The Gmail API `Message` object.
      * @return An `EmailFull` entity or `null` if essential components are missing.
      */
+    private fun decodeBase64UrlSafe(base64Data: String?): String? {
+        if (base64Data == null) {
+            Log.e("EmailFactory", "Attempted to decode null Base64 data")
+            return null
+        }
+        return try {
+            val data = Base64.decode(base64Data, Base64.URL_SAFE or Base64.NO_WRAP)
+            String(data, StandardCharsets.UTF_8)
+        } catch (e: IllegalArgumentException) {
+            Log.e("EmailFactory", "Base64 decoding error: ${e.message}")
+            null
+        }
+    }
+
     fun createEmailFull(email: Message): EmailFull? {
-        val payload = email.payload ?: run {
-            Log.d("EmailFactory", "Email with ID ${email.id} has null payload")
-            return null
-        }
-
+        val payload = email.payload ?: return null
         val headers = createHeaders(payload.headers)
-        val parts = createParts(payload.parts)
-        val payloadBody = payload.body?.let { Body(data = it.data ?: "", size = it.size) } ?: run {
-            Log.d("EmailFactory", "Email with ID ${email.id} has null payload body")
-            return null
-        }
+        val parts = createParts(payload.parts ?: listOf())
 
-        val newPayload = Payload(
-            partId = payload.partId,
-            mimeType = payload.mimeType,
-            filename = payload.filename,
-            headers = headers,
-            body = payloadBody,
-            parts = parts
-        )
+        val payloadBody = payload.body?.data?.let {
+            decodeBase64UrlSafe(it)
+        }?.let {
+            Body(data = it, size = payload.body.size)
+        } ?: Body(data = "", size = 0)
 
         return EmailFull(
             id = email.id,
@@ -99,34 +104,24 @@ object EmailFactory {
                 mimeType = payload.mimeType,
                 filename = payload.filename,
                 headers = headers,
-                body = payloadBody,
-                parts = parts
+                body = payloadBody,  // Can be null if body data was null
+                parts = if (parts.isEmpty()) null else parts
             )
         )
     }
 
-    /**
-     * Converts a list of `MessagePartHeader` objects to a list of `Header` entities.
-     *
-     * @param headers A list of `MessagePartHeader` objects.
-     * @return A list of `Header` entities.
-     */
-    private fun createHeaders(headers: List<MessagePartHeader>?): List<Header> {
-        return headers?.map { header ->
-            Header(name = header.name, value = header.value)
-        } ?: emptyList()
+    private fun createHeaders(headers: List<MessagePartHeader>): List<Header> {
+        return headers.map { Header(name = it.name, value = it.value ?: "") }
     }
 
-    /**
-     * Converts a list of Gmail API `MessagePart` objects to a list of `Part` entities.
-     *
-     * @param parts A list of `MessagePart` objects.
-     * @return A list of `Part` entities or an empty list if no parts are present or they lack bodies.
-     */
-    private fun createParts(parts: List<MessagePart>?): List<Part> {
-        return parts?.mapNotNull { part ->
+    private fun createParts(parts: List<MessagePart>): List<Part> {
+        return parts.mapNotNull { part ->
             val partHeaders = createHeaders(part.headers)
-            val partBody = part.body?.let { Body(data = it.data ?: "", size = it.size ?: 0) }
+            val partBody = part.body?.data?.let {
+                decodeBase64UrlSafe(it)
+            }?.let {
+                Body(data = it, size = part.body.size)
+            }
             if (partBody != null) {
                 Part(
                     partId = part.partId,
@@ -135,10 +130,8 @@ object EmailFactory {
                     headers = partHeaders,
                     body = partBody
                 )
-            } else {
-                null
-            }
-        } ?: emptyList()
+            } else null
+        }
     }
 
     // Raw

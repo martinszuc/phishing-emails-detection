@@ -15,6 +15,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+private const val logTag = "ModelManagerViewModel"
+
+
 @HiltViewModel
 class ModelManagerViewModel @Inject constructor(
     private val modelRepository: ModelRepository,
@@ -22,8 +25,6 @@ class ModelManagerViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val fileRepository: FileRepository
 ) : AbstractBaseViewModel() {
-
-    private val logTag = "ModelManagerViewModel"
 
 
     private val _selectedModel = MutableLiveData<ModelMetadata>()

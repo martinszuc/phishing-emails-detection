@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.R
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Body
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Payload
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailDetailsPayloadBinding
 
@@ -63,7 +64,7 @@ class PayloadAdapter : RecyclerView.Adapter<PayloadAdapter.PayloadViewHolder>() 
         holder.headerAdapter.headers = payload.headers
         holder.headerAdapter.notifyDataSetChanged()
 
-        holder.bodyAdapter.bodies = listOf(payload.body)
+        holder.bodyAdapter.bodies = listOf(payload.body ?: Body(data = "", size = 0))
         holder.bodyAdapter.notifyDataSetChanged()
     }
 

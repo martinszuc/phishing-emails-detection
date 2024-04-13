@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -26,6 +27,7 @@ import java.io.FileOutputStream
 
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
+    private val settingsViewModel: SettingsViewModel by viewModels()
     private val emailsSavedViewModel: EmailsSavedViewModel by activityViewModels()
     private val accountSharedViewModel: AccountSharedViewModel by activityViewModels()
     private val federatedServerSharedViewModel: FederatedServerSharedViewModel by activityViewModels()
@@ -45,17 +47,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
             }
         }
-
-        federatedServerSharedViewModel.isServerOperational.observe(this) { status ->
-            // Update UI with server status
-            updateServerStatusUI(status)
-        }
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
             "clear_database" -> {
                 emailsSavedViewModel.clearDatabase()
+                settingsViewModel.clearMboxFiles()
                 Toast.makeText(context, "Database cleared", Toast.LENGTH_SHORT).show()
             }
             "logout" -> {
@@ -73,13 +71,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             "check_connection" -> {
                 federatedServerSharedViewModel.checkServerConnection()
             }
-
-
         }
         return super.onPreferenceTreeClick(preference)
     }
 
-    private fun updateServerStatusUI(isOperational: Boolean) {
+    private fun updateServerStatusUI(isOperational: Boolean) { // TODO use icons
         // Find the preference item for displaying server status
         val preference = findPreference<Preference>("check_connection")
         preference?.icon = if (isOperational) {

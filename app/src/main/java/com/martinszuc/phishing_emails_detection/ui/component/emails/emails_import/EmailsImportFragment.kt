@@ -34,6 +34,7 @@ import kotlinx.coroutines.launch
 /**
  * Authored by matoszuc@gmail.com
  */
+private const val logTag = "EmailsImportFragment"
 
 @AndroidEntryPoint
     class EmailsImportFragment : Fragment() {                       // TODO better loading screen when batch downloading
@@ -45,7 +46,6 @@ import kotlinx.coroutines.launch
 
     private val binding get() = _binding!!
 
-    private val logTag = "EmailImportFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -246,6 +246,22 @@ import kotlinx.coroutines.launch
         emailsImportViewModel.operationFailed.observe(viewLifecycleOwner) { isFailed ->
             if (isFailed) {
                 showImportFinishedToast(success = false)
+            }
+        }
+
+        emailsImportViewModel.totalCount.observe(viewLifecycleOwner) { total ->
+            if (total > 0) {
+                binding.loadingOverlay.visibility = View.VISIBLE
+                binding.progressBar.max = total
+                binding.progressText.text = "0 / $total"
+            }
+        }
+
+        emailsImportViewModel.progress.observe(viewLifecycleOwner) { progress ->
+            binding.progressBar.progress = progress
+            binding.progressText.text = "$progress / ${binding.progressBar.max}"
+            if (progress == binding.progressBar.max) {
+                binding.loadingOverlay.visibility = View.GONE
             }
         }
     }

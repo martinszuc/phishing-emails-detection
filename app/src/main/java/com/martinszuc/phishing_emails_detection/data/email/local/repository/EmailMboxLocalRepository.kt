@@ -3,16 +3,18 @@ package com.martinszuc.phishing_emails_detection.data.email.local.repository
 import android.util.Log
 import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMboxMetadata
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.utils.Constants
+import com.martinszuc.phishing_emails_detection.utils.emails.MboxFactory
 import javax.inject.Inject
 
+private const val logTag = "EmailMboxRepo"
 
 class EmailMboxLocalRepository @Inject constructor(
     private val database: AppDatabase,
     private val fileRepository: FileRepository
 ) {
-    private val logTag = "EmailMboxRepo"
     private val emailMboxMetadataDao = database.emailMboxDao()
 
     suspend fun saveEmailMbox(emailId: String, mboxContent: String, timestamp: Long) {
@@ -24,6 +26,16 @@ class EmailMboxLocalRepository @Inject constructor(
             Log.d(logTag, "Saved mbox file and metadata successfully: $filename")
         } catch (e: Exception) {
             Log.e(logTag, "Failed to save mbox file or metadata: $filename", e)
+        }
+    }
+
+    suspend fun buildAndSaveMbox(emailFull: EmailFull) {
+        try {
+            val mboxContent = MboxFactory.formatEmailFullToMbox(emailFull)
+            saveEmailMbox(emailFull.id, mboxContent, emailFull.internalDate)
+            Log.d(logTag, "Built and saved mbox for email ID: ${emailFull.id}")
+        } catch (e: Exception) {
+            Log.e(logTag, "Failed to build and save mbox for email ID: ${emailFull.id}", e)
         }
     }
 

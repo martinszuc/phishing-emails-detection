@@ -32,6 +32,8 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+private const val logTag = "ProcessedPackageManagerFragment"
+
 @AndroidEntryPoint
 class ProcessedPackageManagerFragment : Fragment() {
     private var _binding: FragmentEmailsProcessedPackageManagerBinding? = null
@@ -75,14 +77,14 @@ class ProcessedPackageManagerFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.action_add_from_file -> {
                     // Handle "Add .mbox from File"
-                    Log.d("PopupMenu", "Add .csv from File selected")
+                    Log.d(logTag, "Add .csv from File selected")
                     selectCsvFile()
                     true
                 }
 
                 R.id.action_build_package -> {
                     // Handle "Build Package Within App"
-                    Log.d("PopupMenu", "Build and Process Package Within App")
+                    Log.d(logTag, "Build and Process Package Within App")
                     emailParentSharedViewModel.setViewPagerPosition(0)
                     true
                 }
@@ -160,7 +162,7 @@ class ProcessedPackageManagerFragment : Fragment() {
 
     private fun observeViewModel() {
         processedPackageSharedViewModel.processedPackages.observe(viewLifecycleOwner) { packages ->
-            Log.d("ProcessedPackageManagerFragment", "Packages received: ${packages.size}")
+            Log.d(logTag, "Packages received: ${packages.size}")
             processedPackageAdapter.setItems(packages)
         }
     }

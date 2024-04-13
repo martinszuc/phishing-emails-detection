@@ -35,7 +35,8 @@ def preprocess_features(combined_df, is_for_prediction=False):
 
     # Define column types
     boolean_columns = ['html_form', 'flash_content', 'html_iframe', 'html_content', 'ips_in_urls',
-                       'at_in_urls']
+                       'at_in_urls', 'xheader_security', 'arc_pass', 'dmarc_pass', 'spf_pass',
+                       'dkim_pass']
     numerical_columns = ['attachments', 'urls', 'external_resources', 'javascript', 'css',
                          'spam_word_count', 'urgency_phrase_count', 'misspelling_ratio']
     categorical_columns = ['encoding']

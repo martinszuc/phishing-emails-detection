@@ -31,22 +31,32 @@ object EmailUtils {
         return mboxHeader + emailContent + "\n"
     }
 
-    fun mergeMboxStrings(mboxStrings: List<String>): String {
-        return mboxStrings.joinToString(separator = "\n\n")
-    }
+    fun decodeQuotedPrintable(data: String): String {
+        val output = StringBuilder()
+        var i = 0
 
-    /**
-     * Extracts a header value from the raw email content based on the specified header name.
-     *
-     * @param emailContent The raw content of the email.
-     * @param headerName The name of the header to extract the value from.
-     * @return The value of the specified header, or null if the header is not found.
-     */
-    fun extractHeaderFromEmailContent(emailContent: String, headerName: String): String? {
-        val regexPattern = "$headerName: (.+)"
-        val regex = Regex(regexPattern, RegexOption.IGNORE_CASE)
-        val matchResult = regex.find(emailContent)
-        return matchResult?.groupValues?.get(1)?.trim()
+        while (i < data.length) {
+            when {
+                data[i] == '=' -> {
+                    // Handle the soft line break which ends with an '=' sign
+                    if (i + 1 < data.length && data[i + 1] == '\r' && i + 2 < data.length && data[i + 2] == '\n') {
+                        i += 2 // Skip the CRLF
+                    } else if (i + 1 < data.length && data[i + 1] == '\n') {
+                        i++ // Skip the LF (for robustness)
+                    } else {
+                        // Convert the next two hex digits to a byte
+                        if (i + 2 < data.length) {
+                            val hex = data.substring(i + 1, i + 3)
+                            output.append(hex.toInt(16).toChar())
+                            i += 2
+                        }
+                    }
+                }
+                else -> output.append(data[i])
+            }
+            i++
+        }
+        return output.toString()
     }
 }
 

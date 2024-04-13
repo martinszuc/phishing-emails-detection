@@ -1,11 +1,15 @@
 package com.martinszuc.phishing_emails_detection.utils
 
+import android.util.Base64
+import android.util.Log
 import com.martinszuc.phishing_emails_detection.data.processed_packages.entity.ProcessedPackageMetadata
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.UUID
+
+private const val logTag = "StringUtils"
 
 /**
  * Authored by matoszuc@gmail.com
@@ -75,5 +79,16 @@ object StringUtils {
         val rows = csvContent.split(Regex("\r\n|\n|\r")).filter { it.isNotEmpty() }
 
         return rows.size // Return the number of non-empty rows
+    }
+
+    // Base64 URL-safe decoding
+    fun decodeBase64UrlSafe(data: String?): String? {
+        return try {
+            val base64Decoded = Base64.decode(data, Base64.URL_SAFE)
+            String(base64Decoded, Charsets.UTF_8)
+        } catch (e: IllegalArgumentException) {
+            Log.e(logTag, "Error decoding Base64: ${e.message}")
+            null
+        }
     }
 }

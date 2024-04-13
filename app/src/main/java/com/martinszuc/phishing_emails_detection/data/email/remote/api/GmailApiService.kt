@@ -21,10 +21,13 @@ import javax.inject.Inject
 import kotlin.math.min
 
 
+private const val logTag = "GmailApiService"
+
 class GmailApiService @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     private val transport = NetHttpTransport()
+
     private val jsonFactory = JacksonFactory.getDefaultInstance()
 
     suspend fun getEmailsMinimal(
@@ -50,7 +53,7 @@ class GmailApiService @Inject constructor(
         } catch (e: UserRecoverableAuthIOException) {
             throw e
         } catch (e: Exception) {
-            Log.e("GmailApiService", "An error occurred while fetching emails: ${e.message}")
+            Log.e(logTag, "An error occurred while fetching emails: ${e.message}")
             throw e
         }
     }
@@ -77,7 +80,7 @@ class GmailApiService @Inject constructor(
 
             Pair(emails, listResponse.nextPageToken)
         } catch (e: Exception) {
-            Log.e("GmailApiService", "An error occurred while searching emails: ${e.message}")
+            Log.e(logTag, "An error occurred while searching emails: ${e.message}")
             throw e
         }
     }
@@ -146,66 +149,18 @@ class GmailApiService @Inject constructor(
             val timestamp = email.internalDate ?: 0L
             Triple(rawEmail, senderEmail, timestamp)
         } else {
-            Log.d("GmailApiService", "Raw email content is null for ID: $emailId")
+            Log.d(logTag, "Raw email content is null for ID: $emailId")
             null
         }
     }
 
-
     suspend fun fetchFullEmailsBasedOnFilterAndLimit(
         account: GoogleSignInAccount,
         query: String,
-        limit: Int
+        limit: Int,
+        progressCallback: (Int) -> Unit
     ): List<EmailFull> = withContext(Dispatchers.IO) {
-        val emailFullList = mutableListOf<EmailFull>()
-        try {
-            val credential = GoogleAccountCredential.usingOAuth2(
-                context, listOf(Constants.GMAIL_READONLY_SCOPE)
-            ).setSelectedAccount(account.account)
-
-            val service = Gmail.Builder(transport, jsonFactory, credential)
-                .setApplicationName(Constants.APPLICATION_NAME)
-                .build()
-
-            var pageToken: String? = null
-            var emailsFetched = 0
-
-            while (emailsFetched < limit) {
-                val response = service.users().messages().list("me")
-                    .setQ(query)
-                    .setMaxResults(min(limit - emailsFetched, 100).toLong()) // Batch size per request
-                    .setPageToken(pageToken)
-                    .execute()
-
-                val messages = response.messages ?: break // Exit if no more messages
-
-                messages.forEach { message ->
-                    val emailId = message.id
-                    val email = service.users().messages().get("me", emailId).setFormat("full").execute()
-                    EmailFactory.createEmailFull(email)?.let {
-                        emailFullList.add(it)
-                        emailsFetched++
-                    }
-
-                    // Optionally, handle raw email content here as needed
-                }
-
-                pageToken = response.nextPageToken ?: break // Exit if at the last page
-            }
-        } catch (e: Exception) {
-            Log.e("GmailApiService", "Error fetching emails: ${e.message}")
-            // Handle exceptions appropriately
-        }
-        return@withContext emailFullList
-    }
-
-
-    suspend fun fetchEmailsAndBlobsBasedOnFilterAndLimit(
-        account: GoogleSignInAccount,
-        query: String,
-        limit: Int
-    ): List<Pair<EmailFull, ByteArray?>> = withContext(Dispatchers.IO) {
-        val emailsAndBlobsList = mutableListOf<Pair<EmailFull, ByteArray?>>()
+        val emailsList = mutableListOf<EmailFull>()
         try {
             val credential = GoogleAccountCredential.usingOAuth2(
                 context, listOf(Constants.GMAIL_READONLY_SCOPE)
@@ -227,26 +182,26 @@ class GmailApiService @Inject constructor(
 
                 val messages = response.messages ?: break
 
-                messages.forEach { message ->
-                    val emailId = message.id
-                    val fullEmail = service.users().messages().get("me", emailId).setFormat("full").execute()
-                    val rawEmail = service.users().messages().get("me", emailId).setFormat("raw").execute().raw?.let { Base64.decodeBase64(it) }
-
-                    EmailFactory.createEmailFull(fullEmail)?.let {
-                        emailsAndBlobsList.add(it to rawEmail)
+                for (message in messages) {
+                    try {
+                        val emailId = message.id
+                        val fullEmailResponse = service.users().messages().get("me", emailId).setFormat("full").execute()
+                        EmailFactory.createEmailFull(fullEmailResponse)?.let { emailFull ->
+                            emailsList.add(emailFull)
+                        }
                         emailsFetched++
+                        progressCallback(emailsFetched)  // Update progress after processing each email
+                    } catch (e: Exception) {
+                        Log.e(logTag, "Error processing email with ID: ${message.id}", e)
                     }
                 }
 
                 pageToken = response.nextPageToken ?: break
             }
         } catch (e: Exception) {
-            Log.e("GmailApiService", "Error fetching emails and blobs: ${e.message}")
+            Log.e("GmailApiService", "Error fetching emails: ${e.message}")
         }
-        return@withContext emailsAndBlobsList
+        emailsList  // Return the list of fetched full emails
     }
-
-
-
 
 }

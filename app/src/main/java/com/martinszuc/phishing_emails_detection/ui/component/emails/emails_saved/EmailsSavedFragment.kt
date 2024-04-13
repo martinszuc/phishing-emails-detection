@@ -77,7 +77,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
         initObserveSelectedEmails()
         initFloatingActionButton() // TODO number of emails saved in the snackbar
         initBatchPackageButton()
-        initLoadingSpinner()
+        initLoadingFrame()
     }
 
     override fun onDestroyView() {
@@ -202,7 +202,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
             hint = "Enter number of emails to include"
         }
         val isPhishyCheckbox = CheckBox(context).apply {
-            text = "Is this package phishing?"
+            text = context.getString(R.string.phishing_label_2)
         }
         val layout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
@@ -319,9 +319,24 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
         inputManager.hideSoftInputFromWindow(binding.searchView.windowToken, 0)
     }
 
-    private fun initLoadingSpinner() {
-        emailFullSharedViewModel.isLoading.observe(viewLifecycleOwner) { isLoadingFull ->
-            updateLoadingSpinner(isLoadingFull)
+    private fun initLoadingFrame() {
+        emailsSavedViewModel.totalCount.observe(viewLifecycleOwner) { total ->
+            if (total > 0) {
+                binding.loadingOverlay.visibility = View.VISIBLE
+                binding.progressBar.max = total
+                binding.progressText.text = "0 / $total"
+            }
+            else {
+                binding.loadingOverlay.visibility = View.GONE
+            }
+        }
+
+        emailsSavedViewModel.progress.observe(viewLifecycleOwner) { progress ->
+            binding.progressBar.progress = progress
+            binding.progressText.text = "$progress / ${binding.progressBar.max}"
+            if (progress == binding.progressBar.max) {
+                binding.loadingOverlay.visibility = View.GONE
+            }
         }
     }
 

@@ -8,9 +8,10 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.zip.GZIPOutputStream
 
-class FileManager(private val context: Context) {
+private const val logTag = "FileManager"
 
-    private val logTag = "FileManager"
+
+class FileManager(private val context: Context) {
 
     fun getAppDirectory(): File {
         // Assuming files are stored in the app's internal storage directory

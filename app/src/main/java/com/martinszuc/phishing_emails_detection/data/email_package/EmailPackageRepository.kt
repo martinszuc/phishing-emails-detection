@@ -10,17 +10,19 @@ import com.martinszuc.phishing_emails_detection.utils.StringUtils
 import java.io.File
 import javax.inject.Inject
 
+private const val logTag = "EmailPackageRepository"
+
 class EmailPackageRepository @Inject constructor(
     private val emailMboxLocalRepository: EmailMboxLocalRepository,
     private val fileRepository: FileRepository,
     private val emailPackageManifestManager: EmailPackageManifestManager
 ) {
-    private val logTag = "EmailPackageRepository"
 
     suspend fun createEmailPackage(
         emailIds: List<String>,
         isPhishy: Boolean,
-        packageName: String
+        packageName: String,
+        progressCallback: (Int) -> Unit  // Added a progress callback parameter
     ): String {
         Log.d(logTag, "Creating email package: $packageName")
         val currentTime = System.currentTimeMillis()
@@ -28,31 +30,30 @@ class EmailPackageRepository @Inject constructor(
         val tempFilename = "${packageName}_${currentTimeFormatted}_temp_${if (isPhishy) "phishy" else "safe"}.mbox"
         var numberOfEmails = 0
 
-        emailIds.forEach { emailId ->
-            val emailMbox = emailMboxLocalRepository.fetchMboxContentById(emailId + ".mbox")
+        emailIds.forEachIndexed { index, emailId ->
+            val emailMbox = emailMboxLocalRepository.fetchMboxContentById("$emailId.mbox")
             emailMbox?.let {
                 fileRepository.appendMboxContent(Constants.DIR_EMAIL_PACKAGES, tempFilename, it)
                 numberOfEmails++
+                fileRepository.deleteFile(Constants.MBOX_FILES_DIR, "$emailId.mbox")
+                progressCallback(index + 1)  // Update progress after each email is processed
             }
         }
 
         val finalFilename = "${packageName}_${currentTimeFormatted}_${numberOfEmails}_${if (isPhishy) "phishy" else "safe"}.mbox"
-        val renamedFile = fileRepository.renameFile(Constants.DIR_EMAIL_PACKAGES, tempFilename, finalFilename)
-        if (renamedFile != null) {
+        fileRepository.renameFile(Constants.DIR_EMAIL_PACKAGES, tempFilename, finalFilename)?.also {
             Log.d(logTag, "Package file renamed successfully to $finalFilename")
-        } else {
-            Log.e(logTag, "Failed to rename package file to $finalFilename")
+        } ?: Log.e(logTag, "Failed to rename package file to $finalFilename")
+
+        fileRepository.getFileSizeInBytes(Constants.DIR_EMAIL_PACKAGES, finalFilename).also { fileSize ->
+            val metadata = EmailPackageMetadata(finalFilename, isPhishy, packageName, currentTime, fileSize, numberOfEmails)
+            emailPackageManifestManager.addEntryToManifest(metadata)
+            Log.d(logTag, "Package metadata added for $finalFilename")
         }
 
-
-        val fileSize = fileRepository.getFileSizeInBytes(Constants.DIR_EMAIL_PACKAGES, finalFilename)
-        val metadata = EmailPackageMetadata(finalFilename, isPhishy, packageName, currentTime, fileSize, numberOfEmails)
-        emailPackageManifestManager.addEntryToManifest(metadata)
-        Log.d(logTag, "Package metadata added for $finalFilename")
-
-        fileRepository.clearDirectory(Constants.MBOX_FILES_DIR)
         return finalFilename
     }
+
 
     suspend fun createAndSaveEmailPackageFromMbox(
         uri: Uri,

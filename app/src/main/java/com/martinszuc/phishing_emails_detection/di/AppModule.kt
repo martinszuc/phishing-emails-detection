@@ -45,23 +45,6 @@ import javax.inject.Singleton
 object AppModule {
 
     /**
-     * Provides the application's Room database.
-     *
-     * @param context The application context.
-     * @return The singleton instance of [AppDatabase].
-     */
-    @Provides
-    @Singleton
-    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java, Constants.DATABASE_NAME
-        )
-            .fallbackToDestructiveMigration()
-            .build()
-    }
-
-    /**
      * Provides the classifier for the application.
      *
      * @param context The application context.

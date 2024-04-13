@@ -3,22 +3,31 @@ import mailbox
 import os
 import pandas as pd
 import re
+import base64
+
 
 import utils_finders as utils
 from feature_finders import HTMLFormFinder, AttachmentFinder, FlashFinder, IFrameFinder, \
     HTMLContentFinder, URLsFinder, ExternalResourcesFinder, JavascriptFinder, CssFinder, IPsInURLs, \
-    AtInURLs, EncodingFinder, SpamWordCountFinder, UrgencyPhraseFinder, MisspellingRatioFinder
+    AtInURLs, EncodingFinder, SpamWordCountFinder, UrgencyPhraseFinder, MisspellingRatioFinder, \
+    DKIMHeaderFinder, DMARCHeaderFinder, SPFHeaderFinder, ARCHeaderFinder, XHeaderSecurityFinder
 
 finders = [HTMLFormFinder(), AttachmentFinder(), FlashFinder(),
            IFrameFinder(), HTMLContentFinder(), URLsFinder(),
            ExternalResourcesFinder(), JavascriptFinder(),
            CssFinder(), IPsInURLs(), AtInURLs(), EncodingFinder(), SpamWordCountFinder(),
-           UrgencyPhraseFinder(), MisspellingRatioFinder()]
+           UrgencyPhraseFinder(), MisspellingRatioFinder(), DKIMHeaderFinder(), DMARCHeaderFinder(),
+           SPFHeaderFinder(), ARCHeaderFinder(), XHeaderSecurityFinder()]
 
 
 def process_mbox_to_csv(filepath, encoding, output_dir, is_phishy=True, limit=500):
     print(f"Processing file: {filepath}")
-    print(f"Encoding: {encoding}, Output directory: {output_dir}, Is Phishy: {is_phishy}, Limit: {limit}")
+    print(f"Encoding: {encoding}")
+    print(f"Output directory: {output_dir}")
+    print(f"Is Phishy: {is_phishy}")
+    print(f"Limit: {limit}")
+
+    common_encodings = ['utf-8', 'iso-8859-1', 'utf-16', 'ascii']
 
     data, email_index = [], []
     try:
@@ -36,25 +45,30 @@ def process_mbox_to_csv(filepath, encoding, output_dir, is_phishy=True, limit=50
                               finders}
                 email_data["is_phishy"] = is_phishy
                 data.append(email_data)
-
-                try:
-                    email_raw = message.as_bytes().decode(encoding, errors='replace')
-                    email_index.append(
-                        {"id": i, "message": utils.getpayload(message), "raw": email_raw})
-                except (UnicodeEncodeError, AttributeError):
-                    print(f"Error decoding email ID {i}. Skipping.")
-                    continue
+                # email_decoded = False
+                # for encoding in common_encodings:
+                #     try:
+                #         email_raw = message.as_bytes().decode(encoding, errors='replace')
+                #         email_index.append({"id": i, "message": utils.getpayload(message), "raw": email_raw})
+                #         email_decoded = True
+                #         break  # Break if successfully decoded
+                #     except (UnicodeDecodeError, AttributeError, base64.binascii.Error) as e:
+                #         print(f"Trying next encoding due to error with {encoding}: {e}")
+                #
+                # if not email_decoded:
+                #     print(f"Failed to decode email ID {i} with common encodings. Skipping email.")
+                #     continue
 
             # Construct the output file paths
             base_filename = os.path.splitext(os.path.basename(filepath))[0]
             data_csv_path = os.path.join(output_dir, f"{base_filename}-export.csv")
             index_csv_path = os.path.join(output_dir, f"{base_filename}-export-index.csv")
 
-            # Ensure the output directory exists
+                 # Ensure the output directory exists
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
 
-            # Saving the processed data to CSV files
+                    # Saving the processed data to CSV files
             pd.DataFrame(data).to_csv(data_csv_path, index=True, quoting=csv.QUOTE_ALL)
             # pd.DataFrame(email_index).to_csv(index_csv_path, index=False, quoting=csv.QUOTE_ALL) #
             print(f"Data exported to {data_csv_path}")

@@ -3,13 +3,17 @@ package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_save
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailFullLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMboxLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMinimalLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageRepository
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private const val logTag = "EmailsImportViewModel"
 
 /**
  * Authored by matoszuc@gmail.com
@@ -22,8 +26,6 @@ class EmailsSavedViewModel @Inject constructor(
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
     private val emailMboxLocalRepository: EmailMboxLocalRepository
 ) : AbstractBaseViewModel() {
-
-    private val logTag = "EmailsImportViewModel"
 
     private val _isSelectionMode = MutableLiveData(false)
     val isSelectionMode: LiveData<Boolean> = _isSelectionMode
@@ -55,7 +57,8 @@ class EmailsSavedViewModel @Inject constructor(
             val secondIndex = visibleEmailIds.indexOf(secondEmailId)
             if (firstIndex == -1 || secondIndex == -1) return
 
-            val range = if (firstIndex < secondIndex) firstIndex..secondIndex else secondIndex..firstIndex
+            val range =
+                if (firstIndex < secondIndex) firstIndex..secondIndex else secondIndex..firstIndex
             val rangeIds = visibleEmailIds.slice(range).toSet()
 
             addToSelectedEmails(rangeIds)
@@ -81,7 +84,13 @@ class EmailsSavedViewModel @Inject constructor(
     fun createEmailPackageFromSelected(isPhishy: Boolean, packageName: String) {
         val emailIds = _selectedEmails.value?.toList() ?: return
         launchDataLoad(execution = {
-            emailPackageRepository.createEmailPackage(emailIds, isPhishy, packageName)
+            emailPackageRepository.createEmailPackage(
+                emailIds,
+                isPhishy,
+                packageName,
+                progressCallback = { progress ->
+                    _progress.postValue(progress)  // Safely update progress on UI thread
+                })
             emailIds.forEach { emailId ->
                 emailFullLocalRepository.deleteEmailById(emailId)
                 emailMinimalLocalRepository.deleteEmailById(emailId)
@@ -91,19 +100,51 @@ class EmailsSavedViewModel @Inject constructor(
     }
 
     fun createEmailPackageFromLatest(isPhishy: Boolean, packageName: String, limit: Int) {
-        launchDataLoad(execution = {
-            // Fetch the latest email IDs
+        viewModelScope.launch {
             val latestEmailIds = emailMinimalLocalRepository.fetchLatestEmailIds(limit)
-            // Create the email package with these IDs
             if (latestEmailIds.isNotEmpty()) {
-                emailPackageRepository.createEmailPackage(latestEmailIds, isPhishy, packageName)
+                _totalCount.postValue(latestEmailIds.size)  // Update the total count for progress tracking
+
+                launchDataLoad(execution = {
+                    // Perform the package creation on an IO dispatcher
+                    emailPackageRepository.createEmailPackage(
+                        latestEmailIds,
+                        isPhishy,
+                        packageName,
+                        progressCallback = { progress ->
+                                _progress.postValue(progress)  // Update progress safely on the UI thread
+                        }
+                    )
+                }, onSuccess = {
+                    _totalCount.postValue(0)
+                    // After successfully creating the package, delete the emails
+                    deleteEmails(latestEmailIds)
+
+                }, onFailure = { e ->
+                    Log.e(logTag, "Error during package creation: ${e.message}")
+                })
             } else {
                 Log.e(logTag, "No latest emails found to package")
             }
+        }
+    }
+
+    private fun deleteEmails(emailIds: List<String>) {
+        launchDataLoad(execution = {
+            emailIds.forEach { emailId ->
+                emailFullLocalRepository.deleteEmailById(emailId)
+                emailMinimalLocalRepository.deleteEmailById(emailId)
+                emailMboxLocalRepository.deleteEmailMboxById(emailId)
+            }
+        }, onSuccess = {
+            Log.d(logTag, "Emails deleted successfully.")
         }, onFailure = { e ->
-            Log.e(logTag, "Error during package creation: ${e.message}")
+            Log.e(logTag, "Failed to delete emails: ${e.message}")
         })
     }
+
+
+
 
     fun resetSelectionMode() {
         _isSelectionMode.value = false

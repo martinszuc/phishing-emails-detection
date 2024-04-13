@@ -1,6 +1,7 @@
 package com.martinszuc.phishing_emails_detection.data.email.remote.repository
 
 import android.util.Log
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.martinszuc.phishing_emails_detection.data.auth.AuthenticationRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailBlob
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
@@ -14,6 +15,8 @@ import com.martinszuc.phishing_emails_detection.utils.emails.EmailFactory
 import com.martinszuc.phishing_emails_detection.utils.emails.EmailUtils
 import javax.inject.Inject
 
+private const val logTag = "EmailFullRemoteRepo"
+
 class EmailFullRemoteRepository @Inject constructor(
     private val apiService: GmailApiService,
     private val emailBlobLocalRepository: EmailBlobLocalRepository,
@@ -22,16 +25,23 @@ class EmailFullRemoteRepository @Inject constructor(
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
     private val authenticationRepository: AuthenticationRepository
 ) {
+
     suspend fun getEmailsFullByIds(emailIds: List<String>): List<EmailFull> {
-        Log.d("EmailFullRemoteRepo", "Fetching full emails for IDs: $emailIds")
+        Log.d(logTag, "Starting to fetch full emails for IDs: $emailIds")
         val account = authenticationRepository.getCurrentAccount()
         if (account == null) {
-            Log.d("EmailFullRemoteRepository", "Google SignIn Account is null")
+            Log.d(logTag, "Google SignIn Account retrieval failed; account is null.")
             return emptyList()
         }
-        return apiService.fetchEmailFullByIds(emailIds, account)
+        try {
+            val emails = apiService.fetchEmailFullByIds(emailIds, account)
+            Log.d(logTag, "Successfully fetched ${emails.size} emails for IDs: $emailIds")
+            return emails
+        } catch (e: Exception) {
+            Log.e(logTag, "Failed to fetch emails for IDs $emailIds: ${e.localizedMessage}")
+            return emptyList()
+        }
     }
-
     suspend fun fetchAndSaveRawEmail(emailId: String) {
         val account = authenticationRepository.getCurrentAccount()
         if (account != null) {
@@ -50,53 +60,41 @@ class EmailFullRemoteRepository @Inject constructor(
 //                    emailBlobLocalRepository.insert(emailBlob) // TODO
                     emailMboxLocalRepository.saveEmailMbox(emailId, mboxString, timestamp)
 
-                } ?: Log.d("fetchAndSaveRawEmail", "Raw email content is null for ID $emailId")
+                } ?: Log.d(logTag, "Raw email content is null for ID $emailId")
             } else {
-                Log.d("fetchAndSaveRawEmail", "Failed to fetch raw email with ID $emailId")
+                Log.d(logTag, "Failed to fetch raw email with ID $emailId")
             }
         } else {
-            Log.d("EmailFullRemoteRepository", "Google SignIn Account is null")
+            Log.d(logTag, "Google SignIn Account is null")
         }
     }
 
-    suspend fun fetchAndSaveEmailsBasedOnFilterAndLimit(query: String, limit: Int) {
-        val account = authenticationRepository.getCurrentAccount()
-        if (account != null) {
-            val emailsAndBlobs =
-                apiService.fetchEmailsAndBlobsBasedOnFilterAndLimit(account, query, limit)
-
-            emailsAndBlobs.forEach { (emailFull, rawBlob) ->
-                // Save the full email
-                emailFullLocalRepository.insertAllEmailsFull(listOf(emailFull))
-
-                // Convert and save the minimal email
-                val emailMinimal = EmailFactory.createEmailMinimalFromFull(emailFull)
-                emailMinimalLocalRepository.insert(emailMinimal)
-
-                // Save the raw email data (mbox or blob)
-                if (rawBlob != null) {
-                    val emailBlob = EmailBlob(
-                        id = emailFull.id,
-                        blob = rawBlob,
-                        senderEmail = EmailFactory.parseHeader(
-                            String(rawBlob, Charsets.UTF_8),
-                            "From"
-                        ) ?: Constants.SENDER_UNKNOWN,
-                        timestamp = emailFull.internalDate
-                    )
-
-                    val mboxString = EmailUtils.formatToMbox(emailBlob)
-
-//                    emailBlobLocalRepository.insert(emailBlob) // TODO
-                    emailMboxLocalRepository.saveEmailMbox(emailFull.id, mboxString, emailFull.internalDate)
-                }
-            }
-        } else {
-            Log.e(
-                "EmailFullRemoteRepo",
-                "Google SignIn Account is null, aborting fetch and save process"
-            )
+    suspend fun fetchEmailsBasedOnFilterAndLimit(
+        account: GoogleSignInAccount,
+        query: String,
+        limit: Int,
+        progressCallback: (Int) -> Unit
+    ): List<EmailFull> {
+        Log.d(logTag, "Fetching emails with query '$query' and limit $limit")
+        return try {
+            val emails = apiService.fetchFullEmailsBasedOnFilterAndLimit(account, query, limit, progressCallback)
+            Log.d(logTag, "Fetched ${emails.size} emails based on the filter and limit.")
+            emails
+        } catch (e: Exception) {
+            Log.e(logTag, "Error during fetch with query '$query': ${e.localizedMessage}")
+            emptyList()
         }
+    }
+
+    private suspend fun saveRawEmailData(emailFull: EmailFull, rawBlob: ByteArray) {
+        val emailBlob = EmailBlob(
+            id = emailFull.id,
+            blob = rawBlob,
+            senderEmail = EmailFactory.parseHeader(String(rawBlob, Charsets.UTF_8), "From") ?: Constants.SENDER_UNKNOWN,
+            timestamp = emailFull.internalDate
+        )
+        val mboxString = EmailUtils.formatToMbox(emailBlob)
+        emailMboxLocalRepository.saveEmailMbox(emailFull.id, mboxString, emailFull.internalDate)
     }
 
 

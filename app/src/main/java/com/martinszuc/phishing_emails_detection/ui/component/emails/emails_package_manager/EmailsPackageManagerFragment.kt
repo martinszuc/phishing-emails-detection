@@ -10,8 +10,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
+import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +32,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+
+private const val logTag = "EmailsPackageManagerFragment"
 
 /**
  * Authored by matoszuc@gmail.com
@@ -78,14 +81,14 @@ class EmailsPackageManagerFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.action_add_from_file -> {
                     // Handle "Add .mbox from File"
-                    Log.d("PopupMenu", "Add .mbox from File selected")
+                    Log.d(logTag, "Add .mbox from File selected")
                     selectMboxFile()
                     true
                 }
 
                 R.id.action_build_package -> {
                     // Handle "Build Package Within App"
-                    Log.d("PopupMenu", "Build Package Within App selected")
+                    Log.d(logTag, "Build Package Within App selected")
                     emailParentSharedViewModel.setViewPagerPosition(0)
                     true
                 }
@@ -120,44 +123,52 @@ class EmailsPackageManagerFragment : Fragment() {
                 // Proceed with creating the email package from the selected mbox file
                 // If copying is needed, use FileRepository for file operations
                 emailPackageManagerViewModel.createAndSaveEmailPackageFromMboxFile(uri, result.isPhishy, result.packageName)
-                Toast.makeText(context, "Email package created successfully.", Toast.LENGTH_SHORT).show()
+                emailPackageSharedViewModel.loadEmailPackages()
+                Toast.makeText(context, "Email package created!", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private suspend fun showPhishyConfirmationDialog(): PhishyDialogResult = suspendCoroutine { cont ->
         val context = requireContext()
-        val input = EditText(context)
-        input.inputType = InputType.TYPE_CLASS_TEXT
-        input.hint = "Enter package name"
-        input.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                // Show a Toast message
-                Toast.makeText(context, "Please select if the package is phishing or safe.", Toast.LENGTH_LONG).show()
-                true // Consume the event
-            } else {
-                false // Do not consume the event
-            }
+
+        // Input field for the package name
+        val packageNameInput = EditText(context).apply {
+            hint = "Enter package name"
+            inputType = InputType.TYPE_CLASS_TEXT
+        }
+
+        // Checkbox for marking the package as phishy
+        val isPhishyCheckbox = CheckBox(context).apply {
+            text = context.getString(R.string.phishing_label_2)
+        }
+
+        // Layout to hold the inputs
+        val layout = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(packageNameInput)
+            addView(isPhishyCheckbox)
         }
 
         val dialog = AlertDialog.Builder(context).apply {
             setTitle("Confirm Email Package")
-            setMessage("Is this email package suspicious (phishy)?")
-            setView(input) // Add the input field to the dialog
-            setPositiveButton("Yes") { _, _ ->
-                cont.resume(PhishyDialogResult(isPhishy = true, packageName = input.text.toString()))
+            setView(layout) // Set the custom layout as the dialog view
+            setPositiveButton(getString(R.string.confirm_big)) { _, _ ->
+                // Resume coroutine with results from dialog
+                cont.resume(PhishyDialogResult(
+                    isPhishy = isPhishyCheckbox.isChecked,
+                    packageName = packageNameInput.text.toString()
+                ))
             }
-            setNegativeButton("No") { _, _ ->
-                cont.resume(PhishyDialogResult(isPhishy = false, packageName = input.text.toString()))
-            }
-            setNeutralButton("Cancel") { _, _ ->
+            setNegativeButton(getString(R.string.cancel_big)) { _, _ ->
+                // Handle cancellation
                 cont.resume(PhishyDialogResult(isPhishy = false, packageName = null, wasCancelled = true))
             }
             setCancelable(true)
             setOnCancelListener {
+                // Resume coroutine indicating cancellation
                 cont.resume(PhishyDialogResult(isPhishy = false, packageName = null, wasCancelled = true))
             }
-
         }.create()
 
         dialog.show()
@@ -165,7 +176,7 @@ class EmailsPackageManagerFragment : Fragment() {
 
     private fun observeViewModel() {
         emailPackageSharedViewModel.emailPackages.observe(viewLifecycleOwner) { packages ->
-            Log.d("EmailsPackageManager", "Packages received: ${packages.size}")
+            Log.d(logTag, "Packages received: ${packages.size}")
             emailPackageAdapter.setItems(packages)
         }
     }

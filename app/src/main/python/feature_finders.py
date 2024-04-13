@@ -16,6 +16,49 @@ class FeatureFinder(ABC):
     def getFeature(self, message):
         pass
 
+class XHeaderSecurityFinder(FeatureFinder):
+    def getFeatureTitle(self):
+        return "xheader_security"
+
+    def getFeature(self, message):
+        headers = utils.get_email_headers(message)
+        security_headers = ["X-Security", "X-Scanned", "X-Spam-Flag"]  # Example headers
+        return any(header in headers for header in security_headers)
+
+
+class ARCHeaderFinder(FeatureFinder):
+    def getFeatureTitle(self):
+        return "arc_pass"
+
+    def getFeature(self, message):
+        headers = utils.get_email_headers(message)
+        return "arc=pass" in headers.get("Authentication-Results", "").lower()
+
+class DMARCHeaderFinder(FeatureFinder):
+    def getFeatureTitle(self):
+        return "dmarc_pass"
+
+    def getFeature(self, message):
+        headers = utils.get_email_headers(message)
+        return "dmarc=pass" in headers.get("Authentication-Results", "").lower()
+
+
+class SPFHeaderFinder(FeatureFinder):
+    def getFeatureTitle(self):
+        return "spf_pass"
+
+    def getFeature(self, message):
+        headers = utils.get_email_headers(message)
+        return "spf=pass" in headers.get("Authentication-Results", "").lower()
+
+class DKIMHeaderFinder(FeatureFinder):
+    def getFeatureTitle(self):
+        return "dkim_pass"
+
+    def getFeature(self, message):
+        headers = utils.get_email_headers(message)
+        return "dkim=pass" in headers.get("Authentication-Results", "").lower()
+
 class MisspellingRatioFinder(FeatureFinder):
     def getFeatureTitle(self):
         return "misspelling_ratio"

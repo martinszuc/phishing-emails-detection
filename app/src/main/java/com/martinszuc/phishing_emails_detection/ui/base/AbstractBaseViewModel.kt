@@ -12,23 +12,28 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlin.math.log
+
+private const val logTag = "BaseViewModel"
 
 abstract class AbstractBaseViewModel : ViewModel() {
-
     protected val _isLoading = MutableLiveData(false)
+
     val isLoading: LiveData<Boolean> = _isLoading
-
     protected val _isFinished = MutableLiveData(false)
+
     val isFinished: LiveData<Boolean> = _isFinished
-
     protected val _operationFailed = MutableLiveData(false)
+
     val operationFailed: LiveData<Boolean> = _operationFailed
-
     protected val _hasStarted = MutableLiveData(false)
-    val hasStarted: LiveData<Boolean> = _hasStarted
 
-    private val logTag = "BaseViewModel"
+    val hasStarted: LiveData<Boolean> = _hasStarted
+    protected val _progress = MutableLiveData(0)
+
+    val progress: LiveData<Int> = _progress
+    protected val _totalCount = MutableLiveData(0)
+
+    val totalCount: LiveData<Int> = _totalCount
 
     protected fun <T> launchDataLoad(
         execution: suspend () -> T,
@@ -37,6 +42,7 @@ abstract class AbstractBaseViewModel : ViewModel() {
     ) {
         _hasStarted.postValue(true) // Indicate that the operation has started
         _isLoading.postValue(true)
+        _progress.postValue(0)
         viewModelScope.launch {
             try {
                 val result = execution()

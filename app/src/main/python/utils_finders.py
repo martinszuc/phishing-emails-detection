@@ -53,6 +53,12 @@ def __getpayload_dict_rec__(msg, payloadresult):
 
     return payloadresult
 
+def get_email_headers(msg):
+    headers = {}
+    for header in msg.items():
+        headers[header[0]] = header[1]
+    return headers
+
 def get_misspelling_ratio(msg):
     cleaned_text = us.clean_text(msg)
     spell = SpellChecker()

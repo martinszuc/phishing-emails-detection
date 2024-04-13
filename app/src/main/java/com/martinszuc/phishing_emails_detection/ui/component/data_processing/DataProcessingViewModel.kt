@@ -1,22 +1,21 @@
 package com.martinszuc.phishing_emails_detection.ui.component.data_processing
 
 import android.util.Log
-import androidx.lifecycle.viewModelScope
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
 import com.martinszuc.phishing_emails_detection.data.model.DataProcessing
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+
+private const val logTag = "DataProcessingViewModel"
 
 @HiltViewModel
 class DataProcessingViewModel @Inject constructor(
     private val dataProcessing: DataProcessing
 ) : AbstractBaseViewModel() {
-    private val logTag = "DataProcessingViewModel"
 
     fun processEmailPackages(packages: Set<EmailPackageMetadata>) {
         launchDataLoad(
@@ -26,7 +25,7 @@ class DataProcessingViewModel @Inject constructor(
                 }
             },
             onSuccess = {
-                Log.e(logTag, "Success processing email packages")
+                Log.i(logTag, "Success processing email packages")
             },
             onFailure = { e ->
                 Log.e(logTag, "Error processing email packages: ${e.message}")
@@ -40,7 +39,7 @@ class DataProcessingViewModel @Inject constructor(
                 Constants.DIR_EMAIL_PACKAGES,
                 metadata.fileName,
                 Constants.OUTPUT_CSV_DIR,
-                "ascii", // Placeholder for encoding
+                "utf-8", // Placeholder for encoding
                 500, // Placeholder for limit
                 metadata.isPhishy
             )
