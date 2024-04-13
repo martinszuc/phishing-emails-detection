@@ -20,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DataProcessingFragment : Fragment() {  // TODO already processed data to show here and being able to choose
+    // TODO fix loading
 
     private var _binding: FragmentMlDataProcessingBinding? = null
     private val binding get() = _binding!!

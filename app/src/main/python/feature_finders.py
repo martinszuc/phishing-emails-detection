@@ -1,3 +1,4 @@
+# feature_finders.py
 import re
 from abc import ABC, abstractmethod
 
@@ -14,6 +15,32 @@ class FeatureFinder(ABC):
     @abstractmethod
     def getFeature(self, message):
         pass
+
+class MisspellingRatioFinder(FeatureFinder):
+    def getFeatureTitle(self):
+        return "misspelling_ratio"
+
+    def getFeature(self, message):
+        payload = utils.getpayload(message)
+        misspelling_ratio = utils.get_misspelling_ratio(payload)
+        return misspelling_ratio
+
+class UrgencyPhraseFinder(FeatureFinder):
+    def getFeatureTitle(self):
+        return "urgency_phrase_count"
+
+    def getFeature(self, message):
+        payload = utils.getpayload(message)
+        urgency_count = utils.get_urgency_phrase_count(payload)
+        return urgency_count
+
+class SpamWordCountFinder(FeatureFinder):
+    def getFeatureTitle(self):
+        return "spam_word_count"
+
+    def getFeature(self, message):
+        payload = utils.getpayload(message).lower()
+        return utils.get_spam_word_count(payload)
 
 class HTMLFormFinder(FeatureFinder):
     def getFeatureTitle(self):
@@ -115,7 +142,7 @@ class EncodingFinder(FeatureFinder):
 
     def getFeature(self, message):
         encoding = message.get('content-transfer-encoding')
-        common_encodings = ['7bit', '8bit', 'none', 'quoted_printable', 'base64', 'binary']
+        common_encodings = ['7bit', '8bit', 'none', 'quoted_printable', 'base64', 'binary'] # + 'other'
         
         if encoding:
             # Normalize the encoding string by making it lowercase and stripping white spaces and line breaks

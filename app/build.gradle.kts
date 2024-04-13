@@ -74,6 +74,7 @@ chaquopy {
             install ("joblib")
             install ("pandas")
             install ("beautifulsoup4==4.10.0")
+            install ("pyspellchecker")
         }
     }
     productFlavors { }

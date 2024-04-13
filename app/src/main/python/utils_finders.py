@@ -1,7 +1,9 @@
+# utils_finders.py
 import re
 from bs4 import BeautifulSoup
-
 from utils_config import Config
+import utils_string as us
+from spellchecker import SpellChecker
 
 
 def getpayload(msg):
@@ -51,6 +53,28 @@ def __getpayload_dict_rec__(msg, payloadresult):
 
     return payloadresult
 
+def get_misspelling_ratio(msg):
+    cleaned_text = us.clean_text(msg)
+    spell = SpellChecker()
+    words = cleaned_text.split()
+    misspelled = spell.unknown(words)
+    total_words = len(words)
+    misspelled_count = len(misspelled)
+    if total_words == 0:
+        return 0  # Avoid division by zero
+    return misspelled_count / total_words
+
+def get_urgency_phrase_count(msg):
+    cleaned_text = us.clean_text(msg)  # Assuming clean_text function already removes HTML and lowers the case
+    cleaned_text = us.remove_stop_words(cleaned_text)  # Optional, based on your need
+    urgency_count = sum(phrase in cleaned_text for phrase in Config.urgency_phrases)
+    return urgency_count
+
+def get_spam_word_count(msg):
+    cleaned_text = us.clean_text(msg)
+    cleaned_text = us.remove_stop_words(cleaned_text)
+    words = cleaned_text.split()
+    return sum(word in Config.spam_words for word in words)
 
 def getAttachmentCount(msg):
     return __getAttachmentCountrec__(msg, count=0)
