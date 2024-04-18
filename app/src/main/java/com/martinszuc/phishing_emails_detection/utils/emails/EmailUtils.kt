@@ -10,7 +10,7 @@ import java.util.TimeZone
  * Authored by matoszuc@gmail.com
  */
 object EmailUtils {
-    fun formatToMbox(emailBlob: EmailBlob): String {
+    fun FormatBlobToMbox(emailBlob: EmailBlob): String {
         // Format the timestamp
         val dateFormatter = SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH)
         dateFormatter.timeZone = TimeZone.getTimeZone("GMT+1") // Adjust to the email's timezone

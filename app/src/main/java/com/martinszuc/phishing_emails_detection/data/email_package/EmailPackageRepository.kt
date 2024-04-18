@@ -93,7 +93,7 @@ class EmailPackageRepository @Inject constructor(
 
     fun loadEmailPackageContent(fileName: String): String? {
         Log.d(logTag, "Loading email package content for $fileName")
-        return fileRepository.loadMboxContent(Constants.DIR_EMAIL_PACKAGES, fileName)
+        return fileRepository.loadFileContent(Constants.DIR_EMAIL_PACKAGES, fileName)
     }
 
     fun deleteEmailPackage(fileName: String) {

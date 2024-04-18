@@ -98,5 +98,9 @@
     <string name="phishing_label_2">Phishing label</string>
     <string name="confirm_big">CONFIRM</string>
     <string name="cancel_big">CANCEL</string>
-    <string name="phishing_label_string">Phishing label</string>
+    <string name="confirm_email">Confirm Email</string>
+    <string name="file_selection_cancelled">File selection cancelled.</string>
+    <string name="file_processing_initiated">File processing initiated.</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
 </resources>

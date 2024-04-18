@@ -1,7 +1,10 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -14,6 +17,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -23,7 +27,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.R
@@ -36,6 +39,7 @@ import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailFullSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailMinimalSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailParentSharedViewModel
+import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -45,6 +49,8 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * Authored by matoszuc@gmail.com
  */
+
+private const val logTag = "EmailsSavedFragment"
 
 @AndroidEntryPoint
 class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismissListener {
@@ -62,9 +68,9 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("EmailsSavedFragment", "onCreateView called")
+        Log.d(logTag, "onCreateView called")
         _binding = FragmentEmailsSavedBinding.inflate(inflater, container, false)
-                return binding.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,7 +88,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("EmailsSavedFragment", "onDestroyView called")
+        Log.d(logTag, "onDestroyView called")
         emailsSavedViewModel.resetSelectionMode()
         _binding = null
     }
@@ -146,51 +152,83 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
                 val result = showPhishyConfirmationDialog()
                 if (!result.wasCancelled && result.packageName != null) {
                     // Only proceed if the dialog was not cancelled and a package name was entered
-                    emailsSavedViewModel.createEmailPackageFromSelected(result.isPhishy, result.packageName)
-                    Toast.makeText(context, "Emails successfully packaged!", Toast.LENGTH_SHORT).show()
+                    emailsSavedViewModel.createEmailPackageFromSelected(
+                        result.isPhishy,
+                        result.packageName
+                    )
+                    Toast.makeText(context, "Emails successfully packaged!", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
 
     }
 
-    private suspend fun showPhishyConfirmationDialog(): PhishyDialogResult = suspendCoroutine { cont ->
-        val context = requireContext()
-        val input = EditText(context)
-        input.inputType = InputType.TYPE_CLASS_TEXT
-        input.hint = "Enter package name"
-        input.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                // Show a Toast message
-                Toast.makeText(context, "Please select if the package is phishing or safe.", Toast.LENGTH_LONG).show()
-                true // Consume the event
-            } else {
-                false // Do not consume the event
+
+    private suspend fun showPhishyConfirmationDialog(): PhishyDialogResult =
+        suspendCoroutine { cont ->
+            val context = requireContext()
+            val input = EditText(context)
+            input.inputType = InputType.TYPE_CLASS_TEXT
+            input.hint = "Enter package name"
+            input.setOnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    // Show a Toast message
+                    Toast.makeText(
+                        context,
+                        "Please select if the package is phishing or safe.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    true // Consume the event
+                } else {
+                    false // Do not consume the event
+                }
             }
+
+            val dialog = AlertDialog.Builder(context).apply {
+                setTitle("Confirm Email Package")
+                setMessage("Is this package phishing?")
+                setView(input) // Add the input field to the dialog
+                setPositiveButton(getString(R.string.yes)) { _, _ ->
+                    cont.resume(
+                        PhishyDialogResult(
+                            isPhishy = true,
+                            packageName = input.text.toString()
+                        )
+                    )
+                }
+                setNegativeButton(getString(R.string.no)) { _, _ ->
+                    cont.resume(
+                        PhishyDialogResult(
+                            isPhishy = false,
+                            packageName = input.text.toString()
+                        )
+                    )
+                }
+                setNeutralButton(getString(R.string.cancel_big)) { _, _ ->
+                    cont.resume(
+                        PhishyDialogResult(
+                            isPhishy = false,
+                            packageName = null,
+                            wasCancelled = true
+                        )
+                    )
+                }
+                setCancelable(true)
+                setOnCancelListener {
+                    cont.resume(
+                        PhishyDialogResult(
+                            isPhishy = false,
+                            packageName = null,
+                            wasCancelled = true
+                        )
+                    )
+                }
+
+            }.create()
+
+            dialog.show()
         }
-
-        val dialog = AlertDialog.Builder(context).apply {
-            setTitle("Confirm Email Package")
-            setMessage("Is this email package suspicious (phishy)?")
-            setView(input) // Add the input field to the dialog
-            setPositiveButton("Yes") { _, _ ->
-                cont.resume(PhishyDialogResult(isPhishy = true, packageName = input.text.toString()))
-            }
-            setNegativeButton("No") { _, _ ->
-                cont.resume(PhishyDialogResult(isPhishy = false, packageName = input.text.toString()))
-            }
-            setNeutralButton("Cancel") { _, _ ->
-                cont.resume(PhishyDialogResult(isPhishy = false, packageName = null, wasCancelled = true))
-            }
-            setCancelable(true)
-            setOnCancelListener {
-                cont.resume(PhishyDialogResult(isPhishy = false, packageName = null, wasCancelled = true))
-            }
-
-        }.create()
-
-        dialog.show()
-    }
 
     private fun showCreatePackageDialog() {
         val context = requireContext()
@@ -221,25 +259,33 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
                 if (packageName.isNotBlank() && limit > 0) {
                     emailsSavedViewModel.createEmailPackageFromLatest(isPhishy, packageName, limit)
                 } else {
-                    Toast.makeText(context, "Invalid package name or email count", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "Invalid package name or email count",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
-            setNegativeButton("Cancel", null)
+            setNegativeButton(getString(R.string.cancel_big), null)
             show()
         }
     }
 
     private fun initEmailsSaved() {
-        // Initialize RecyclerView and Adapter
-        val recyclerView: RecyclerView = binding.emailSelectionRecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        emailsSavedAdapter = EmailsSavedAdapter(
+            emailsSavedViewModel,
+            { emailId -> /* Handle email clicked */ },
+            { addEmailFromFile() } // This method will handle adding an email
+        )
 
-        emailsSavedAdapter = EmailsSavedAdapter(emailsSavedViewModel) { emailId ->
-            emailMinimalSharedViewModel.fetchEmailById(emailId)
-            emailFullSharedViewModel.fetchEmailById(emailId)
+        binding.emailSelectionRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = emailsSavedAdapter
         }
+    }
 
-        recyclerView.adapter = emailsSavedAdapter
+    private fun addEmailFromFile() {
+        openFilePicker()
     }
 
     private fun setupEmailDetailsObserver() {
@@ -274,7 +320,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
     private fun showEmailDetailsDialog(emailMinimal: EmailMinimal, emailFull: EmailFull) {
         EmailsDetailsDialogFragment(emailMinimal, emailFull).apply {
             setDialogDismissListener(this@EmailsSavedFragment)
-            show(this@EmailsSavedFragment.parentFragmentManager, "emailDetailsDialog")
+            show(this@EmailsSavedFragment.parentFragmentManager, logTag)
         }
     }
 
@@ -325,8 +371,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
                 binding.loadingOverlay.visibility = View.VISIBLE
                 binding.progressBar.max = total
                 binding.progressText.text = "0 / $total"
-            }
-            else {
+            } else {
                 binding.loadingOverlay.visibility = View.GONE
             }
         }
@@ -340,7 +385,73 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
         }
     }
 
-    private fun updateLoadingSpinner(show: Boolean) {
-        binding.loadingSpinner.visibility = if (show) View.GONE else View.VISIBLE
+    private suspend fun showIsPhishyDialog(): Boolean =
+        suspendCoroutine { continuation ->
+            val context = requireContext()
+            val isPhishyCheckbox = CheckBox(context).apply {
+                text = getString(R.string.phishing_label_2)
+
+                // Adding margin top for spacing
+                val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                params.topMargin = resources.getDimensionPixelSize(R.dimen.spacing_16dp)
+                layoutParams = params
+            }
+
+            val layout = LinearLayout(context).apply {
+                orientation = LinearLayout.VERTICAL
+                addView(isPhishyCheckbox)
+            }
+
+            val dialog = AlertDialog.Builder(context).apply {
+                setTitle(getString(R.string.confirm_email))
+                setView(layout)
+                setPositiveButton(getString(R.string.confirm_big)) { _, _ ->
+                    continuation.resume(isPhishyCheckbox.isChecked)
+                }
+                setNegativeButton(getString(R.string.cancel_big)) { _, _ ->
+                    continuation.resume(false) // Assume not phishing if cancelled
+                }
+                setCancelable(false) // Makes it mandatory to choose an option
+            }.create()
+
+            dialog.show()
+        }
+
+    private val filePickerResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.also { uri ->
+                lifecycleScope.launch {
+                    val isPhishy = showIsPhishyDialog()
+                    if (isPhishy) {
+                        handleEmlFileUri(uri, isPhishy)
+                    } else {
+                        // User cancelled the phishing dialog, do nothing or perform cleanup
+                        Toast.makeText(context,
+                            getString(R.string.file_selection_cancelled), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
+
+
+    private fun handleEmlFileUri(uri: Uri, isPhishy: Boolean) {
+        lifecycleScope.launch {
+            emailsSavedViewModel.processEmlFile(uri, isPhishy)
+            Toast.makeText(context,
+                getString(R.string.file_processing_initiated), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun openFilePicker() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = Constants.EML_FILE_TYPE  // may want to use "message/rfc822" for .eml files specifically or */*
+            addCategory(Intent.CATEGORY_OPENABLE)
+        }
+        filePickerResultLauncher.launch(intent)
+    }
+
 }

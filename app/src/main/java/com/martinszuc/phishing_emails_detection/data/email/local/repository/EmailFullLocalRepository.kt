@@ -1,5 +1,7 @@
 package com.martinszuc.phishing_emails_detection.data.email.local.repository
 
+import android.content.Context
+import android.net.Uri
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -7,7 +9,13 @@ import androidx.room.withTransaction
 import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.Subject
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
+import com.martinszuc.phishing_emails_detection.data.file.FileRepository
+import com.martinszuc.phishing_emails_detection.utils.Constants
+import com.martinszuc.phishing_emails_detection.utils.emails.EmailFactory
+import com.martinszuc.phishing_emails_detection.utils.emails.MboxFactory
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -15,7 +23,8 @@ import javax.inject.Inject
  */
 
 class EmailFullLocalRepository @Inject constructor(
-    private val database: AppDatabase
+    private val database: AppDatabase,
+    private val fileRepository: FileRepository
 ) {
     private val emailFullDao = database.emailFullDao()
     private val subjectDao = database.subjectDao()
@@ -23,6 +32,21 @@ class EmailFullLocalRepository @Inject constructor(
     suspend fun insertEmailFull(emailFull: EmailFull) {
         database.withTransaction {
             emailFullDao.insert(emailFull)
+        }
+    }
+    suspend fun saveEmlToEmailFull(uri: Uri, isPhishy: Boolean) {
+        withContext(Dispatchers.IO) {
+            val content = fileRepository.loadFileContent(uri)
+            val emailFull = EmailFactory.parseEmlToEmailFull(content)
+                ?: throw IllegalArgumentException("Failed to parse the EML file")
+
+            // Insert the EmailFull object into the database
+            insertEmailFull(emailFull.copy(isPhishing = isPhishy))
+
+            // Convert the EmailFull to MBOX format and save it
+            val mboxContent = MboxFactory.formatEmailFullToMbox(emailFull)
+            val mboxFileName = "email-${emailFull.id}.mbox"
+            fileRepository.saveMboxContent(mboxContent, Constants.DIR_EMAIL_PACKAGES, mboxFileName)
         }
     }
 
@@ -74,9 +98,11 @@ class EmailFullLocalRepository @Inject constructor(
     }
 
 
+
     suspend fun deleteEmailById(id: String) {
         database.withTransaction {
             emailFullDao.deleteEmailFullById(id)
         }
     }
+
 }

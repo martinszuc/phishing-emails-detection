@@ -22,7 +22,7 @@ class EmailBlobLocalRepository @Inject constructor(
 
     suspend fun getMboxById(id: String): String {
         val emailBlob = emailBlobDao.getEmailBlob(id)
-        return EmailUtils.formatToMbox(emailBlob)
+        return EmailUtils.FormatBlobToMbox(emailBlob)
     }
 
     suspend fun getBlobById(id: String): EmailBlob? {

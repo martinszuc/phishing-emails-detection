@@ -113,7 +113,7 @@ class TrainingFragment : Fragment() {
             setPositiveButton("OK") { _, _ ->
                 cont.resume(input.text.toString())
             }
-            setNegativeButton("Cancel") { _, _ ->
+            setNegativeButton(getString(R.string.cancel_big)) { _, _ ->
                 cont.resume(null) // Resume with null if the user cancels the dialog
             }
             setCancelable(false) // Make dialog non-cancelable to ensure input

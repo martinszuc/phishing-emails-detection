@@ -3,9 +3,12 @@ package com.martinszuc.phishing_emails_detection.data.file
 import android.content.Context
 import android.net.Uri
 import com.martinszuc.phishing_emails_detection.utils.Constants
+import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
+import java.io.InputStreamReader
 import java.util.zip.GZIPOutputStream
 
 private const val logTag = "FileManager"
@@ -40,12 +43,12 @@ class FileManager(private val context: Context) {
         return compressedFile.name
     }
 
-    fun saveTextToFile(mboxContent: String, directoryName: String, fileName: String): File {
-        val directory = File(getAppDirectory(), directoryName)
+    fun saveTextToFile(textContent: String, directoryName: String, fileName: String): File {
+        val directory = File(context.filesDir, directoryName)
         if (!directory.exists()) directory.mkdirs()
 
         val file = File(directory, fileName)
-        file.writeText(mboxContent)
+        file.writeText(textContent)
         return file
     }
 
@@ -168,6 +171,16 @@ class FileManager(private val context: Context) {
                 }
             }
         }
+    }
+
+    fun loadFileContentFromUri(uri: Uri): String {
+        val contentResolver = context.contentResolver
+        contentResolver.openInputStream(uri)?.use { inputStream ->
+            BufferedReader(InputStreamReader(inputStream)).use { reader ->
+                return reader.readText()
+            }
+        }
+        throw FileNotFoundException("Unable to open file from URI: $uri")
     }
 
 

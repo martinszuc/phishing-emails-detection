@@ -1,5 +1,6 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -67,6 +68,22 @@ class EmailsSavedViewModel @Inject constructor(
             _isSelectionMode.value = false
             firstSelectedEmailId = null
         }
+    }
+
+    fun processEmlFile(uri: Uri, isPhishy: Boolean) {
+        launchDataLoad(
+            execution = {
+                emailFullLocalRepository.saveEmlToEmailFull(uri, isPhishy)
+            },
+            onSuccess = {
+                // Handle success case, post success event or message if necessary
+                Log.i(logTag, "EML file processed successfully.")
+            },
+            onFailure = { exception ->
+                // Handle errors more specifically if needed
+                Log.e(logTag, "Failed to process EML file: ${exception.message}")
+            }
+        )
     }
 
     private fun addToSelectedEmails(selectedIds: Set<String>) {

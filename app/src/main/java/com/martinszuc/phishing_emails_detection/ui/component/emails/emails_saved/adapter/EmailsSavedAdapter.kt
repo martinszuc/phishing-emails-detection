@@ -22,61 +22,77 @@ import com.martinszuc.phishing_emails_detection.utils.StringUtils
  */
 class EmailsSavedAdapter(
     private val emailsSavedViewModel: EmailsSavedViewModel,
-    private val onEmailClicked: (String) -> Unit
-) : PagingDataAdapter<EmailFull, EmailsSavedAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
+    private val onEmailClicked: (String) -> Unit,
+    private val onAddClicked: () -> Unit
+) : PagingDataAdapter<EmailFull, RecyclerView.ViewHolder>(EMAIL_COMPARATOR) {
 
-    inner class EmailViewHolder(val binding: ItemEmailSavedBinding) :
-        RecyclerView.ViewHolder(binding.root)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmailViewHolder {
-        val binding =
-            ItemEmailSavedBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return EmailViewHolder(binding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            VIEW_TYPE_ADD -> {
+                // Inflate the layout for the "Add Package" item
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_add_package, parent, false)
+                AddPackageViewHolder(view)
+            }
+            VIEW_TYPE_PACKAGE -> {
+                // Inflate the layout for the regular email items
+                val binding = ItemEmailSavedBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                EmailViewHolder(binding)
+            }
+            else -> throw IllegalArgumentException("Unknown view type: $viewType")
+        }
     }
 
-    override fun onBindViewHolder(holder: EmailViewHolder, position: Int) {
-        val email = getItem(position)
-        Log.d("EmailsSavedAdapter", "Binding email at position $position")
-        if (email != null) {
-            holder.binding.senderValue.text = email.payload.headers.find { it.name == "From" }?.value
-            holder.binding.subject.text = email.payload.headers.find { it.name == "Subject" }?.value
-            holder.binding.timestamp.text = StringUtils.formatTimestamp(email.internalDate)
-            holder.binding.snippet.text = email.snippet
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is EmailViewHolder) {
+            // Handle binding regular email items
+            val email = getItem(position - 1)
+            Log.d("EmailsSavedAdapter", "Binding email at position $position")
+            if (email != null) {
+                holder.binding.senderValue.text = email.payload.headers.find { it.name == "From" }?.value
+                holder.binding.subject.text = email.payload.headers.find { it.name == "Subject" }?.value
+                holder.binding.timestamp.text = StringUtils.formatTimestamp(email.internalDate)
+                holder.binding.snippet.text = email.snippet
 
-            if (!email.payload.parts.isNullOrEmpty()) {
-                holder.binding.attachmentsValue.text = email.payload.parts.size.toString()
-                holder.binding.attachmentsValue.visibility = View.VISIBLE
-                holder.binding.attachmentsLabel.visibility = View.VISIBLE
+                if (!email.payload.parts.isNullOrEmpty()) {
+                    holder.binding.attachmentsValue.text = email.payload.parts.size.toString()
+                    holder.binding.attachmentsValue.visibility = View.VISIBLE
+                    holder.binding.attachmentsLabel.visibility = View.VISIBLE
 
+                } else {
+                    holder.binding.attachmentsLabel.visibility = View.GONE
+                    holder.binding.attachmentsValue.visibility = View.GONE
+
+                }
+
+                holder.itemView.setOnClickListener {
+                    onEmailClicked(email.id)
+                }
+
+                // Checkboxes codes
+
+                // Remove the checkbox state change listener before setting the checkbox state
+                holder.binding.checkbox.setOnCheckedChangeListener(null)
+
+                // Set the checkbox state based on whether the email ID is selected
+                holder.binding.checkbox.isChecked = emailsSavedViewModel.selectedEmails.value?.contains(email.id) ?: false
+
+                holder.binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
+                    handleCheckboxCheckedChange(isChecked, email)
+                }
+
+                holder.binding.checkbox.setOnLongClickListener { view ->
+                    handleCheckboxLongClick(view, email.id)
+                    true
+                }
             } else {
-                holder.binding.attachmentsLabel.visibility = View.GONE
-                holder.binding.attachmentsValue.visibility = View.GONE
-
+                holder.binding.checkbox.setOnCheckedChangeListener(null)
+                holder.binding.checkbox.isChecked = false
             }
-
+        } else if (holder is AddPackageViewHolder) {
+            // Handle binding the "Add Package" item
             holder.itemView.setOnClickListener {
-                onEmailClicked(email.id)
+                onAddClicked()
             }
-
-            // Checkboxes codes
-
-            // Remove the checkbox state change listener before setting the checkbox state
-            holder.binding.checkbox.setOnCheckedChangeListener(null)
-
-            // Set the checkbox state based on whether the email ID is selected
-            holder.binding.checkbox.isChecked = emailsSavedViewModel.selectedEmails.value?.contains(email.id) ?: false
-
-            holder.binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
-                handleCheckboxCheckedChange(isChecked, email)
-            }
-
-            holder.binding.checkbox.setOnLongClickListener { view ->
-                handleCheckboxLongClick(view, email.id)
-                true
-            }
-        } else {
-            holder.binding.checkbox.setOnCheckedChangeListener(null)
-            holder.binding.checkbox.isChecked = false
         }
     }
 
@@ -114,6 +130,20 @@ class EmailsSavedAdapter(
         return true
     }
 
+    override fun getItemCount(): Int {
+        return super.getItemCount() + 1 // Add one for the "Add Package" item at the top
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position == 0) VIEW_TYPE_ADD else VIEW_TYPE_PACKAGE
+    }
+
+    inner class EmailViewHolder(val binding: ItemEmailSavedBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        // Implement bind function for regular email items
+    }
+
+    inner class AddPackageViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     companion object {
         private val EMAIL_COMPARATOR = object : DiffUtil.ItemCallback<EmailFull>() {
@@ -123,6 +153,8 @@ class EmailsSavedAdapter(
             override fun areContentsTheSame(oldItem: EmailFull, newItem: EmailFull): Boolean =
                 oldItem == newItem
         }
+        private const val VIEW_TYPE_ADD = 0
+        private const val VIEW_TYPE_PACKAGE = 1
     }
 }
 private fun View.showCustomSnackbar(snackbarMessage: String) {

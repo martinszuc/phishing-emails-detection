@@ -141,13 +141,13 @@ class ProcessedPackageManagerFragment : Fragment() {
             setTitle("Confirm Processed Package")
             setMessage("Is this processed package phishing?")
             setView(input) // Add the input field to the dialog
-            setPositiveButton("Yes") { _, _ ->
+            setPositiveButton(getString(R.string.yes)) { _, _ ->
                 cont.resume(PhishyDialogResult(isPhishy = true, packageName = input.text.toString()))
             }
-            setNegativeButton("No") { _, _ ->
+            setNegativeButton(getString(R.string.no)) { _, _ ->
                 cont.resume(PhishyDialogResult(isPhishy = false, packageName = input.text.toString()))
             }
-            setNeutralButton("Cancel") { _, _ ->
+            setNeutralButton(getString(R.string.cancel_big)) { _, _ ->
                 cont.resume(PhishyDialogResult(isPhishy = false, packageName = null, wasCancelled = true))
             }
             setCancelable(true)

@@ -43,7 +43,7 @@ class EmailMboxLocalRepository @Inject constructor(
         try {
             val metadata = emailMboxMetadataDao.getEmailMbox(id)
             return metadata.let {
-                fileRepository.loadMboxContent(Constants.MBOX_FILES_DIR, it.id).also {
+                fileRepository.loadFileContent(Constants.MBOX_FILES_DIR, it.id).also {
                     Log.d(logTag, "Fetched mbox content for id: $id")
                 }
             } ?: run {

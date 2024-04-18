@@ -55,7 +55,7 @@ class EmailFullRemoteRepository @Inject constructor(
                         senderEmail = senderEmail,
                         timestamp = timestamp
                     )
-                    val mboxString = EmailUtils.formatToMbox(emailBlob)
+                    val mboxString = EmailUtils.FormatBlobToMbox(emailBlob)
 
 //                    emailBlobLocalRepository.insert(emailBlob) // TODO
                     emailMboxLocalRepository.saveEmailMbox(emailId, mboxString, timestamp)
@@ -93,7 +93,7 @@ class EmailFullRemoteRepository @Inject constructor(
             senderEmail = EmailFactory.parseHeader(String(rawBlob, Charsets.UTF_8), "From") ?: Constants.SENDER_UNKNOWN,
             timestamp = emailFull.internalDate
         )
-        val mboxString = EmailUtils.formatToMbox(emailBlob)
+        val mboxString = EmailUtils.FormatBlobToMbox(emailBlob)
         emailMboxLocalRepository.saveEmailMbox(emailFull.id, mboxString, emailFull.internalDate)
     }
 

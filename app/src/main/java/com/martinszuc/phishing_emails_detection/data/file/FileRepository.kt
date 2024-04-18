@@ -49,11 +49,15 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
         return fileManager.listFilesInDirectory(directoryName)
     }
 
-    fun loadMboxContent(
+    fun loadFileContent(
         directoryName: String,
         fileName: String
     ): String? {
         return fileManager.readFileContent(directoryName, fileName)
+    }
+
+    fun loadFileContent(uri: Uri): String {
+        return fileManager.loadFileContentFromUri(uri)
     }
 
     // Get the size of the file in bytes
@@ -147,5 +151,4 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
     ) {
         fileManager.appendMboxToFile(directoryName, fileName, mboxContent)
     }
-
 }

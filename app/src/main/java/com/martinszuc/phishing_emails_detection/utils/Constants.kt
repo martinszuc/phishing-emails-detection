@@ -24,6 +24,12 @@ class Constants {
         // GmailApiService constants
         const val SENDER_UNKNOWN = "unknown@sender.com"
 
+        // File types
+        const val EML_FILE_TYPE = "message/rfc822"
+        const val ALL_FILE_TYPES = "*/*"
+
+
+
         // Directories
         const val DIR_EMAIL_PACKAGES = "email_packages"
         const val OUTPUT_CSV_DIR = "extracted_csv"
@@ -32,6 +38,8 @@ class Constants {
         const val MBOX_FILES_DIR = "email_mbox_files"
         const val MANIFESTS_DIR = "manifests"
         const val WEIGHTS_DIR = "weights"
+        const val SAVED_EMAILS_DIR = "saved_emails"
+
 
     }
 }
