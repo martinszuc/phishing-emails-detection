@@ -7,13 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMachineLearningBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MachineLearningParentFragment :
-    Fragment() {              // TODO back button and skip button for data picker to training/retraining
-
+class MachineLearningParentFragment : Fragment() {
     private var _binding: FragmentMachineLearningBinding? = null
     private val binding get() = _binding!!
 
@@ -35,71 +34,65 @@ class MachineLearningParentFragment :
 
     private fun setupViewPager() {
         val adapter = MachineLearningPagerAdapter(this)
-        binding.machineLearningViewpager.apply {
-            this.adapter = adapter
-            isUserInputEnabled = false
-        }
-    }
+        binding.machineLearningViewpager.adapter = adapter
+        binding.machineLearningViewpager.isUserInputEnabled =
+            true  // Allow user input for custom behavior
 
-    private fun setupTabLayout() {
-        val tabTitles = listOf("Data Processing", "Training", "Retraining")
-        tabTitles.forEach { title ->
-            binding.machineLearningTabs.addTab(binding.machineLearningTabs.newTab().setText(title))
-
-        }
-
-        // Disable tab click navigation
-        for (i in 0 until binding.machineLearningTabs.tabCount) {
-            val tab = (binding.machineLearningTabs.getChildAt(0) as ViewGroup).getChildAt(i)
-            tab.setOnTouchListener { _, _ -> true } // Override the touch listener to do nothing
-        }
-
-        // Adjust tab selection to reflect ViewPager page changes
         binding.machineLearningViewpager.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                if (position > 0) { // Adjust for "Data Picking" not having a visible tab
-                    binding.machineLearningTabs.getTabAt(position - 1)?.select()
+                super.onPageSelected(position)
+                // Adjust the machine learning state based on the selected page
+                val newState = when (position) {
+                    0 -> MachineLearningState.DATA_PICKING
+                    1 -> MachineLearningState.TRAINING
+                    2 -> MachineLearningState.RETRAINING
+                    else -> return
                 }
+                machineLearningParentSharedViewModel.setState(newState)
+                binding.machineLearningTabs.getTabAt(position)
+                    ?.select()  // Ensure tabs are synchronized with page swipes
             }
+        })
+    }
+
+    private fun setupTabLayout() {
+        val tabTitles =
+            listOf("Data Picking", "Training", "Retraining")  // Adjusted to remove Data Processing
+        tabTitles.forEachIndexed { index, title ->
+            binding.machineLearningTabs.addTab(
+                binding.machineLearningTabs.newTab().setText(title),
+                index
+            )
+        }
+
+        binding.machineLearningTabs.addOnTabSelectedListener(object :
+            TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                // Map directly to the pages which are available
+                binding.machineLearningViewpager.currentItem = tab.position
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+            override fun onTabReselected(tab: TabLayout.Tab) {}
         })
     }
 
     private fun observeViewModelState() {
         machineLearningParentSharedViewModel.state.observe(viewLifecycleOwner) { state ->
-            // Direct mapping of state to ViewPager's currentItem.
-            // The viewPagerItem logic remains aligned with the ViewModel's state.
             val viewPagerItem = when (state) {
                 MachineLearningState.DATA_PICKING -> 0
-                MachineLearningState.DATA_PROCESSING -> 1
-                MachineLearningState.TRAINING -> 2
-                MachineLearningState.RETRAINING -> 3
-            }
-
-            // Ensure the ViewPager displays the correct fragment for the current state.
-            if (binding.machineLearningViewpager.currentItem != viewPagerItem) {
-                binding.machineLearningViewpager.currentItem = viewPagerItem
-            }
-
-            // Adjust the TabLayout's selected tab to reflect the merged view of DATA_PICKING and DATA_PROCESSING.
-            // Tab index logic accounts for the "merged" view in the TabLayout.
-            val tabIndex = when (state) {
-                MachineLearningState.DATA_PICKING, MachineLearningState.DATA_PROCESSING -> 0
                 MachineLearningState.TRAINING -> 1
                 MachineLearningState.RETRAINING -> 2
             }
-
-            // This condition ensures we do not attempt to select a tab that does not exist for the first state,
-            // and correctly selects the tab for other states.
-            val selectedTab = binding.machineLearningTabs.getTabAt(tabIndex)
-            selectedTab?.select()
+            if (binding.machineLearningViewpager.currentItem != viewPagerItem) {
+                binding.machineLearningViewpager.currentItem = viewPagerItem
+            }
         }
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
-        machineLearningParentSharedViewModel.setState(MachineLearningState.DATA_PICKING) // Or any default state
-        _binding = null // Avoid memory leaks
+        _binding = null
     }
 }

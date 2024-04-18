@@ -74,6 +74,7 @@ class RetrainingFragment : Fragment() {
 
 
     private fun observeModels() {
+        modelManagerSharedViewModel.refreshAndLoadModels()
         modelManagerSharedViewModel.models.observe(viewLifecycleOwner) { models ->
             setupModelSpinner(models)
         }

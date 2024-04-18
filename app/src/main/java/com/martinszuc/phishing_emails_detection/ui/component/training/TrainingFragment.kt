@@ -19,6 +19,7 @@ import com.martinszuc.phishing_emails_detection.databinding.FragmentMlTrainingBi
 import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningState
 import com.martinszuc.phishing_emails_detection.ui.component.training.adapter.TrainingSelectionAdapter
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -33,6 +34,7 @@ class TrainingFragment : Fragment() {
     private val processedPackageSharedViewModel: ProcessedPackageSharedViewModel by activityViewModels()
     private val machineLearningParentSharedViewModel: MachineLearningParentSharedViewModel by activityViewModels()
     private val trainingViewModel: TrainingViewModel by activityViewModels()
+    private val modelManagerSharedViewModel: ModelManagerSharedViewModel by activityViewModels()
 
     private lateinit var trainingSelectionAdapter: TrainingSelectionAdapter
 
@@ -83,6 +85,7 @@ class TrainingFragment : Fragment() {
                 modelName?.let {
                     // Pass the model name to the ViewModel
                     trainingViewModel.startModelTraining(it)
+                    modelManagerSharedViewModel.refreshAndLoadModels()
                 }
             }
         }

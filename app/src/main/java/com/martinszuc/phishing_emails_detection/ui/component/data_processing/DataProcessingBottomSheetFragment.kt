@@ -1,32 +1,30 @@
 package com.martinszuc.phishing_emails_detection.ui.component.data_processing
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlDataProcessingBinding
 import com.martinszuc.phishing_emails_detection.ui.component.data_picking.DataPickingViewModel
 import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentSharedViewModel
-import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningState
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DataProcessingFragment : Fragment() {  // TODO already processed data to show here and being able to choose
-    // TODO fix loading
-
+class DataProcessingBottomSheetFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentMlDataProcessingBinding? = null
     private val binding get() = _binding!!
+
     private val dataProcessingViewModel: DataProcessingViewModel by viewModels()
     private val dataPickingViewModel: DataPickingViewModel by activityViewModels()
-    private val machineLearningParentSharedViewModel: MachineLearningParentSharedViewModel by activityViewModels()
     private val processedPackageSharedViewModel: ProcessedPackageSharedViewModel by activityViewModels()
 
     private var processingStarted = false
@@ -36,11 +34,9 @@ class DataProcessingFragment : Fragment() {  // TODO already processed data to s
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        initFloatingActionButton()
-
         binding.btnProcessEmails.setOnClickListener {
             val selectedPackages = dataPickingViewModel.selectedPackages.value ?: setOf()
             if (selectedPackages.isNotEmpty()) {
@@ -82,37 +78,33 @@ class DataProcessingFragment : Fragment() {  // TODO already processed data to s
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        val dialog = dialog as? BottomSheetDialog
+        dialog?.let {
+            val bottomSheet = it.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.let { bs ->
+                val behavior = BottomSheetBehavior.from(bs)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                // Set max height to 80% of the screen
+                val maxHeight = (resources.displayMetrics.heightPixels * 0.8).toInt()
+                behavior.peekHeight = maxHeight
+
+                // Force the bottom sheet to use a fixed height
+                val layoutParams = bs.layoutParams
+                layoutParams.height = maxHeight
+                bs.layoutParams = layoutParams
+            }
+        }
+    }
+
     private fun processPackages(packages: Set<EmailPackageMetadata>) {
         dataProcessingViewModel.processEmailPackages(packages)
     }
 
-    private fun initFloatingActionButton() {
-        val fab: FloatingActionButton = binding.fab
-        fab.setOnClickListener {
-            showTrainingOptionDialog()
-        }
-    }
-
-    private fun showTrainingOptionDialog() {
-        val context = requireContext()
-        AlertDialog.Builder(context).apply {
-            setTitle("Select Option")
-            setMessage("Do you wish to train a new model or retrain an existing model?")
-            setPositiveButton("Train New") { _, _ ->
-                // User chooses to train a new model
-                machineLearningParentSharedViewModel.setState(MachineLearningState.TRAINING)
-            }
-            setNegativeButton("Retrain Existing") { _, _ ->
-                // User chooses to retrain an existing model
-                machineLearningParentSharedViewModel.setState(MachineLearningState.RETRAINING)
-            }
-            setCancelable(true)
-        }.create().show()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        dataProcessingViewModel.clearIsFinished()
         _binding = null
     }
 }

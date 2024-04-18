@@ -57,6 +57,13 @@ class EmailsPackageManagerFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Call loadEmailPackages when fragment is visible again
+        emailPackageSharedViewModel.loadEmailPackages()
+        Log.d(logTag, "Fragment resumed and packages reloaded")
+    }
+
     private fun setupRecyclerView() {
         emailPackageAdapter = EmailPackageAdapter(
             emptyList(),

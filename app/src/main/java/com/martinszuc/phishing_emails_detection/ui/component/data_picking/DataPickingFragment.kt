@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlDataPickingBinding
 import com.martinszuc.phishing_emails_detection.ui.component.data_picking.adapter.DataPickingSelectionAdapter
+import com.martinszuc.phishing_emails_detection.ui.component.data_processing.DataProcessingBottomSheetFragment
 import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningState
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailPackageSharedViewModel
@@ -43,12 +44,6 @@ class DataPickingFragment : Fragment() {
 
     private fun setupRecyclerView() {
         emailPackageSelectionAdapter = DataPickingSelectionAdapter(
-            onTrainingClicked = {
-                machineLearningParentSharedViewModel.setState(MachineLearningState.TRAINING)
-            },
-            onRetrainingClicked = {
-                machineLearningParentSharedViewModel.setState(MachineLearningState.RETRAINING)
-            },
             onPackageSelected = { emailPackage, isChecked ->
                 // Assuming emailPackage is an EmailPackageMetadata object
                 dataPickingViewModel.togglePackageSelected(emailPackage)
@@ -83,9 +78,13 @@ class DataPickingFragment : Fragment() {
         }
 
         fab.setOnClickListener {
-            // Set the state to DATA_PROCESSING to navigate to the Data Processing Fragment
-            machineLearningParentSharedViewModel.setState(MachineLearningState.DATA_PROCESSING)
+            showDataProcessingBottomSheet()
         }
+    }
+
+    private fun showDataProcessingBottomSheet() {
+        val bottomSheetFragment = DataProcessingBottomSheetFragment()
+        bottomSheetFragment.show(parentFragmentManager, bottomSheetFragment.tag)
     }
 
 
