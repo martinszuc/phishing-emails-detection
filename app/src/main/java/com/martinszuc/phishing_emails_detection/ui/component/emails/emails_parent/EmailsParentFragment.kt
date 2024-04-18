@@ -65,15 +65,20 @@ class EmailsParentFragment : Fragment() {
                 }
 
                 1 -> {
-                    tab.text = "Saved"
+                    tab.text = "Memory"
                     tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_saved)
                 }
 
                 2 -> {
+                    tab.text = "Saved"
+                    tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_email_protected)
+                }
+
+                3 -> {
                     tab.text = "Packaged"
                     tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_box_package)
                 }
-                3 -> {
+                4 -> {
                     tab.text = "Processed"
                     tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_package_processed)
                 }

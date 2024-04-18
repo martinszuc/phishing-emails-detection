@@ -8,6 +8,7 @@ import androidx.paging.PagingData
 import androidx.room.withTransaction
 import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.Subject
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailDetection
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.utils.Constants
@@ -17,6 +18,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+
+private const val logTag = "EmailFullLocalRepository"
 
 /**
  * Authored by matoszuc@gmail.com
@@ -34,19 +37,25 @@ class EmailFullLocalRepository @Inject constructor(
             emailFullDao.insert(emailFull)
         }
     }
-    suspend fun saveEmlToEmailFull(uri: Uri, isPhishy: Boolean) {
+    suspend fun saveEmlToEmailFull(uri: Uri) {
         withContext(Dispatchers.IO) {
-            val content = fileRepository.loadFileContent(uri)
+            val content = fileRepository.loadFileContent(uri) // TODO Read line by line
             val emailFull = EmailFactory.parseEmlToEmailFull(content)
                 ?: throw IllegalArgumentException("Failed to parse the EML file")
 
-            // Insert the EmailFull object into the database
-            insertEmailFull(emailFull.copy(isPhishing = isPhishy))
+            database.withTransaction {
+                // Insert EmailFull
+                emailFullDao.insert(emailFull)
 
-            // Convert the EmailFull to MBOX format and save it
-            val mboxContent = MboxFactory.formatEmailFullToMbox(emailFull)
-            val mboxFileName = "email-${emailFull.id}.mbox"
-            fileRepository.saveMboxContent(mboxContent, Constants.DIR_EMAIL_PACKAGES, mboxFileName)
+                // Convert the EmailFull to EmailMinimal and insert
+                val emailMinimal = EmailFactory.createEmailMinimalFromFull(emailFull)
+                database.emailMinimalDao().insert(emailMinimal)
+
+                // Convert the EmailFull to MBOX format and save it
+                val mboxContent = MboxFactory.formatEmailFullToMbox(emailFull)
+                val mboxFileName = "email-${emailFull.id}.mbox"
+                fileRepository.saveMboxContent(mboxContent, Constants.DIR_EMAIL_PACKAGES, mboxFileName)
+            }
         }
     }
 

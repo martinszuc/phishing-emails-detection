@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -63,6 +62,8 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
     private lateinit var emailsSavedAdapter: EmailsSavedAdapter
 
     private val binding get() = _binding!!
+    private var isDialogShown = false  // Flag to track if the dialog is shown
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,6 +76,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        isDialogShown = false
         initEmailsSaved()
         initSearchView()
         initEmptyTextAndButton()
@@ -100,6 +102,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
     }
 
     override fun onDialogDismissed() {
+        isDialogShown = false  // Reset the flag when dialog is dismissed
         emailMinimalSharedViewModel.clearIdFetchedEmail()
         emailFullSharedViewModel.clearIdFetchedEmail()
     }
@@ -272,12 +275,21 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
     }
 
     private fun initEmailsSaved() {
+        // Initialize the EmailsSavedAdapter with necessary callbacks
         emailsSavedAdapter = EmailsSavedAdapter(
             emailsSavedViewModel,
-            { emailId -> /* Handle email clicked */ },
-            { addEmailFromFile() } // This method will handle adding an email
+            { emailId ->
+                // This lambda function is executed when an email item is clicked
+                emailMinimalSharedViewModel.fetchEmailById(emailId) // Fetch minimal email details
+                emailFullSharedViewModel.fetchEmailById(emailId)    // Fetch full email details
+            },
+            {
+                // This lambda function is executed when the add email button is clicked
+                addEmailFromFile() // Handle adding an email from file
+            }
         )
 
+        // Set up the RecyclerView with a LinearLayoutManager and attach the adapter
         binding.emailSelectionRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = emailsSavedAdapter
@@ -285,8 +297,10 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
     }
 
     private fun addEmailFromFile() {
+        // Open a file picker to select an EML file
         openFilePicker()
     }
+
 
     private fun setupEmailDetailsObserver() {
         // Define temporary holders for your email data
@@ -318,9 +332,12 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
     }
 
     private fun showEmailDetailsDialog(emailMinimal: EmailMinimal, emailFull: EmailFull) {
-        EmailsDetailsDialogFragment(emailMinimal, emailFull).apply {
-            setDialogDismissListener(this@EmailsSavedFragment)
-            show(this@EmailsSavedFragment.parentFragmentManager, logTag)
+        if (!isDialogShown && isResumed) {  // Check if the fragment is currently resumed
+            EmailsDetailsDialogFragment(emailMinimal, emailFull).apply {
+                setDialogDismissListener(this@EmailsSavedFragment)
+                show(this@EmailsSavedFragment.parentFragmentManager, logTag)
+            }
+            isDialogShown = true  // Set the flag to true as the dialog is now being shown
         }
     }
 
@@ -385,73 +402,22 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
         }
     }
 
-    private suspend fun showIsPhishyDialog(): Boolean =
-        suspendCoroutine { continuation ->
-            val context = requireContext()
-            val isPhishyCheckbox = CheckBox(context).apply {
-                text = getString(R.string.phishing_label_2)
-
-                // Adding margin top for spacing
-                val params = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                params.topMargin = resources.getDimensionPixelSize(R.dimen.spacing_16dp)
-                layoutParams = params
-            }
-
-            val layout = LinearLayout(context).apply {
-                orientation = LinearLayout.VERTICAL
-                addView(isPhishyCheckbox)
-            }
-
-            val dialog = AlertDialog.Builder(context).apply {
-                setTitle(getString(R.string.confirm_email))
-                setView(layout)
-                setPositiveButton(getString(R.string.confirm_big)) { _, _ ->
-                    continuation.resume(isPhishyCheckbox.isChecked)
-                }
-                setNegativeButton(getString(R.string.cancel_big)) { _, _ ->
-                    continuation.resume(false) // Assume not phishing if cancelled
-                }
-                setCancelable(false) // Makes it mandatory to choose an option
-            }.create()
-
-            dialog.show()
-        }
-
-    private val filePickerResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.data?.also { uri ->
-                lifecycleScope.launch {
-                    val isPhishy = showIsPhishyDialog()
-                    if (isPhishy) {
-                        handleEmlFileUri(uri, isPhishy)
-                    } else {
-                        // User cancelled the phishing dialog, do nothing or perform cleanup
-                        Toast.makeText(context,
-                            getString(R.string.file_selection_cancelled), Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-    }
-
-
-    private fun handleEmlFileUri(uri: Uri, isPhishy: Boolean) {
-        lifecycleScope.launch {
-            emailsSavedViewModel.processEmlFile(uri, isPhishy)
-            Toast.makeText(context,
-                getString(R.string.file_processing_initiated), Toast.LENGTH_SHORT).show()
-        }
-    }
-
     private fun openFilePicker() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = Constants.EML_FILE_TYPE  // may want to use "message/rfc822" for .eml files specifically or */*
+            type = Constants.EML_FILE_TYPE  // Adjust as necessary
             addCategory(Intent.CATEGORY_OPENABLE)
         }
         filePickerResultLauncher.launch(intent)
     }
+
+    private val filePickerResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.also { uri ->
+                emailsSavedViewModel.createEmailFullFromEML(uri)
+                Toast.makeText(context, "File processed successfully", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 
 }

@@ -29,8 +29,6 @@ data class EmailFull(
     val internalDate: Long,
     @Embedded
     val payload: Payload,
-    @ColumnInfo(name = "is_phishing")
-    val isPhishing: Boolean?
 ) : Parcelable
 
 

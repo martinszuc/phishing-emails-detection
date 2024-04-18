@@ -13,8 +13,11 @@ import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_fu
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Payload
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
 import java.nio.charset.StandardCharsets
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
+
+private const val logTag = "EmailFactory"
 
 /**
  * Authored by matoszuc@gmail.com
@@ -110,7 +113,6 @@ object EmailFactory {
                 body = payloadBody,  // Can be null if body data was null
                 parts = if (parts.isEmpty()) null else parts
             ),
-            isPhishing = null
         )
     }
 
@@ -165,7 +167,7 @@ object EmailFactory {
 
         for (line in lines) {
             if (line.trim().isEmpty() && readingHeaders) {
-                readingHeaders = false // Headers section ended, body starts
+                readingHeaders = false
             } else if (readingHeaders) {
                 val headerParts = line.split(":", limit = 2)
                 if (headerParts.size == 2) {
@@ -176,28 +178,34 @@ object EmailFactory {
             }
         }
 
-        val emailHeaders = headers.map { Header(it.key, it.value) }
+        val decodedBody = decodeBase64UrlSafe(body.toString()) ?: body.toString()
+        val snippet = if (decodedBody.length > 50) decodedBody.substring(0, 50) else decodedBody
+
         return EmailFull(
             id = headers["Message-ID"] ?: StringUtils.generateClientId(),
             threadId = headers["Thread-Index"] ?: "",
             labelIds = listOf(headers["Labels"] ?: "UNLABELED"),
-            snippet = body.toString().take(50), // Just take first 50 characters as a snippet
-            historyId = 0, // Optional if you have a history ID
+            snippet = snippet,
+            historyId = 0,
             internalDate = headers["Date"]?.let { parseDateToMillis(it) } ?: System.currentTimeMillis(),
             payload = Payload(
                 partId = null,
                 mimeType = "text/plain",
                 filename = "",
-                headers = emailHeaders,
-                body = Body(data = body.toString(), size = body.length),
-                parts = null // Assume simple emails without multipart
-            ),
-            isPhishing = null
+                headers = headers.map { Header(it.key, it.value) },
+                body = Body(data = decodedBody, size = decodedBody.length),
+                parts = null
+            )
         )
     }
 
-    fun parseDateToMillis(dateStr: String): Long {
+    private fun parseDateToMillis(dateStr: String): Long {
         val format = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH)
-        return format.parse(dateStr)?.time ?: System.currentTimeMillis()
+        try {
+            return format.parse(dateStr)?.time ?: System.currentTimeMillis()
+        } catch (e: ParseException) {
+            Log.e(logTag, "Error parsing date: $dateStr", e)
+            return System.currentTimeMillis()
+        }
     }
 }

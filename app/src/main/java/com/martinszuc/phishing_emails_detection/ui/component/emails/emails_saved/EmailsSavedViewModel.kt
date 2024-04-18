@@ -70,10 +70,10 @@ class EmailsSavedViewModel @Inject constructor(
         }
     }
 
-    fun processEmlFile(uri: Uri, isPhishy: Boolean) {
+    fun createEmailFullFromEML(uri: Uri) {
         launchDataLoad(
             execution = {
-                emailFullLocalRepository.saveEmlToEmailFull(uri, isPhishy)
+                emailFullLocalRepository.saveEmlToEmailFull(uri)
             },
             onSuccess = {
                 // Handle success case, post success event or message if necessary
@@ -95,6 +95,7 @@ class EmailsSavedViewModel @Inject constructor(
     fun clearDatabase() {
         launchDataLoad(execution = {
             emailFullLocalRepository.clearAll()
+            emailMinimalLocalRepository
         })
     }
 
@@ -159,9 +160,6 @@ class EmailsSavedViewModel @Inject constructor(
             Log.e(logTag, "Failed to delete emails: ${e.message}")
         })
     }
-
-
-
 
     fun resetSelectionMode() {
         _isSelectionMode.value = false

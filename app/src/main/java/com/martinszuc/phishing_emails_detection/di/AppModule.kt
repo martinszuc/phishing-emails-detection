@@ -7,6 +7,7 @@ import com.martinszuc.phishing_emails_detection.data.auth.AccountManager
 import com.martinszuc.phishing_emails_detection.data.auth.UserRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
+import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailDetectionLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMboxLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.remote.api.GmailApiService
 import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageManifestManager
@@ -183,4 +184,12 @@ object AppModule {
         return WeightManager()
     }
 
+    @Provides
+    @Singleton
+    fun provideEmailDetectionLocalRepository(
+        database: AppDatabase,
+        fileRepository: FileRepository
+    ): EmailDetectionLocalRepository {
+        return EmailDetectionLocalRepository(database, fileRepository)
+    }
 }
