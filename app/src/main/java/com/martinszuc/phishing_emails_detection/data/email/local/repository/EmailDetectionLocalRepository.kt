@@ -6,6 +6,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.room.withTransaction
 import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
+import com.martinszuc.phishing_emails_detection.data.email.local.entity.Subject
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailDetection
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.utils.Constants
@@ -58,29 +59,42 @@ class EmailDetectionLocalRepository @Inject constructor(
                 ?: throw IllegalArgumentException("Failed to parse the EML file")
 
             database.withTransaction {
-
                 database.emailFullDao().insert(emailFull)
 
-                // Create and insert an EmailDetection object based on the EmailFull data
-                val emailDetection = EmailDetection(emailFull.id ,emailFull, isPhishing)
+                // Create and insert an EmailDetection object
+                val emailDetection = EmailDetection(emailFull.id, emailFull, isPhishing)
                 insertEmailDetection(emailDetection)
 
-                // Convert the EmailFull to EmailMinimal and insert
+                // Insert EmailMinimal
                 val emailMinimal = EmailFactory.createEmailMinimalFromFull(emailFull)
                 database.emailMinimalDao().insert(emailMinimal)
+
+                // Create and insert Subject entity
+                val subjectHeader = emailFull.payload.headers.find { it.name == "Subject" }
+                if (subjectHeader != null) {
+                    val subject = Subject(
+                        id = 0,
+                        emailId = emailFull.id,
+                        value = subjectHeader.value
+                    )
+                    database.subjectDao().insert(subject)
+                }
+
+                // Convert the EmailFull to MBOX format and save it
+                val mboxContent = MboxFactory.formatEmailFullToMbox(emailFull)
+                val mboxFileName = "email-${emailFull.id}.mbox"
+
+                fileRepository.saveMboxContent(
+                    mboxContent,
+                    Constants.SAVED_EMAILS_DIR,
+                    mboxFileName
+                )
             }
-
-            // Convert the EmailFull to MBOX format and save it
-            val mboxContent = MboxFactory.formatEmailFullToMbox(emailFull)
-            val mboxFileName = "email-${emailFull.id}.mbox"
-
-            fileRepository.saveMboxContent(mboxContent, Constants.SAVED_EMAILS_DIR, mboxFileName)
         }
     }
-
-    suspend fun clearAll() {
-        database.withTransaction {
-            emailDetectionDao.clearAll()
+        suspend fun clearAll() {
+            database.withTransaction {
+                emailDetectionDao.clearAll()
+            }
         }
     }
-}

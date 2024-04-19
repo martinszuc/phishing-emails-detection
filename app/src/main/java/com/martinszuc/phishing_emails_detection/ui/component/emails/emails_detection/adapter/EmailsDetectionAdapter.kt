@@ -3,6 +3,7 @@ package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_dete
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -34,31 +35,32 @@ class EmailsDetectionAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is EmailViewHolder) {
-            val email = getItem(position - 1)
-            if (email != null) {
-                holder.binding.senderValue.text = email.emailFull.payload.headers.find { it.name == "From" }?.value
-                holder.binding.subject.text = email.emailFull.payload.headers.find { it.name == "Subject" }?.value
-                holder.binding.timestamp.text = StringUtils.formatTimestamp(email.emailFull.internalDate)
-                holder.binding.snippet.text = email.emailFull.snippet
-                holder.binding.phishingStatus.text = if (email.isPhishing) "Yes" else "No" // Assuming EmailFull has a 'isPhishy' boolean
+        when (holder) {
+            is EmailViewHolder -> {
+                val email = getItem(position - 1)  // Adjust indexing if necessary
+                if (email != null) {
+                    holder.binding.senderValue.text = email.emailFull.payload.headers.find { it.name == "From" }?.value
+                    holder.binding.subject.text = email.emailFull.payload.headers.find { it.name == "Subject" }?.value
+                    holder.binding.timestamp.text = StringUtils.formatTimestamp(email.emailFull.internalDate)
+                    holder.binding.snippet.text = email.emailFull.snippet
+                    holder.binding.phishingStatus.text = if (email.isPhishing) "Phishing" else "Not Phishing"
 
-                holder.itemView.setOnClickListener {
-                    onEmailClicked(email.emailFull.id)
-                }
+                    holder.itemView.setOnClickListener {
+                        onEmailClicked(email.emailFull.id)
+                    }
 
-                holder.binding.checkbox.setOnCheckedChangeListener(null)
-                holder.binding.checkbox.isChecked = emailsDetectionViewModel.selectedEmails.value?.contains(email.emailFull.id) ?: false
-                holder.binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
-                    handleCheckboxCheckedChange(isChecked, email.emailFull)
+                    holder.binding.checkbox.setOnCheckedChangeListener(null)
+                    holder.binding.checkbox.isChecked = emailsDetectionViewModel.selectedEmails.value?.contains(email.emailFull.id) ?: false
+                    holder.binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
+                        emailsDetectionViewModel.toggleEmailSelected(email.emailFull.id)
+                    }
                 }
-            } else {
-                holder.binding.checkbox.setOnCheckedChangeListener(null)
-                holder.binding.checkbox.isChecked = false
             }
-        } else if (holder is AddPackageViewHolder) {
-            holder.itemView.setOnClickListener {
-                onAddClicked()
+            is AddPackageViewHolder -> {
+                holder.textView.text = "Add from files"  // Set dynamic text
+                holder.itemView.setOnClickListener {
+                    onAddClicked()
+                }
             }
         }
     }
@@ -85,7 +87,9 @@ class EmailsDetectionAdapter(
     inner class EmailViewHolder(val binding: ItemEmailDetectionBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    inner class AddPackageViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    inner class AddPackageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val textView: TextView = view.findViewById(R.id.tvAdd) // Adjust ID as necessary
+    }
 
     companion object {
         private val EMAIL_COMPARATOR = object : DiffUtil.ItemCallback<EmailDetection>() {

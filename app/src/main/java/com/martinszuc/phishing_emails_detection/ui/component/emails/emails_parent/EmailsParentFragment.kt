@@ -60,17 +60,17 @@ class EmailsParentFragment : Fragment() {
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             when (position) {
                 0 -> {
-                    tab.text = "Import"
-                    tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_email_plus)
+                    tab.text = "Gmail"
+                    tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_gmail_icon)
                 }
 
                 1 -> {
-                    tab.text = "Memory"
+                    tab.text = "Saved"
                     tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_saved)
                 }
 
                 2 -> {
-                    tab.text = "Saved"
+                    tab.text = "Labeled"
                     tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_email_protected)
                 }
 

@@ -89,6 +89,7 @@ class EmailsSavedAdapter(
                 holder.binding.checkbox.isChecked = false
             }
         } else if (holder is AddPackageViewHolder) {
+            holder.textView.text = "Add from files"  // Set dynamic text
             // Handle binding the "Add Package" item
             holder.itemView.setOnClickListener {
                 onAddClicked()
@@ -143,8 +144,9 @@ class EmailsSavedAdapter(
         // Implement bind function for regular email items
     }
 
-    inner class AddPackageViewHolder(view: View) : RecyclerView.ViewHolder(view)
-
+    inner class AddPackageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val textView: TextView = view.findViewById(R.id.tvAdd) // Adjust ID as necessary
+    }
     companion object {
         private val EMAIL_COMPARATOR = object : DiffUtil.ItemCallback<EmailFull>() {
             override fun areItemsTheSame(oldItem: EmailFull, newItem: EmailFull): Boolean =

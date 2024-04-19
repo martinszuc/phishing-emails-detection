@@ -15,6 +15,7 @@
         android:tint="@color/md_theme_dark_primary" />
 
     <TextView
+        android:id="@+id/tvAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

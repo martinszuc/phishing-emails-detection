@@ -68,7 +68,6 @@ class EmailsDetectionFragment : Fragment(), EmailsDetailsDialogFragment.DialogDi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initEmailsDetection()
-        setupSearchView()
         observeEmailsFlow()
         initFloatingActionButton()
         setupEmailDetailsObserver()
@@ -188,22 +187,6 @@ class EmailsDetectionFragment : Fragment(), EmailsDetailsDialogFragment.DialogDi
             }
             isDialogShown = true
         }
-    }
-
-    private fun setupSearchView() {
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let { emailFullSharedViewModel.searchEmails(it) }
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText.isNullOrEmpty()) {
-                    emailFullSharedViewModel.getEmails()  // Fetch all emails
-                }
-                return true
-            }
-        })
     }
 
     private fun observeEmailsFlow() {

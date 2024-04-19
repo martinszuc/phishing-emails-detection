@@ -12,7 +12,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,17 +28,6 @@ class EmailDetectionSharedViewModel @Inject constructor(
     init {
         getEmailDetections()
     }
-
-//    fun searchEmailDetections(query: String) {
-//        viewModelScope.launch {
-//            collectFlow(
-//                flow = emailDetectionLocalRepository.searchEmailDetections(query).cachedIn(viewModelScope),
-//                onEach = { pagingData ->
-//                    _localEmailDetectionsFlow.value = pagingData
-//                }
-//            )
-//        }
-//    }
 
     fun clearDatabase() {
         launchDataLoad(execution = {

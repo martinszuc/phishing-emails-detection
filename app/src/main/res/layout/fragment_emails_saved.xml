@@ -14,16 +14,17 @@
             android:id="@+id/searchViewContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible">
+            android:visibility="visible"
+            android:background="@drawable/frame_with_border"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp">
 
-            <!-- Use LinearLayout for proper sizing, alignment, and centering children vertically -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical"> <!-- Add this line -->
+                android:gravity="center_vertical">
 
-                <!-- SearchView taking up most of the space, now centered vertically -->
                 <androidx.appcompat.widget.SearchView
                     android:id="@+id/searchView"
                     android:layout_width="0dp"
@@ -31,7 +32,6 @@
                     android:layout_weight="1"
                     android:queryHint="Search by subject" />
 
-                <!-- Button aligned to the end of the SearchView, also centered vertically -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnBatchSave"
                     style="@style/CustomBatchImportMaterialButton"

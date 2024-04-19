@@ -15,7 +15,10 @@
             android:id="@+id/searchViewContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:background="@drawable/frame_with_border"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp">
 
             <!-- Use LinearLayout for proper sizing, alignment, and centering children vertically -->
             <LinearLayout
