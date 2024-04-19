@@ -41,28 +41,28 @@ class EmailMboxLocalRepository @Inject constructor(
 
     suspend fun fetchMboxContentById(id: String): String? {
         try {
+            // Attempt to fetch metadata for the mbox file
             val metadata = emailMboxMetadataDao.getEmailMbox(id)
-            // Attempt to load content from the main directory if metadata is found
             metadata?.let {
-                return fileRepository.loadFileContent(Constants.MBOX_FILES_DIR, it.id).also {
+                // Try to load content from the main directory if metadata is found
+                fileRepository.loadFileContent(Constants.MBOX_FILES_DIR, it.id)?.let { content ->
                     Log.d(logTag, "Fetched mbox content for id: $id from ${Constants.MBOX_FILES_DIR}")
-                }
+                    return content // If content is found, return it
+                } ?: Log.w(logTag, "No file found in main directory for id: $id, trying fallback")
             }
-            // If metadata is not found, attempt to load from the fallback directory
-            return try {
-                fileRepository.loadFileContent(Constants.SAVED_EMAILS_DIR, id).also {
-                    Log.d(logTag, "Fetched fallback mbox content for id: $id from ${Constants.SAVED_EMAILS_DIR}")
-                }
-            } catch (e: Exception) {
+
+            // If the main directory attempt fails or metadata is null, try the fallback directory
+            return fileRepository.loadFileContent(Constants.SAVED_EMAILS_DIR, id)?.also {
+                Log.d(logTag, "Fetched fallback mbox content for id: $id from ${Constants.SAVED_EMAILS_DIR}")
+            } ?: run {
                 Log.w(logTag, "No file found in fallback directory for id: $id")
-                null // If still not found, return null
+                null // Return null if no file is found in the fallback directory
             }
         } catch (e: Exception) {
             Log.e(logTag, "Failed to fetch mbox content for id: $id", e)
-            return null // Log the exception and return null if any other error occurs
+            return null // Return null if an exception occurs
         }
     }
-
 
     suspend fun deleteEmailMboxById(emailId: String) {
         val filename = "$emailId.mbox" // Construct the filename from the email ID
