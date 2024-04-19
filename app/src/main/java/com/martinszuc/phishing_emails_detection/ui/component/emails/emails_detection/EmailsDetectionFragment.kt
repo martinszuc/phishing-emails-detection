@@ -50,6 +50,7 @@ class EmailsDetectionFragment : Fragment(), EmailsDetailsDialogFragment.DialogDi
     private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()
     private val emailsDetectionSharedViewModel: EmailDetectionSharedViewModel by activityViewModels()
     private val emailFullSharedViewModel: EmailFullSharedViewModel by activityViewModels()
+    private val emailDetectionSharedViewModel: EmailDetectionSharedViewModel by activityViewModels()
     private val emailsDetectionViewModel: EmailsDetectionViewModel by viewModels()
 
     private val emailDetailsCombined = MediatorLiveData<Pair<EmailMinimal?, EmailFull?>>()
@@ -78,7 +79,7 @@ class EmailsDetectionFragment : Fragment(), EmailsDetailsDialogFragment.DialogDi
             { emailId ->
                 // This lambda function is executed when an email item is clicked
                 emailMinimalSharedViewModel.fetchEmailById(emailId) // Fetch minimal email details
-                emailFullSharedViewModel.fetchEmailById(emailId)    // Fetch full email details
+                emailDetectionSharedViewModel.fetchEmailDetectionById(emailId)    // Fetch full email details
             },
             {
                 // This lambda function is executed when the add email button is clicked
@@ -151,7 +152,7 @@ class EmailsDetectionFragment : Fragment(), EmailsDetailsDialogFragment.DialogDi
     override fun onDialogDismissed() {
         isDialogShown = false
         emailMinimalSharedViewModel.clearIdFetchedEmail()
-        emailFullSharedViewModel.clearIdFetchedEmail()
+        emailDetectionSharedViewModel.clearIdFetchedEmailDetection()
     }
 
     private fun setupEmailDetailsObserver() {
@@ -165,8 +166,8 @@ class EmailsDetectionFragment : Fragment(), EmailsDetailsDialogFragment.DialogDi
             }
         }
 
-        emailDetailsCombined.addSource(emailFullSharedViewModel.emailById) { full ->
-            emailFull = full
+        emailDetailsCombined.addSource(emailDetectionSharedViewModel.emailDetectionById) { emailDet ->
+            emailFull = emailDet?.emailFull
             if (emailMinimal != null && emailFull != null) {
                 emailDetailsCombined.value = Pair(emailMinimal, emailFull)
             }

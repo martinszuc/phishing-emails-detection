@@ -31,4 +31,8 @@ interface EmailDetectionDao {
 
     @Query("DELETE FROM email_detection")
     suspend fun clearAll()
+
+    // Check if an EmailDetection exists by its id_detection
+    @Query("SELECT EXISTS(SELECT 1 FROM email_detection WHERE id_detection = :id)")
+    suspend fun isEmailSaved(id: String): Boolean
 }

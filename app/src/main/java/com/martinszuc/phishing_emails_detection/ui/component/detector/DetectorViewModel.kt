@@ -19,6 +19,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+private const val logTag = "DetectorViewModel"
+
 /**
  * Authored by matoszuc@gmail.com
  */
@@ -48,7 +50,7 @@ class DetectorViewModel @Inject constructor(
     val isFinished: LiveData<Boolean> = _isFinished
 
     init {
-        Log.d("DetectorViewModel", "Initializing ViewModel")
+        Log.d(logTag, "Initializing ViewModel")
         viewModelScope.launch {
             val latestEmail = getLatestEmailId()
             _selectedEmailId.value = latestEmail
@@ -82,12 +84,17 @@ class DetectorViewModel @Inject constructor(
     }
 
     fun clearSelectedEmail() {
-        Log.d("DetectorViewModel", "Deselecting all emails")
+        Log.d(logTag, "Deselecting all emails")
+        _selectedEmailId.value = null
+    }
+
+    fun clearSelectedModel() {
+        Log.d(logTag, "Deselecting all emails")
         _selectedEmailId.value = null
     }
 
     fun clearIsFinished() {
-        Log.d("DetectorViewModel", "Deselecting all emails")
+        Log.d(logTag, "Deselecting all emails")
         _isFinished.value = false
     }
 
@@ -96,20 +103,20 @@ class DetectorViewModel @Inject constructor(
         val emailId = _selectedEmailId.value
         val selectedModel = _selectedModel.value
         if (emailId == null || selectedModel == null) {
-            Log.d("DetectorViewModel", "No email or model selected for processing")
+            Log.d(logTag, "No email or model selected for processing")
             _classificationResult.postValue(false)
             return
         }
 
         viewModelScope.launch {
             _isLoading.postValue(true)
-            Log.d("DetectorViewModel", "Fetching mbox content for email ID: $emailId")
+            Log.d(logTag, "Fetching mbox content for email ID: $emailId")
 
             val mboxContent = emailMboxLocalRepository.fetchMboxContentById("$emailId.mbox")
 
             // Check if mboxContent is either null or empty
             if (mboxContent.isNullOrEmpty()) {
-                Log.d("DetectorViewModel", "Mbox content is empty or not available")
+                Log.d(logTag, "Mbox content is empty or not available")
                 _classificationResult.postValue(false)
                 _isLoading.postValue(false)
                 return@launch
@@ -117,14 +124,14 @@ class DetectorViewModel @Inject constructor(
 
             // Save mbox content to a file
             val mboxFile = fileRepository.saveMboxForPrediction(context, mboxContent, "email_$emailId.mbox")
-            Log.d("DetectorViewModel", "Mbox content saved to file: ${mboxFile.name}")
+            Log.d(logTag, "Mbox content saved to file: ${mboxFile.name}")
 
             // Use the selected model name
             val modelName = selectedModel.modelName
-            Log.d("DetectorViewModel", "Preparing to classify email. Model name: $modelName, Mbox file path: ${mboxFile.absolutePath}")
+            Log.d(logTag, "Preparing to classify email. Model name: $modelName, Mbox file path: ${mboxFile.absolutePath}")
 
             // Perform classification using the saved file and model path
-            Log.d("DetectorViewModel", "Classifying email from saved mbox file")
+            Log.d(logTag, "Classifying email from saved mbox file")
             val result = withContext(Dispatchers.IO) {
                 prediction.classify(modelName, mboxFile.name)  // Assume this method correctly handles classification
             }
@@ -136,7 +143,7 @@ class DetectorViewModel @Inject constructor(
 
             _isLoading.postValue(false)
             _isFinished.postValue(true)
-            Log.d("DetectorViewModel", "Classification result for the first email: $isPhishing")
+            Log.d(logTag, "Classification result for the first email: $isPhishing")
         }
     }
 

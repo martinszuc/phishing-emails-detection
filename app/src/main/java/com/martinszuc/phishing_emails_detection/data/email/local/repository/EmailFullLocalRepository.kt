@@ -27,7 +27,8 @@ private const val logTag = "EmailFullLocalRepository"
 
 class EmailFullLocalRepository @Inject constructor(
     private val database: AppDatabase,
-    private val fileRepository: FileRepository
+    private val fileRepository: FileRepository,
+    private val mboxLocalRepository: EmailMboxLocalRepository
 ) {
     private val emailFullDao = database.emailFullDao()
     private val subjectDao = database.subjectDao()
@@ -53,8 +54,7 @@ class EmailFullLocalRepository @Inject constructor(
 
                 // Convert the EmailFull to MBOX format and save it
                 val mboxContent = MboxFactory.formatEmailFullToMbox(emailFull)
-                val mboxFileName = "email-${emailFull.id}.mbox"
-                fileRepository.saveMboxContent(mboxContent, Constants.DIR_EMAIL_PACKAGES, mboxFileName)
+                mboxLocalRepository.saveEmailMbox(emailFull.id, mboxContent, emailFull.internalDate)
             }
         }
     }

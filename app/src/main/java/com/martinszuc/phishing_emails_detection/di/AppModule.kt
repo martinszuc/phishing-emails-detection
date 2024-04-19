@@ -188,8 +188,9 @@ object AppModule {
     @Singleton
     fun provideEmailDetectionLocalRepository(
         database: AppDatabase,
-        fileRepository: FileRepository
+        fileRepository: FileRepository,
+        emailMboxLocalRepository: EmailMboxLocalRepository
     ): EmailDetectionLocalRepository {
-        return EmailDetectionLocalRepository(database, fileRepository)
+        return EmailDetectionLocalRepository(database, fileRepository, emailMboxLocalRepository)
     }
 }

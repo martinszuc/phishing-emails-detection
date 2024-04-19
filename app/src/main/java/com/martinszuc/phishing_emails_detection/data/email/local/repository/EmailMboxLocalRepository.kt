@@ -42,19 +42,27 @@ class EmailMboxLocalRepository @Inject constructor(
     suspend fun fetchMboxContentById(id: String): String? {
         try {
             val metadata = emailMboxMetadataDao.getEmailMbox(id)
-            return metadata.let {
-                fileRepository.loadFileContent(Constants.MBOX_FILES_DIR, it.id).also {
-                    Log.d(logTag, "Fetched mbox content for id: $id")
+            // Attempt to load content from the main directory if metadata is found
+            metadata?.let {
+                return fileRepository.loadFileContent(Constants.MBOX_FILES_DIR, it.id).also {
+                    Log.d(logTag, "Fetched mbox content for id: $id from ${Constants.MBOX_FILES_DIR}")
                 }
-            } ?: run {
-                Log.w(logTag, "No metadata found for id: $id")
-                null
+            }
+            // If metadata is not found, attempt to load from the fallback directory
+            return try {
+                fileRepository.loadFileContent(Constants.SAVED_EMAILS_DIR, id).also {
+                    Log.d(logTag, "Fetched fallback mbox content for id: $id from ${Constants.SAVED_EMAILS_DIR}")
+                }
+            } catch (e: Exception) {
+                Log.w(logTag, "No file found in fallback directory for id: $id")
+                null // If still not found, return null
             }
         } catch (e: Exception) {
             Log.e(logTag, "Failed to fetch mbox content for id: $id", e)
-            return null
+            return null // Log the exception and return null if any other error occurs
         }
     }
+
 
     suspend fun deleteEmailMboxById(emailId: String) {
         val filename = "$emailId.mbox" // Construct the filename from the email ID
@@ -66,21 +74,6 @@ class EmailMboxLocalRepository @Inject constructor(
             Log.d(logTag, "Deleted mbox file and metadata: $filename")
         } catch (e: Exception) {
             Log.e(logTag, "Failed to delete mbox file or metadata: $filename", e)
-        }
-    }
-
-    suspend fun refreshDatabaseFromFiles() {
-        try {
-            val mboxFiles = fileRepository.listFilesInDirectory(Constants.MBOX_FILES_DIR)
-            mboxFiles?.forEach { file ->
-                // Assume file naming convention allows extraction of emailId, senderEmail, and timestamp
-                // For simplicity, not shown here. Requires parsing the filename or storing this data within the file.
-                Log.d(logTag, "Processing file during refresh: ${file.name}")
-                // TODO: Implement the logic to parse the filename and store this data within the file.
-            }
-            Log.d(logTag, "Refreshed database from files successfully")
-        } catch (e: Exception) {
-            Log.e(logTag, "Failed to refresh database from files", e)
         }
     }
 }

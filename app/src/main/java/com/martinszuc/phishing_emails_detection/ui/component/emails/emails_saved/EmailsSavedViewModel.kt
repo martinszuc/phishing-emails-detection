@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailDetectionLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailFullLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMboxLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMinimalLocalRepository
@@ -25,7 +26,8 @@ class EmailsSavedViewModel @Inject constructor(
     private val emailFullLocalRepository: EmailFullLocalRepository,
     private val emailPackageRepository: EmailPackageRepository,
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
-    private val emailMboxLocalRepository: EmailMboxLocalRepository
+    private val emailMboxLocalRepository: EmailMboxLocalRepository,
+    private val emailDetectionLocalRepository: EmailDetectionLocalRepository
 ) : AbstractBaseViewModel() {
 
     private val _isSelectionMode = MutableLiveData(false)
@@ -109,11 +111,8 @@ class EmailsSavedViewModel @Inject constructor(
                 progressCallback = { progress ->
                     _progress.postValue(progress)  // Safely update progress on UI thread
                 })
-            emailIds.forEach { emailId ->
-                emailFullLocalRepository.deleteEmailById(emailId)
-                emailMinimalLocalRepository.deleteEmailById(emailId)
-                emailMboxLocalRepository.deleteEmailMboxById(emailId)
-            }
+        }, onSuccess = {
+            deleteEmails(emailIds)
         })
     }
 
@@ -130,7 +129,7 @@ class EmailsSavedViewModel @Inject constructor(
                         isPhishy,
                         packageName,
                         progressCallback = { progress ->
-                                _progress.postValue(progress)  // Update progress safely on the UI thread
+                            _progress.postValue(progress)  // Update progress safely on the UI thread
                         }
                     )
                 }, onSuccess = {
@@ -150,9 +149,14 @@ class EmailsSavedViewModel @Inject constructor(
     private fun deleteEmails(emailIds: List<String>) {
         launchDataLoad(execution = {
             emailIds.forEach { emailId ->
-                emailFullLocalRepository.deleteEmailById(emailId)
-                emailMinimalLocalRepository.deleteEmailById(emailId)
-                emailMboxLocalRepository.deleteEmailMboxById(emailId)
+                if (!emailDetectionLocalRepository.isEmailSaved(emailId)) {
+                    emailFullLocalRepository.deleteEmailById(emailId)
+                    emailMinimalLocalRepository.deleteEmailById(emailId)
+                    emailMboxLocalRepository.deleteEmailMboxById(emailId)
+                } else {
+                    emailFullLocalRepository.deleteEmailById(emailId)
+                    Log.d(logTag, "Skipped deletion for saved email with ID: $emailId")
+                }
             }
         }, onSuccess = {
             Log.d(logTag, "Emails deleted successfully.")

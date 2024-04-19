@@ -19,7 +19,8 @@ import javax.inject.Inject
 
 class EmailDetectionLocalRepository @Inject constructor(
     private val database: AppDatabase,
-    private val fileRepository: FileRepository
+    private val fileRepository: FileRepository,
+    private val emailMboxLocalRepository: EmailMboxLocalRepository,
 ) {
     private val emailDetectionDao = database.emailDetectionDao()
 
@@ -82,19 +83,30 @@ class EmailDetectionLocalRepository @Inject constructor(
 
                 // Convert the EmailFull to MBOX format and save it
                 val mboxContent = MboxFactory.formatEmailFullToMbox(emailFull)
-                val mboxFileName = "email-${emailFull.id}.mbox"
+                val mboxFileName = "${emailFull.id}.mbox"
 
                 fileRepository.saveMboxContent(
                     mboxContent,
                     Constants.SAVED_EMAILS_DIR,
                     mboxFileName
                 )
+
+                emailMboxLocalRepository.saveEmailMbox(
+                    emailFull.id,
+                    mboxContent,
+                    emailFull.internalDate
+                )
             }
         }
     }
-        suspend fun clearAll() {
-            database.withTransaction {
-                emailDetectionDao.clearAll()
-            }
+
+    suspend fun clearAll() {
+        database.withTransaction {
+            emailDetectionDao.clearAll()
         }
     }
+
+    suspend fun isEmailSaved(id: String): Boolean {
+        return database.emailDetectionDao().isEmailSaved(id)
+    }
+}
