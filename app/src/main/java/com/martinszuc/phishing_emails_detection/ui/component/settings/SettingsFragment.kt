@@ -16,6 +16,7 @@ import androidx.preference.PreferenceFragmentCompat
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.EmailsSavedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.FederatedServerSharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailDetectionSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.user.AccountSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -31,6 +32,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private val emailsSavedViewModel: EmailsSavedViewModel by activityViewModels()
     private val accountSharedViewModel: AccountSharedViewModel by activityViewModels()
     private val federatedServerSharedViewModel: FederatedServerSharedViewModel by activityViewModels()
+    private val emailDetectionSharedViewModel: EmailDetectionSharedViewModel by activityViewModels()
 
     private lateinit var directoryPickerLauncher: ActivityResultLauncher<Intent> // Android 13 doesnt need explicit permissions to read external storage files. Android 10 and older do.
 
@@ -54,6 +56,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             "clear_database" -> {
                 emailsSavedViewModel.clearDatabase()
                 settingsViewModel.clearMboxFiles()
+                emailDetectionSharedViewModel.clearDatabase()
                 Toast.makeText(context, "Database cleared", Toast.LENGTH_SHORT).show()
             }
             "logout" -> {

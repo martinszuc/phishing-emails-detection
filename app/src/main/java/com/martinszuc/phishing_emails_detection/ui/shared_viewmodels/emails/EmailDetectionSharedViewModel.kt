@@ -41,6 +41,12 @@ class EmailDetectionSharedViewModel @Inject constructor(
 //        }
 //    }
 
+    fun clearDatabase() {
+        launchDataLoad(execution = {
+            emailDetectionLocalRepository.clearAll()
+        })
+    }
+
     fun getEmailDetections() {
         collectFlow(
             flow = emailDetectionLocalRepository.getAllEmailDetectionsFlow().cachedIn(viewModelScope),

@@ -28,4 +28,7 @@ interface EmailDetectionDao {
 
     @Update
     suspend fun update(emailDetection: EmailDetection)
+
+    @Query("DELETE FROM email_detection")
+    suspend fun clearAll()
 }

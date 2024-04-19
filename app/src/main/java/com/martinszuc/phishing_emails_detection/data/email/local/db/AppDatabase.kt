@@ -21,7 +21,7 @@ import com.martinszuc.phishing_emails_detection.utils.Converters
  * Authored by matoszuc@gmail.com
  */
 
-@Database(entities = [EmailMinimal::class, EmailFull::class, EmailBlob::class, EmailMboxMetadata::class, Subject::class, EmailDetection::class], exportSchema = false, version = 3)
+@Database(entities = [EmailMinimal::class, EmailFull::class, EmailBlob::class, EmailMboxMetadata::class, Subject::class, EmailDetection::class], exportSchema = false, version = 2)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun emailMinimalDao(): EmailMinimalDao

@@ -72,5 +72,10 @@ class EmailMinimalLocalRepository@Inject constructor(
             emailMinimalDao.deleteById(id)
         }
     }
+    suspend fun deleteAllEmails() {
+        database.withTransaction {
+            emailMinimalDao.clearAll()
+        }
+    }
 }
 

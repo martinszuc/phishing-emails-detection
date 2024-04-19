@@ -77,4 +77,10 @@ class EmailDetectionLocalRepository @Inject constructor(
             fileRepository.saveMboxContent(mboxContent, Constants.SAVED_EMAILS_DIR, mboxFileName)
         }
     }
+
+    suspend fun clearAll() {
+        database.withTransaction {
+            emailDetectionDao.clearAll()
+        }
+    }
 }

@@ -95,7 +95,7 @@ class EmailsSavedViewModel @Inject constructor(
     fun clearDatabase() {
         launchDataLoad(execution = {
             emailFullLocalRepository.clearAll()
-            emailMinimalLocalRepository
+            emailMinimalLocalRepository.deleteAllEmails()
         })
     }
 
