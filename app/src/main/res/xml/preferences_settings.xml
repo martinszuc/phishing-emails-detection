@@ -35,7 +35,7 @@
         <Preference
             app:key="check_connection"
             app:title="Check server connection"
-            app:layout="@layout/preference_layout"
+            android:layout="@layout/preference_layout"
             android:summary="Verify connectivity of federated server."/>
 
     </PreferenceCategory>

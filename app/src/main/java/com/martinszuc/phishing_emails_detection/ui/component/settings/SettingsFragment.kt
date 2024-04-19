@@ -4,9 +4,12 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -51,6 +54,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupServerStatusListener()
+    }
+
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
             "clear_database" -> {
@@ -78,17 +86,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
         return super.onPreferenceTreeClick(preference)
     }
 
-    private fun updateServerStatusUI(isOperational: Boolean) { // TODO use icons
-        // Find the preference item for displaying server status
-        val preference = findPreference<Preference>("check_connection")
-        preference?.icon = if (isOperational) {
-            // Server is operational, set green flag icon
-            requireContext().getDrawable(R.drawable.ic_green_checkmark_line)
-        } else {
-            // Server is not operational, set red flag icon
-            requireContext().getDrawable(R.drawable.ic_red_x_line)
+    private fun setupServerStatusListener() {
+        federatedServerSharedViewModel.isServerOperational.observe(viewLifecycleOwner) { isOperational ->
+            updateServerStatusUI(isOperational)
         }
     }
+
+    private fun updateServerStatusUI(isOperational: Boolean) {
+        val message = if (isOperational) {
+            "Server is operational"
+        } else {
+            "Server is not operational"
+        }
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    }
+
 
     private fun openLearnPhishingFragment() {
         val navController = findNavController()

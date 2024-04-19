@@ -10,6 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val logTag = "FederatedServerVM"
+
 @HiltViewModel
 class FederatedServerSharedViewModel @Inject constructor(
     private val modelWeightsService: ModelWeightsService // Ensure this is provided through DI correctly
@@ -25,7 +27,7 @@ class FederatedServerSharedViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = modelWeightsService.checkServer()
-                if (response.isSuccessful && response.body()?.string()?.contains("Server is operational") == true) {
+                if (response.isSuccessful) {
                     // Post success status on the main thread
                     _isServerOperational.postValue(true)
                 } else {
@@ -33,7 +35,7 @@ class FederatedServerSharedViewModel @Inject constructor(
                     _isServerOperational.postValue(false)
                 }
             } catch (e: Exception) {
-                Log.e("FederatedServerVM", "Error checking server connection: ${e.localizedMessage}")
+                Log.e(logTag, "Error checking server connection: ${e.localizedMessage}")
                 _isServerOperational.postValue(false)
             } finally {
                 _isLoading.postValue(false) // Indicate loading has finished
