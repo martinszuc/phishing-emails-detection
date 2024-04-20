@@ -210,6 +210,8 @@ class DetectorFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         detectorViewModel.clearIsFinished()
+        detectorViewModel.clearSelectedModel()
+        detectorViewModel.clearSelectedEmail()
         Log.d("DetectorFragment", "onDestroyView")
         _binding = null
     }

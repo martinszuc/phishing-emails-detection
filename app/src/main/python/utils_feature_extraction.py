@@ -27,8 +27,6 @@ def process_mbox_to_csv(filepath, encoding, output_dir, is_phishy=True, limit=50
     print(f"Is Phishy: {is_phishy}")
     print(f"Limit: {limit}")
 
-    common_encodings = ['utf-8', 'iso-8859-1', 'utf-16', 'ascii']
-
     data, email_index = [], []
     try:
         mbox = mailbox.mbox(filepath)
@@ -45,19 +43,7 @@ def process_mbox_to_csv(filepath, encoding, output_dir, is_phishy=True, limit=50
                               finders}
                 email_data["is_phishy"] = is_phishy
                 data.append(email_data)
-                # email_decoded = False
-                # for encoding in common_encodings:
-                #     try:
-                #         email_raw = message.as_bytes().decode(encoding, errors='replace')
-                #         email_index.append({"id": i, "message": utils.getpayload(message), "raw": email_raw})
-                #         email_decoded = True
-                #         break  # Break if successfully decoded
-                #     except (UnicodeDecodeError, AttributeError, base64.binascii.Error) as e:
-                #         print(f"Trying next encoding due to error with {encoding}: {e}")
-                #
-                # if not email_decoded:
-                #     print(f"Failed to decode email ID {i} with common encodings. Skipping email.")
-                #     continue
+
 
             # Construct the output file paths
             base_filename = os.path.splitext(os.path.basename(filepath))[0]

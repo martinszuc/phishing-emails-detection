@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -17,6 +18,7 @@ import com.martinszuc.phishing_emails_detection.ui.component.data_picking.DataPi
 import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.cancel
 
 @AndroidEntryPoint
 class DataProcessingBottomSheetFragment : BottomSheetDialogFragment() {
@@ -104,6 +106,7 @@ class DataProcessingBottomSheetFragment : BottomSheetDialogFragment() {
 
 
     override fun onDestroyView() {
+        lifecycleScope.cancel()  // Cancel all coroutines started by this fragment's scope
         super.onDestroyView()
         _binding = null
     }

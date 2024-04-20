@@ -55,18 +55,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- New FloatingActionButton on the left side -->
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fabLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:contentDescription="@string/previous"
-        android:text="Back"
-        app:icon="@drawable/ic_back_arrow_round"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <!-- ProgressBar for loading indication -->
     <ProgressBar
         android:id="@+id/progressBar"

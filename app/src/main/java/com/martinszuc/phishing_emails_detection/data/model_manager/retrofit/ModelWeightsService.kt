@@ -8,6 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Streaming
 
 interface ModelWeightsService {
     @Multipart
@@ -17,8 +18,9 @@ interface ModelWeightsService {
         @Part weightsFile: MultipartBody.Part
     ): Response<ResponseBody>
 
+    @Streaming
     @GET("get_weights")
-    suspend fun downloadWeights(): Response<WeightsResponse>
+    suspend fun downloadWeights(): Response<ResponseBody>
 
     @GET("check")
     suspend fun checkServer(): Response<ResponseBody>

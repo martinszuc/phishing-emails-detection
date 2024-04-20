@@ -1,20 +1,31 @@
+# utils_model.py module
 import numpy as np
+import utils_config as cfg
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc, \
     precision_score, recall_score, f1_score
-from tensorflow.keras.layers import Dense, Dropout
-from tensorflow.keras.layers import DenseFeatures
-from tensorflow.keras.models import Sequential
+import tensorflow as tf
 
+def build_model():
+    config = cfg.Config()
+    feature_columns = []
+    for feature, categories in config.CATEGORICAL_FEATURES.items():
+        for category in categories:
+            feature_columns.append(tf.feature_column.numeric_column(f"{feature}_{category}"))
 
-def build_model(feature_columns):
-    feature_layer = DenseFeatures(feature_columns)
-    model = Sequential([
+    feature_columns += [tf.feature_column.numeric_column(feat) for feat in config.NUMERICAL_FEATURES + config.BOOLEAN_FEATURES]
+
+    # Create a DenseFeatures layer with specified feature columns
+    feature_layer = tf.keras.layers.DenseFeatures(feature_columns)
+    model = tf.keras.Sequential([
         feature_layer,
-        Dense(128, activation='relu'),
-        Dropout(0.3),  # Added dropout for regularization
-        Dense(64, activation='relu'),
-        Dense(1, activation='sigmoid')
+        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dropout(0.3),
+        tf.keras.layers.Dense(64, activation='relu'),
+        tf.keras.layers.Dense(1, activation='sigmoid')
     ])
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+    print("Compiled the model with Adam optimizer and binary_crossentropy loss")
+
     return model
 
 def compile_and_train_model(model, train_ds, test_ds, epochs=100):
@@ -24,6 +35,7 @@ def compile_and_train_model(model, train_ds, test_ds, epochs=100):
 
 def evaluate_model(model, test_ds):
     loss, accuracy = model.evaluate(test_ds)
+    model.summary()
     print(f"Test Loss: {loss}, Test Accuracy: {accuracy}")
     return loss, accuracy
 

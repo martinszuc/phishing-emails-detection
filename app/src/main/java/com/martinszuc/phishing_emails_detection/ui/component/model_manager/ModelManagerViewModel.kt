@@ -37,7 +37,6 @@ class ModelManagerViewModel @Inject constructor(
     fun uploadModelWeights() {
         _selectedModel.value?.let { model ->
             launchDataLoad(execution = {
-                withContext(Dispatchers.IO){
                     _isLoading.postValue(true)
                     // Get user ID
                     val clientId = userRepository.getUserId()
@@ -51,7 +50,6 @@ class ModelManagerViewModel @Inject constructor(
 
                     // Upload the compressed weights
                     modelRepository.uploadCompressedWeights(clientId, compressedFileName)
-                }
             }, onSuccess = {
                 Log.d(logTag, "Model weights uploaded successfully for model: ${model.modelName}")
             }, onFailure = { exception ->
@@ -64,9 +62,7 @@ class ModelManagerViewModel @Inject constructor(
     fun downloadAndUpdateModelWeights() {
         _selectedModel.value?.let { model ->
             launchDataLoad(execution = {
-                withContext(Dispatchers.IO) {
-                    modelRepository.downloadModelWeights(model.modelName)
-                }
+                    modelRepository.downloadAndLoadModelWeights(model.modelName)
             }, onSuccess = {
                 Log.d(logTag, "Model weights updated successfully for model: ${model.modelName}")
             }, onFailure = { exception ->

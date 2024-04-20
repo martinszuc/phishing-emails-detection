@@ -32,7 +32,7 @@ class ModelRepository @Inject constructor(
 
         file?.let { safeFile ->
             val requestBody = safeFile.asRequestBody("application/gzip".toMediaTypeOrNull())
-            val filePart = MultipartBody.Part.createFormData("weights_file", safeFile.name, requestBody)
+            val filePart = MultipartBody.Part.createFormData("file", safeFile.name, requestBody)
             val clientIdPart = MultipartBody.Part.createFormData("client_id", clientId)
 
             return try {
@@ -50,17 +50,20 @@ class ModelRepository @Inject constructor(
 
 
 
-    suspend fun downloadModelWeights(modelName: String) {
+    suspend fun downloadAndLoadModelWeights(modelName: String) {
         try {
             val response = modelWeightsService.downloadWeights()
 
             if (response.isSuccessful) {
-                response.body()?.let { weightsResponse ->
-                    // Save the downloaded weights to a temporary file
-                    val tempWeightsFile = fileRepository.saveTemporaryWeights(weightsResponse.weights)
-                    // Now tempWeightsFile contains the latest weights
-                    _downloadResult.postValue(Resource.Success(tempWeightsFile))
-                    weightManager.updateModelWithNewWeights(modelName, tempWeightsFile.name)
+                response.body()?.let { responseBody ->
+                    val weightsData = responseBody.byteStream().readBytes()
+                    // Save the downloaded compressed weights to a temporary file
+                    val tempWeightsFile = fileRepository.saveTemporaryWeights(weightsData, "temp_weights.gz")
+                    val decompressedWeightsPath = fileRepository.decompressFile(tempWeightsFile)
+                    val decompressedWeightsFile = File(decompressedWeightsPath)
+
+                    weightManager.updateModelWithNewWeights(modelName, decompressedWeightsFile)
+                    _downloadResult.postValue(Resource.Success(decompressedWeightsFile))
                 } ?: run {
                     _downloadResult.postValue(Resource.Error("Download failed: Empty response", null))
                 }
@@ -71,6 +74,8 @@ class ModelRepository @Inject constructor(
             _downloadResult.postValue(Resource.Error("Network error: ${e.message}", null))
         }
     }
+
+
 
 
     fun loadModelsMetadata(): List<ModelMetadata> {

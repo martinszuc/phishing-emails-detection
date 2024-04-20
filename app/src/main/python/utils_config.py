@@ -7,6 +7,15 @@ class Config:
     IPREGEX = r"\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\b"
     EMAILREGEX = r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)"
 
+    # Add feature configurations
+    CATEGORICAL_FEATURES = {
+        "encoding": ["7bit", "8bit", "none", "quoted_printable", "base64", "binary", "other"]
+    }
+    NUMERICAL_FEATURES = ["attachments", "urls", "external_resources", "javascript", "css",
+                          "spam_word_count", "urgency_phrase_count", "misspelling_ratio"]
+    BOOLEAN_FEATURES = ["html_form", "flash_content", "html_iframe", "html_content", "ips_in_urls",
+                        "at_in_urls", "xheader_security", "arc_pass", "dmarc_pass", "spf_pass", "dkim_pass"]
+
     spam_words = [
         # Existing words
         'claim', 'congratulations', 'free', 'money', 'offer', 'click', 'save',

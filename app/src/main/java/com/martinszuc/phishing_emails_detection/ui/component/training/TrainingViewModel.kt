@@ -41,7 +41,7 @@ class TrainingViewModel @Inject constructor(
             val safeFilename = safePackages.first()
 
 
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(Dispatchers.Default) {
                 _isLoading.postValue(true) // Notify UI that the training process has started
                 _isFinished.postValue(false)
 

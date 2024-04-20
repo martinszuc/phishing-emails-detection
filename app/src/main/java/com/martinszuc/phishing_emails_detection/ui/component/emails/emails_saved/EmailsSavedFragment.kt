@@ -83,7 +83,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
         observeEmailsFlow()
         setupEmailDetailsObserver()
         initObserveSelectedEmails()
-        initFloatingActionButton() // TODO number of emails saved in the snackbar
+        initFloatingActionButton()
         initBatchPackageButton()
         initLoadingFrame()
     }

@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val logTag = "BaseViewModel"
 
@@ -45,7 +46,10 @@ abstract class AbstractBaseViewModel : ViewModel() {
         _progress.postValue(0)
         viewModelScope.launch {
             try {
-                val result = execution()
+                // Move execution to the background thread for CPU-intensive task
+                val result = withContext(Dispatchers.Default) {
+                    execution()
+                }
                 onSuccess(result)
                 _isFinished.postValue(true)
             } catch (e: Exception) {

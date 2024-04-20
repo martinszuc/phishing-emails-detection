@@ -25,12 +25,12 @@ import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_fu
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsDetectionBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.EmailsDetailsDialogFragment
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detection.adapter.EmailsDetectionAdapter
-import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.adapter.EmailsSavedAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailDetectionSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailFullSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailMinimalSharedViewModel
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
@@ -206,6 +206,8 @@ class EmailsDetectionFragment : Fragment(), EmailsDetailsDialogFragment.DialogDi
     }
 
     override fun onDestroyView() {
+        binding.emailSelectionRecyclerView.adapter = null
+        lifecycleScope.cancel()
         super.onDestroyView()
         _binding = null
     }

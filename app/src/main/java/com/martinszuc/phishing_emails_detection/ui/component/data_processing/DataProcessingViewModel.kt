@@ -33,16 +33,15 @@ class DataProcessingViewModel @Inject constructor(
         )
     }
 
-    private suspend fun processEmailPackage(metadata: EmailPackageMetadata) {
-        withContext(Dispatchers.Default) { // Ensure processing is done in the background
-            dataProcessing.processMboxToCsv(
-                Constants.DIR_EMAIL_PACKAGES,
-                metadata.fileName,
-                Constants.OUTPUT_CSV_DIR,
-                "utf-8", // Placeholder for encoding
-                500, // Placeholder for limit
-                metadata.isPhishy
-            )
-        }
+    private fun processEmailPackage(metadata: EmailPackageMetadata) {
+        dataProcessing.processMboxToCsv(
+            Constants.DIR_EMAIL_PACKAGES,
+            metadata.fileName,
+            Constants.OUTPUT_CSV_DIR,
+            "utf-8", // Placeholder for encoding
+            500, // Placeholder for limit
+            metadata.isPhishy
+        )
+
     }
 }

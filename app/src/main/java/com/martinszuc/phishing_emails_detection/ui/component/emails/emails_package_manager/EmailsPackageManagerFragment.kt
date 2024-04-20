@@ -29,6 +29,7 @@ import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_packa
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailPackageSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailParentSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -198,6 +199,8 @@ class EmailsPackageManagerFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        binding.rvEmailPackages.adapter = null
+        lifecycleScope.cancel()
         super.onDestroyView()
         _binding = null
     }

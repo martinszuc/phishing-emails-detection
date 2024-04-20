@@ -6,6 +6,10 @@ import android.util.Log
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.util.zip.GZIPInputStream
+import java.util.zip.ZipException
 import javax.inject.Inject
 
 private const val logTag = "FileRepository"
@@ -20,6 +24,22 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
             // Assuming `compressFile` is a method in FileManager that compresses the file and returns the path
             return fileManager.compressFile(directoryName, fileName, compressedFileName)
         } ?: throw Exception("Original file for compression not found: $fileName")
+    }
+
+    fun decompressFile(originalFile: File): String {
+        val decompressedFile = File(originalFile.parent, originalFile.name.replace(".gz", ""))
+        try {
+            GZIPInputStream(FileInputStream(originalFile)).use { gzipInputStream ->
+                FileOutputStream(decompressedFile).use { fileOutputStream ->
+                    gzipInputStream.copyTo(fileOutputStream)
+                }
+            }
+        } catch (e: ZipException) {
+            // Log the error or handle it appropriately
+            Log.e(logTag, "Error decompressing file: ${e.message}")
+            return originalFile.absolutePath  // Return the original path if decompression fails
+        }
+        return decompressedFile.absolutePath
     }
 
     // Save mbox content to a file within a specified directory

@@ -28,6 +28,9 @@ class EmailsParentFragment : Fragment() {
 
     private val binding get() = _binding!!
 
+    private lateinit var viewPager: ViewPager2
+    private lateinit var tabLayout: TabLayout
+    private var emailsPagerAdapter: EmailsPagerAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,22 +44,23 @@ class EmailsParentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewPager = binding.viewPager
+        tabLayout = binding.tabs
+
         setupViewPager()
         observePagerPosition()
     }
 
     private fun observePagerPosition() {
         emailParentSharedViewModel.viewPagerPosition.observe(viewLifecycleOwner) { position ->
-            binding.viewPager.currentItem = position
+            viewPager.currentItem = position
         }
     }
 
-
     private fun setupViewPager() {
-        val viewPager: ViewPager2 = binding.viewPager
-        viewPager.adapter = EmailsPagerAdapter(this)
+        emailsPagerAdapter = EmailsPagerAdapter(this)
+        viewPager.adapter = emailsPagerAdapter
 
-        val tabLayout: TabLayout = binding.tabs
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             when (position) {
                 0 -> {
@@ -89,5 +93,7 @@ class EmailsParentFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        viewPager.adapter = null
+        emailsPagerAdapter = null
     }
 }

@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +23,7 @@ import com.martinszuc.phishing_emails_detection.ui.component.training.adapter.Tr
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -32,7 +34,6 @@ class TrainingFragment : Fragment() {
     private var _binding: FragmentMlTrainingBinding? = null
     private val binding get() = _binding!!
     private val processedPackageSharedViewModel: ProcessedPackageSharedViewModel by activityViewModels()
-    private val machineLearningParentSharedViewModel: MachineLearningParentSharedViewModel by activityViewModels()
     private val trainingViewModel: TrainingViewModel by activityViewModels()
     private val modelManagerSharedViewModel: ModelManagerSharedViewModel by activityViewModels()
 
@@ -44,7 +45,6 @@ class TrainingFragment : Fragment() {
         _binding = FragmentMlTrainingBinding.inflate(inflater, container, false)
         setupRecyclerView()
         initFloatingActionButton()
-        initBackFloatingActionButton()
         return binding.root
     }
 
@@ -88,14 +88,6 @@ class TrainingFragment : Fragment() {
                     modelManagerSharedViewModel.refreshAndLoadModels()
                 }
             }
-        }
-    }
-
-    private fun initBackFloatingActionButton() {
-        val fab: ExtendedFloatingActionButton = binding.fabLeft
-        // Implement FAB click action to proceed to the next step
-        fab.setOnClickListener {
-            machineLearningParentSharedViewModel.setState(MachineLearningState.DATA_PICKING)
         }
     }
 
@@ -171,6 +163,8 @@ class TrainingFragment : Fragment() {
 
 
     override fun onDestroyView() {
+        lifecycleScope.cancel()  // Cancel all coroutines started by this fragment's scope
+        binding.rvProcessedPackages.adapter = null  // Detach the adapter
         super.onDestroyView()
         _binding = null
     }

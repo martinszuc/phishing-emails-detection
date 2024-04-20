@@ -9,6 +9,7 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.InputStreamReader
+import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
 private const val logTag = "FileManager"
@@ -29,6 +30,16 @@ class FileManager(private val context: Context) {
         file.writeBytes(content)
         return file
     }
+
+     fun decompressFile(originalFile: File, decompressedFile: File) {
+        GZIPInputStream(FileInputStream(originalFile)).use { gzipInputStream ->
+            FileOutputStream(decompressedFile).use { fileOutputStream ->
+                gzipInputStream.copyTo(fileOutputStream)
+            }
+        }
+    }
+
+
 
     fun compressFile(directoryName: String, originalFileName: String, compressedFileName: String): String {
         val originalFile = File(context.filesDir, directoryName + File.separator + originalFileName)

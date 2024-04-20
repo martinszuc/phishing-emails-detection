@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMachineLearningBinding
@@ -16,7 +17,7 @@ class MachineLearningParentFragment : Fragment() {
     private var _binding: FragmentMachineLearningBinding? = null
     private val binding get() = _binding!!
 
-    private val machineLearningParentSharedViewModel: MachineLearningParentSharedViewModel by activityViewModels()
+    private val machineLearningParentSharedViewModel: MachineLearningParentSharedViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,6 +94,7 @@ class MachineLearningParentFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.machineLearningViewpager.adapter = null  // Clear the adapter
         _binding = null
     }
 }

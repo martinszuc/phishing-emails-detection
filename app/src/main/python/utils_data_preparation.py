@@ -3,6 +3,7 @@ import numpy as np
 import os
 import pandas as pd
 import tensorflow as tf
+import utils_config as cfg
 # noinspection PyUnresolvedReferences
 from sklearn.model_selection import train_test_split
 
@@ -28,33 +29,27 @@ def load_datasets(resources_dir, safe_filename, phishing_filename):
 
 
 def preprocess_features(combined_df, is_for_prediction=False):
-    """Preprocess features for training or prediction."""
+    config = cfg.Config()
 
     # Drop 'Unnamed' columns if they exist
     combined_df = combined_df.loc[:, ~combined_df.columns.str.contains('^Unnamed')]
 
-    # Define column types
-    boolean_columns = ['html_form', 'flash_content', 'html_iframe', 'html_content', 'ips_in_urls',
-                       'at_in_urls', 'xheader_security', 'arc_pass', 'dmarc_pass', 'spf_pass',
-                       'dkim_pass']
-    numerical_columns = ['attachments', 'urls', 'external_resources', 'javascript', 'css',
-                         'spam_word_count', 'urgency_phrase_count', 'misspelling_ratio']
-    categorical_columns = ['encoding']
-    common_encodings = ['7bit', '8bit', 'none', 'base64', 'binary', 'other']
-
     # One-hot encode categorical columns
-    combined_df = pd.get_dummies(combined_df, columns=categorical_columns, dtype=np.float32)
+    for feature, categories in config.CATEGORICAL_FEATURES.items():
+        for category in categories:
+            column_name = f"{feature}_{category}"
+            combined_df[column_name] = (combined_df[feature] == category).astype(int)
 
-    # Ensure all encoding columns are present
-    for encoding in common_encodings:
-        column_name = f'encoding_{encoding}'
-        combined_df[column_name] = combined_df.get(column_name, 0.0)
+        # After processing each feature, drop the original column to avoid redundancy
+        if feature in combined_df:
+            combined_df.drop(columns=[feature], inplace=True)
 
     # Convert data types
-    combined_df[
-        boolean_columns + numerical_columns + [f'encoding_{enc}' for enc in common_encodings]] = \
-        combined_df[boolean_columns + numerical_columns + [f'encoding_{enc}' for enc in
-                                                           common_encodings]].astype(np.float32)
+    dtype_columns = config.NUMERICAL_FEATURES + config.BOOLEAN_FEATURES + [f"{feat}_{cat}" for
+                                                                           feat, cats in
+                                                                           config.CATEGORICAL_FEATURES.items()
+                                                                           for cat in cats]
+    combined_df[dtype_columns] = combined_df[dtype_columns].astype(np.float32)
 
     if not is_for_prediction and 'is_phishy' in combined_df.columns:
         combined_df['is_phishy'] = combined_df['is_phishy'].astype(np.float32)

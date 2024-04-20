@@ -18,8 +18,7 @@ def train_and_evaluate_model(resources_dir, safe_filename, phishing_filename, mo
     print("Starting data preparation...")
 
     resources_path = os.path.join(os.environ["HOME"], resources_dir)
-    model_save_path = os.path.join(os.environ["HOME"], 'models' , model_save_dir)
-
+    model_save_path = os.path.join(os.environ["HOME"], 'models', model_save_dir)
 
     train_ds, test_ds = udp.prepare_data_for_model(resources_path, safe_filename, phishing_filename)
 
@@ -27,13 +26,12 @@ def train_and_evaluate_model(resources_dir, safe_filename, phishing_filename, mo
     for features, label in train_ds.take(1):
         print("Sample data point from training set:", features, "Label:", label.numpy())
 
-    # Build and train the model
     print("Building and training the model...")
-    feature_columns = [tf.feature_column.numeric_column(key=key) for key, _ in features.items()]
-    model = um.build_model(feature_columns)
-    um.compile_and_train_model(model, train_ds, test_ds, epochs=10)  # Reduced epochs for quicker runs
+    model = um.build_model()  # Build the model using the updated build_model function
 
-    # Evaluate the model
+    print("Training the model...")
+    um.compile_and_train_model(model, train_ds, test_ds, epochs=10)
+
     print("Evaluating the model...")
     um.evaluate_model(model, test_ds)
 

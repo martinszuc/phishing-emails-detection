@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -34,7 +35,6 @@ class RetrainingFragment : Fragment() {
     private val retrainingViewModel: RetrainingViewModel by activityViewModels()
     private val processedPackageSharedViewModel: ProcessedPackageSharedViewModel by activityViewModels()
     private val modelManagerSharedViewModel: ModelManagerSharedViewModel by activityViewModels()
-    private val machineLearningParentSharedViewModel: MachineLearningParentSharedViewModel by activityViewModels()
 
     private lateinit var trainingSelectionAdapter: TrainingSelectionAdapter
 
@@ -46,7 +46,6 @@ class RetrainingFragment : Fragment() {
         _binding = FragmentMlRetrainingBinding.inflate(inflater, container, false)
         setupRecyclerView()
         setupRetrainButton()
-        initBackFloatingActionButton()
         return binding.root
     }
 
@@ -134,14 +133,6 @@ class RetrainingFragment : Fragment() {
         binding.fab.setOnClickListener {
             // This is where you call the startModelRetraining from the RetrainingViewModel
             retrainingViewModel.startModelRetraining()
-        }
-    }
-
-    private fun initBackFloatingActionButton() {
-        val fab: ExtendedFloatingActionButton = binding.fabLeft
-        // Implement FAB click action to proceed to the next step
-        fab.setOnClickListener {
-            machineLearningParentSharedViewModel.setState(MachineLearningState.DATA_PICKING)
         }
     }
 

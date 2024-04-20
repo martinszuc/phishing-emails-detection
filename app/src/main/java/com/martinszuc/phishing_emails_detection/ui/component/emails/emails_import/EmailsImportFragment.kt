@@ -29,6 +29,7 @@ import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_impor
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailMinimalSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.user.AccountSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -165,6 +166,8 @@ private const val logTag = "EmailsImportFragment"
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.emailSelectionRecyclerView.adapter = null
+        lifecycleScope.cancel()
         Log.d(logTag, "onDestroyView called")
         _binding = null
     }

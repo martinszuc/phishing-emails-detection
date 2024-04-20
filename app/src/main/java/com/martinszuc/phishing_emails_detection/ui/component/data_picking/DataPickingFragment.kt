@@ -6,13 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlDataPickingBinding
 import com.martinszuc.phishing_emails_detection.ui.component.data_picking.adapter.DataPickingSelectionAdapter
 import com.martinszuc.phishing_emails_detection.ui.component.data_processing.DataProcessingBottomSheetFragment
-import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentSharedViewModel
-import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningState
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,7 +25,6 @@ class DataPickingFragment : Fragment() {
     private var _binding: FragmentMlDataPickingBinding? = null
     private val binding get() = _binding!!
     private val emailPackageSharedViewModel: EmailPackageSharedViewModel by activityViewModels()
-    private val machineLearningParentSharedViewModel: MachineLearningParentSharedViewModel by activityViewModels()
     private val dataPickingViewModel: DataPickingViewModel by activityViewModels()
 
     private lateinit var emailPackageSelectionAdapter: DataPickingSelectionAdapter
@@ -90,10 +88,9 @@ class DataPickingFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-
+        binding.rvEmailPackages.adapter = null
         // Clear selected packages
         dataPickingViewModel.clearSelectedPackages()
-
         _binding = null
     }
 }
