@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.EmailPackageMetadata
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlDataProcessingBinding
 import com.martinszuc.phishing_emails_detection.ui.component.data_picking.DataPickingViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel

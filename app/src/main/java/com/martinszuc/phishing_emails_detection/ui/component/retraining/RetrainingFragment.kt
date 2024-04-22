@@ -8,13 +8,12 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlRetrainingBinding
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.component.training.adapter.TrainingSelectionAdapter

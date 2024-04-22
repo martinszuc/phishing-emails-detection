@@ -3,9 +3,9 @@ package com.martinszuc.phishing_emails_detection.ui.component.training
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.martinszuc.phishing_emails_detection.data.model.Training
-import com.martinszuc.phishing_emails_detection.data.model_manager.ModelRepository
-import com.martinszuc.phishing_emails_detection.data.processed_packages.entity.ProcessedPackageMetadata
+import com.martinszuc.phishing_emails_detection.data.python.model.Training
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.component.model_manager.ModelRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.ProcessedPackageMetadata
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel

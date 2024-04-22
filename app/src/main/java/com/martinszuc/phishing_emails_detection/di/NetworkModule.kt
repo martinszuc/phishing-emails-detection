@@ -1,8 +1,8 @@
 package com.martinszuc.phishing_emails_detection.di
 
 import android.content.Context
-import com.martinszuc.phishing_emails_detection.data.network.BaseUrlRepository
-import com.martinszuc.phishing_emails_detection.data.network.retrofit.ModelWeightsService
+import com.martinszuc.phishing_emails_detection.data.data_repository.remote.repository.BaseUrlRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.remote.network.retrofit.ModelWeightsService
 import com.martinszuc.phishing_emails_detection.utils.NetworkUtils
 import dagger.Module
 import dagger.Provides
@@ -33,7 +33,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(@ApplicationContext context: Context, baseUrlRepository: BaseUrlRepository): OkHttpClient {
+    fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }

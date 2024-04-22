@@ -3,7 +3,7 @@ package com.martinszuc.phishing_emails_detection.ui.component.data_picking.adapt
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
-import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata;
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.EmailPackageMetadata;
 import com.martinszuc.phishing_emails_detection.databinding.ItemPackageEmailCheckboxBinding;
 import com.martinszuc.phishing_emails_detection.utils.StringUtils;
 

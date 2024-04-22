@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.processed_packages.entity.ProcessedPackageMetadata
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.ProcessedPackageMetadata
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailProcessedPackageBinding
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
 

@@ -19,6 +19,7 @@ import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.FederatedServerSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailDetectionSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.user.AccountSharedViewModel
+import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.FileOutputStream
@@ -155,7 +156,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun openFilePicker() {
         // Launch the file picker
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-        intent.type = "*/*" // Specify the MIME type of H5 files here
+        intent.type = Constants.ALL_FILE_TYPES
         filePickerLauncher.launch(intent)
     }
 

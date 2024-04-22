@@ -14,7 +14,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
@@ -27,8 +26,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.EmailMinimal
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsSavedBinding
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.EmailsDetailsDialogFragment

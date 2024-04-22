@@ -1,6 +1,6 @@
 package com.martinszuc.phishing_emails_detection.utils
 
-import com.martinszuc.phishing_emails_detection.data.processed_packages.entity.ProcessedPackageMetadata
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.ProcessedPackageMetadata
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date

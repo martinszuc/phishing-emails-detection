@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.FragmentDetailsFullBinding
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.full.adapter.EmailFullAdapter

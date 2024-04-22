@@ -3,7 +3,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.martinszuc.phishing_emails_detection.data.network.retrofit.ModelWeightsService
+import com.martinszuc.phishing_emails_detection.data.data_repository.remote.network.retrofit.ModelWeightsService
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

@@ -4,7 +4,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailDetectionLocalRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.component.emails.EmailDetectionLocalRepository
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

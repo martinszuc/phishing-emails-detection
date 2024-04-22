@@ -11,8 +11,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.EmailMinimal
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.DialogEmailDetailsBinding
 
 /**

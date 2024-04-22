@@ -16,7 +16,7 @@ import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.model.Prediction
+import com.martinszuc.phishing_emails_detection.data.python.model.Prediction
 import com.martinszuc.phishing_emails_detection.databinding.ActivityMainBinding
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.user.AccountSharedViewModel

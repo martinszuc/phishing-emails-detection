@@ -2,8 +2,8 @@ package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_proc
 
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
-import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageRepository
-import com.martinszuc.phishing_emails_detection.data.processed_packages.entity.ProcessedPackageMetadata
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.component.processed_packages.ProcessedPackageRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.ProcessedPackageMetadata
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

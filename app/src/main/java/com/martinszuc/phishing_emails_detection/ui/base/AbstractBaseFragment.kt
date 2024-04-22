@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.data_class.PhishyDialogResult
+import com.martinszuc.phishing_emails_detection.utils.data_class.PhishyDialogResult
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 

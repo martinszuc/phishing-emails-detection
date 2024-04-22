@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSelectionBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.EmailsImportViewModel
 import com.martinszuc.phishing_emails_detection.utils.StringUtils

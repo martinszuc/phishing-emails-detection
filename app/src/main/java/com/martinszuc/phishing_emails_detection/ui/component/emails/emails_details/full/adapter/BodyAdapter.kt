@@ -3,7 +3,7 @@ package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_deta
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Body
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.email_full.Body
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailDetailsBodyBinding
 
 /**

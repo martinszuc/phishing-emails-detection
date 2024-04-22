@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
-import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMinimalLocalRepository
-import com.martinszuc.phishing_emails_detection.data.email.remote.repository.EmailMinimalRemoteRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.EmailMinimal
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.component.emails.EmailMinimalLocalRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.remote.repository.EmailMinimalRemoteRepository
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

@@ -17,8 +17,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.EmailMinimal
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsDetectionBinding
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.EmailsDetailsDialogFragment

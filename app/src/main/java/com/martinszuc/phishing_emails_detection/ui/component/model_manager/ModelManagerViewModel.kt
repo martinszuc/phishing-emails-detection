@@ -3,11 +3,11 @@ package com.martinszuc.phishing_emails_detection.ui.component.model_manager
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.martinszuc.phishing_emails_detection.data.auth.UserRepository
-import com.martinszuc.phishing_emails_detection.data.file.FileRepository
-import com.martinszuc.phishing_emails_detection.data.model.WeightManager
-import com.martinszuc.phishing_emails_detection.data.model_manager.ModelRepository
-import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
+import com.martinszuc.phishing_emails_detection.data.data_repository.auth.UserRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.component.file.FileRepository
+import com.martinszuc.phishing_emails_detection.data.python.model.WeightManager
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.component.model_manager.ModelRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel

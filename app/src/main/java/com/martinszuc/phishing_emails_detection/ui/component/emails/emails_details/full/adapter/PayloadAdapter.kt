@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Body
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Payload
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.email_full.Body
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.email_full.Payload
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailDetailsPayloadBinding
 
 /**

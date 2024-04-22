@@ -21,6 +21,7 @@ import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsProces
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailParentSharedViewModel
+import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -103,7 +104,7 @@ class ProcessedPackageManagerFragment : AbstractBaseFragment() {
 
     private fun selectCsvFile() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = "*/*"
+            type = Constants.ALL_FILE_TYPES
             addCategory(Intent.CATEGORY_OPENABLE)
         }
         filePickerResultLauncher.launch(intent)

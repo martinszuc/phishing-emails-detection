@@ -8,8 +8,8 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailDetection
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.email_full.EmailDetection
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailDetectionBinding
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detection.EmailsDetectionViewModel
 import com.martinszuc.phishing_emails_detection.utils.StringUtils

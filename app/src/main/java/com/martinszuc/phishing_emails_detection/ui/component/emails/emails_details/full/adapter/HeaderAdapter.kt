@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Header
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.email_full.Header
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailDetailsHeaderBinding
 
 /**

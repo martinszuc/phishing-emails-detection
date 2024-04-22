@@ -5,11 +5,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailDetectionLocalRepository
-import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailFullLocalRepository
-import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMboxLocalRepository
-import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMinimalLocalRepository
-import com.martinszuc.phishing_emails_detection.data.email_package.EmailPackageRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.component.emails.EmailDetectionLocalRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.component.emails.EmailFullLocalRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.component.emails.EmailMboxLocalRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.component.emails.EmailMinimalLocalRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.component.email_package.EmailPackageRepository
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

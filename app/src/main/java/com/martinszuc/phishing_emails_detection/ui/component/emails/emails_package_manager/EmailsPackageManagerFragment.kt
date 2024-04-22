@@ -110,7 +110,7 @@ class EmailsPackageManagerFragment : AbstractBaseFragment() {
 
     private fun selectMboxFile() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = "*/*"
+            type = Constants.ALL_FILE_TYPES
             addCategory(Intent.CATEGORY_OPENABLE)
             putExtra(Intent.EXTRA_MIME_TYPES, arrayOf(Constants.MBOX_TYPE, Constants.TEXT_PLAIN_TYPE)) // MIME type for mbox might vary, adjust as needed
         }

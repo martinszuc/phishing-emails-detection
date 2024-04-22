@@ -1,7 +1,7 @@
 package com.martinszuc.phishing_emails_detection.ui.component.settings
 
 import android.util.Log
-import com.martinszuc.phishing_emails_detection.data.file.FileRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.component.file.FileRepository
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel

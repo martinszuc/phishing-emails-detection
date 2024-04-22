@@ -4,8 +4,8 @@ import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.martinszuc.phishing_emails_detection.data.auth.AccountManager
-import com.martinszuc.phishing_emails_detection.data.auth.AuthenticationRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.auth.AccountManager
+import com.martinszuc.phishing_emails_detection.data.data_repository.auth.AuthenticationRepository
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

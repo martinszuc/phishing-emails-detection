@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
-import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
+import com.martinszuc.phishing_emails_detection.data.data_repository.local.db.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
