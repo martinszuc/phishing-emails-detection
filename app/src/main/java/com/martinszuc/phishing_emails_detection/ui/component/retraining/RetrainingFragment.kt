@@ -110,11 +110,7 @@ class RetrainingFragment : AbstractBaseFragment() {
                     if (position > 0) {
                         val selectedModel = spinnerModels[position]
                         retrainingViewModel.toggleSelectedModel(selectedModel)
-                        Toast.makeText(
-                            requireContext(),
-                            "Selected: ${selectedModel.modelName}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        showToast("Selected: ${selectedModel.modelName}")
                     }
                 }
 

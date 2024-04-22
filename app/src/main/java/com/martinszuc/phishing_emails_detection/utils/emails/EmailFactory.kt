@@ -11,6 +11,7 @@ import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_fu
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Header
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Part
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.Payload
+import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
 import java.nio.charset.StandardCharsets
 import java.text.ParseException
@@ -190,7 +191,7 @@ object EmailFactory {
             internalDate = headers["Date"]?.let { parseDateToMillis(it) } ?: System.currentTimeMillis(),
             payload = Payload(
                 partId = null,
-                mimeType = "text/plain",
+                mimeType = Constants.TEXT_PLAIN_TYPE,
                 filename = "",
                 headers = headers.map { Header(it.key, it.value) },
                 body = Body(data = decodedBody, size = decodedBody.length),

@@ -82,7 +82,8 @@ class DetectorFragment : AbstractBaseFragment() {
         // Update dialog content based on prediction
         if (isPhishing) {
             imageView.setImageResource(R.drawable.ic_phishing) // Replace with your phishing icon drawable
-            textView.text = getString(R.string.phishing_warning) // Assuming you have a string resource
+            textView.text =
+                getString(R.string.phishing_warning) // Assuming you have a string resource
         } else {
             imageView.setImageResource(R.drawable.ic_safe) // Replace with your safe icon drawable
             textView.text = getString(R.string.safe_email) // Assuming you have a string resource
@@ -168,11 +169,7 @@ class DetectorFragment : AbstractBaseFragment() {
                     if (position > 0) {
                         val selectedModel = spinnerModels[position]
                         detectorViewModel.toggleSelectedModel(selectedModel)
-                        Toast.makeText(
-                            requireContext(),
-                            "Selected: ${selectedModel.modelName}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        showToast("Selected: ${selectedModel.modelName}")
                     }
                 }
 

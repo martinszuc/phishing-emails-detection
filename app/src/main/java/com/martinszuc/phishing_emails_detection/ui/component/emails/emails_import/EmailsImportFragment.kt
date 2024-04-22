@@ -39,7 +39,8 @@ import kotlinx.coroutines.launch
 private const val logTag = "EmailsImportFragment"
 
 @AndroidEntryPoint
-    class EmailsImportFragment : AbstractBaseFragment() {                       // TODO better loading screen when batch downloading
+class EmailsImportFragment :
+    AbstractBaseFragment() {                       // TODO better loading screen when batch downloading
     private var _binding: FragmentEmailsImportBinding? = null
     private val emailsImportViewModel: EmailsImportViewModel by viewModels()
     private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()
@@ -120,8 +121,7 @@ private const val logTag = "EmailsImportFragment"
                         count
                     )
                 } else {
-                    Toast.makeText(context, "Please enter a valid number", Toast.LENGTH_SHORT)
-                        .show()
+                    showToast("Please enter a valid number")
                 }
             }
             setNegativeButton(getString(R.string.cancel_big), null)
@@ -272,7 +272,7 @@ private const val logTag = "EmailsImportFragment"
 
     private fun showImportFinishedToast(success: Boolean) {
         val message = if (success) "Import finished successfully." else "Import failed."
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        showToast(message)
     }
 }
 

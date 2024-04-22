@@ -89,10 +89,10 @@ abstract class AbstractBaseViewModel : ViewModel() {
     fun clearStates() {
         _isFinished.postValue(false)
         _operationFailed.postValue(false)
-        _hasStarted.postValue(false) // Ensure to reset this as well when clearing states
+        _hasStarted.postValue(false)
+        _isLoading.postValue(false)
     }
 
-    // Optional: Provide separate clear methods for more granular control
     fun clearIsFinished() {
         _isFinished.postValue(false)
     }
@@ -101,14 +101,8 @@ abstract class AbstractBaseViewModel : ViewModel() {
         _operationFailed.postValue(false)
     }
 
-    // Additional method to reset hasStarted state
     fun clearHasStarted() {
         _hasStarted.postValue(false)
     }
 
-    fun showToast(message: String, context: Context) {
-        viewModelScope.launch(Dispatchers.Main) {
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-        }
-    }
 }

@@ -5,6 +5,7 @@ import android.text.InputType
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.martinszuc.phishing_emails_detection.R
@@ -13,6 +14,10 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 abstract class AbstractBaseFragment : Fragment() {
+
+    protected fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
 
     protected suspend fun showPackageConfigDialog(context: Context): PhishyDialogResult =
         suspendCoroutine { cont ->

@@ -48,7 +48,8 @@ import kotlinx.coroutines.launch
 private const val logTag = "EmailsSavedFragment"
 
 @AndroidEntryPoint
-class EmailsSavedFragment : AbstractBaseFragment(), EmailsDetailsDialogFragment.DialogDismissListener {
+class EmailsSavedFragment : AbstractBaseFragment(),
+    EmailsDetailsDialogFragment.DialogDismissListener {
     private var _binding: FragmentEmailsSavedBinding? = null
     private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()
     private val emailParentSharedViewModel: EmailParentSharedViewModel by activityViewModels()
@@ -156,8 +157,7 @@ class EmailsSavedFragment : AbstractBaseFragment(), EmailsDetailsDialogFragment.
                         result.isPhishy,
                         result.packageName
                     )
-                    Toast.makeText(context, "Emails successfully packaged!", Toast.LENGTH_SHORT)
-                        .show()
+                    showToast(getString(R.string.emails_successfully_packaged))
                 }
             }
         }
@@ -194,11 +194,7 @@ class EmailsSavedFragment : AbstractBaseFragment(), EmailsDetailsDialogFragment.
                 if (packageName.isNotBlank() && limit > 0) {
                     emailsSavedViewModel.createEmailPackageFromLatest(isPhishy, packageName, limit)
                 } else {
-                    Toast.makeText(
-                        context,
-                        "Invalid package name or email count",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showToast("Invalid package name or email count")
                 }
             }
             setNegativeButton(getString(R.string.cancel_big), null)
@@ -342,14 +338,15 @@ class EmailsSavedFragment : AbstractBaseFragment(), EmailsDetailsDialogFragment.
         filePickerResultLauncher.launch(intent)
     }
 
-    private val filePickerResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.data?.also { uri ->
-                emailsSavedViewModel.createEmailFullFromEML(uri)
-                Toast.makeText(context, "File processed successfully", Toast.LENGTH_SHORT).show()
+    private val filePickerResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.data?.also { uri ->
+                    emailsSavedViewModel.createEmailFullFromEML(uri)
+                    showToast("File processed successfully")
+                }
             }
         }
-    }
 
 
 }

@@ -22,6 +22,7 @@ import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_package_manager.adapter.EmailPackageAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailPackageSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailParentSharedViewModel
+import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -111,7 +112,7 @@ class EmailsPackageManagerFragment : AbstractBaseFragment() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
             type = "*/*"
             addCategory(Intent.CATEGORY_OPENABLE)
-            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("application/mbox", "text/plain")) // MIME type for mbox might vary, adjust as needed
+            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf(Constants.MBOX_TYPE, Constants.TEXT_PLAIN_TYPE)) // MIME type for mbox might vary, adjust as needed
         }
         filePickerResultLauncher.launch(intent)
     }
@@ -124,7 +125,7 @@ class EmailsPackageManagerFragment : AbstractBaseFragment() {
                 // If copying is needed, use FileRepository for file operations
                 emailPackageManagerViewModel.createAndSaveEmailPackageFromMboxFile(uri, result.isPhishy, result.packageName)
                 emailPackageSharedViewModel.loadEmailPackages()
-                Toast.makeText(context, "Email package created!", Toast.LENGTH_SHORT).show()
+                showToast(getString(R.string.emails_successfully_packaged))
             }
         }
     }

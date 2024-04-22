@@ -89,13 +89,14 @@ class ProcessedPackageManagerFragment : AbstractBaseFragment() {
         popup.show()
     }
 
-    private val filePickerResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.data?.let { uri ->
-                onCsvFileSelected(uri)
+    private val filePickerResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.data?.let { uri ->
+                    onCsvFileSelected(uri)
+                }
             }
         }
-    }
 
     private fun selectCsvFile() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
@@ -109,9 +110,13 @@ class ProcessedPackageManagerFragment : AbstractBaseFragment() {
         lifecycleScope.launch {
             val result = showPackageConfigDialog(requireContext())
             if (!result.wasCancelled && result.packageName != null) {
-                processedPackageManagerViewModel.createAndSaveProcessedPackageFromCsvFile(uri, result.isPhishy, result.packageName)
+                processedPackageManagerViewModel.createAndSaveProcessedPackageFromCsvFile(
+                    uri,
+                    result.isPhishy,
+                    result.packageName
+                )
                 processedPackageSharedViewModel.refreshAndLoadProcessedPackages()
-                Toast.makeText(context, "Processed package created successfully.", Toast.LENGTH_SHORT).show()
+                showToast("Package imported!")
             }
         }
     }

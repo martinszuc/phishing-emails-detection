@@ -27,6 +27,8 @@ class Constants {
         // File types
         const val EML_FILE_TYPE = "message/rfc822"
         const val ALL_FILE_TYPES = "*/*"
+        const val TEXT_PLAIN_TYPE = "text/plain"
+        const val MBOX_TYPE = "application/mbox"
 
 
 

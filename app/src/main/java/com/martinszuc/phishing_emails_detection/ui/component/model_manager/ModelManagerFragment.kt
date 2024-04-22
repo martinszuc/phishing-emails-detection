@@ -49,7 +49,7 @@ class ModelManagerFragment : AbstractBaseFragment() {
     private fun setupFabRefresh() {
         binding.fab.setOnClickListener {
             modelManagerSharedViewModel.refreshAndLoadModels()
-            Toast.makeText(requireContext(), "Refreshing models...", Toast.LENGTH_SHORT).show()
+            showToast("Refreshing models...")
         }
     }
 
@@ -58,26 +58,16 @@ class ModelManagerFragment : AbstractBaseFragment() {
             // Check if a model is selected before attempting to upload weights
             modelManagerViewModel.selectedModel.value?.let { modelMetadata ->
                 modelManagerViewModel.uploadModelWeights()
-                Toast.makeText(
-                    requireContext(),
-                    "Uploading weights for ${modelMetadata.modelName}...",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } ?: Toast.makeText(requireContext(), "Please select a model first", Toast.LENGTH_SHORT)
-                .show()
+                showToast("Uploading weights for ${modelMetadata.modelName}...")
+            } ?: showToast("Please select a model first")
         }
 
         binding.btnLoadFromServer.setOnClickListener {
             // Check if a model is selected before attempting to download weights
             modelManagerViewModel.selectedModel.value?.let { modelMetadata ->
                 modelManagerViewModel.downloadAndUpdateModelWeights()
-                Toast.makeText(
-                    requireContext(),
-                    "Downloading weights for ${modelMetadata.modelName}...",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } ?: Toast.makeText(requireContext(), "Please select a model first", Toast.LENGTH_SHORT)
-                .show()
+                showToast("Downloading weights for ${modelMetadata.modelName}...")
+            } ?: showToast("Please select a model first")
         }
     }
 
@@ -107,11 +97,7 @@ class ModelManagerFragment : AbstractBaseFragment() {
                     if (position > 0) {
                         val selectedModel = spinnerModels[position]
                         modelManagerViewModel.toggleSelectedModel(selectedModel)
-                        Toast.makeText(
-                            requireContext(),
-                            "Selected: ${selectedModel.modelName}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        showToast("Selected: ${selectedModel.modelName}")
                     }
                 }
 
