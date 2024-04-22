@@ -29,7 +29,6 @@ def build_model():
     return model
 
 def compile_and_train_model(model, train_ds, test_ds, epochs=100):
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
     history = model.fit(train_ds, epochs=epochs, validation_data=test_ds)
     return history
 
