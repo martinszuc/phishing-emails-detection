@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 /**
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 @Parcelize
 data class Body(

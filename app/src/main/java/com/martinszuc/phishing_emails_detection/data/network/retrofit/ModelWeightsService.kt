@@ -12,7 +12,7 @@ import retrofit2.http.Streaming
 /**
  * Interface for the service that manages the model weights.
  *
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 interface ModelWeightsService {
 

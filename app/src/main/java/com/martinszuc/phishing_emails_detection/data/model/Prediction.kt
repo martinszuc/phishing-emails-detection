@@ -15,7 +15,7 @@ private const val logTag = "PredictionModule"
  * a Python backend for prediction. The `classify` method asynchronously executes the prediction
  * process on the provided mbox file using the specified model path.
  *
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 class Prediction @Inject constructor() {
 

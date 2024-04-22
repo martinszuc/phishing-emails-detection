@@ -35,7 +35,7 @@ import javax.inject.Singleton
  * It is installed in [SingletonComponent] to ensure that the provided instances are singletons
  * and live as long as the application does.
  *
- * @author Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 @Module
 @InstallIn(SingletonComponent::class)

@@ -12,7 +12,7 @@ import javax.inject.Inject
  * maintaining an updated list of all email packages, including their metadata like name, phishing status,
  * creation date, and size. It interfaces with the local file system to update and retrieve manifest data.
  *
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 class EmailPackageManifestManager @Inject constructor(context: Context) :
     AbstractManifestManager<EmailPackageMetadata>(context) {

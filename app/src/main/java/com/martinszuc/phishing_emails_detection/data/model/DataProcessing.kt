@@ -11,7 +11,7 @@ private const val logTag = "DataProcessingModule"
  * This class acts as a bridge between the Android application and Python backend processes, using the
  * PythonSingleton to execute Python scripts that perform the data transformation tasks.
  *
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 class DataProcessing @Inject constructor() {
 

@@ -21,7 +21,7 @@ import javax.inject.Inject
 import kotlin.math.min
 
 /**
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 
 private const val logTag = "GmailApiService"

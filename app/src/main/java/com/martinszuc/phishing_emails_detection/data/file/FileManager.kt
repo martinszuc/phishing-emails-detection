@@ -19,7 +19,7 @@ private const val logTag = "FileManager"
  * This class manages basic file operations such as save, load, delete, and compress,
  * directly interacting with the Android file system to perform these tasks.
  *
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 class FileManager(private val context: Context) {
 

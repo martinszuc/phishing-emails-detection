@@ -12,7 +12,7 @@ import javax.inject.Inject
  * This repository interacts with GmailApiService to fetch complete email data,
  * providing support for operations based on email IDs, search queries, and pagination limits.
  *
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 private const val logTag = "EmailFullRemoteRepository"
 

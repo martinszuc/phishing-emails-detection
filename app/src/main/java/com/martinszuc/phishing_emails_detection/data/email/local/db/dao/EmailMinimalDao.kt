@@ -9,7 +9,7 @@ import androidx.room.Transaction
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 
 /**
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 
 @Dao

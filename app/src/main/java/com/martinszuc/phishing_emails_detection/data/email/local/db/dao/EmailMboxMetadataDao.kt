@@ -7,7 +7,7 @@ import androidx.room.Query
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMboxMetadata
 
 /**
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 
 @Dao

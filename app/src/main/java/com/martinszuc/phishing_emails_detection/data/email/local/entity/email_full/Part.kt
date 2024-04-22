@@ -8,7 +8,7 @@ import com.martinszuc.phishing_emails_detection.utils.Converters
 import kotlinx.android.parcel.Parcelize
 
 /**
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 @Parcelize
 data class Part(

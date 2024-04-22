@@ -12,6 +12,8 @@ import javax.inject.Inject
  * abstracting the details of shared preferences usage away from the rest of the application.
  *
  * @property context The application context used to access [SharedPreferences].
+ *
+ * @author matoszuc@gmail.com
  */
 class BaseUrlRepository @Inject constructor(@ApplicationContext private val context: Context) {
     companion object {

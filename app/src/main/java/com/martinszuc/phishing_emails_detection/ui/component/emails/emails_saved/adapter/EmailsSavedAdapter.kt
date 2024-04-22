@@ -18,7 +18,7 @@ import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
 
 /**
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 class EmailsSavedAdapter(
     private val emailsSavedViewModel: EmailsSavedViewModel,

@@ -15,7 +15,7 @@ import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.Emai
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 
 @AndroidEntryPoint

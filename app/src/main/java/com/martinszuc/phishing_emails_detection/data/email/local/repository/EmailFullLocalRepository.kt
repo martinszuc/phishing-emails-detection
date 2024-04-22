@@ -24,7 +24,7 @@ private const val logTag = "EmailFullLocalRepository"
  * associated metadata, and provides methods to query and manage emails based on various attributes. It also handles
  * the conversion of emails from EML to mbox format and ensures their persistence.
  *
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 class EmailFullLocalRepository @Inject constructor(
     private val database: AppDatabase,

@@ -18,7 +18,7 @@ private const val logTag = "EmailPackageRepository"
  * It supports creating packages from individual emails or directly from mbox files, managing their lifecycle,
  * and maintaining a manifest of all packages.
  *
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 class EmailPackageRepository @Inject constructor(
     private val emailMboxLocalRepository: EmailMboxLocalRepository,

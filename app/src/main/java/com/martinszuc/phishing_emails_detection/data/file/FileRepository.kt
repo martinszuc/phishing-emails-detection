@@ -15,7 +15,7 @@ private const val logTag = "FileRepository"
  * to email packages and mbox files. This class simplifies file management tasks by providing
  * methods to save, load, delete, and manipulate mbox content and related metadata.
  *
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 
 class FileRepository @Inject constructor(private val fileManager: FileManager) {

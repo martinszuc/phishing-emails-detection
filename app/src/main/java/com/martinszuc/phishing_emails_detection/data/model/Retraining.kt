@@ -7,7 +7,7 @@ import javax.inject.Inject
 private const val logTag = "ModelRetrainingModule"
 
 /**
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 
 class Retraining @Inject constructor() {

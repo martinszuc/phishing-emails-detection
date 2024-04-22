@@ -1,7 +1,7 @@
 package com.martinszuc.phishing_emails_detection.utils
 
 /**
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 
 class Constants {

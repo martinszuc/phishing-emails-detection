@@ -9,7 +9,7 @@ import java.util.Date
 import javax.inject.Inject
 
 /**
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 
 class ModelManifestManager @Inject constructor(context: Context) :

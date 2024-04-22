@@ -8,7 +8,7 @@ private const val logTag = "ModelTrainingModule"
 
 
 /**
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 
 class Training @Inject constructor() {

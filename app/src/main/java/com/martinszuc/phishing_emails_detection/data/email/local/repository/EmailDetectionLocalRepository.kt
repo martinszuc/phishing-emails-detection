@@ -22,7 +22,7 @@ import javax.inject.Inject
  * for EmailDetection entities, supporting operations such as inserting, fetching, updating, and deleting
  * email detections, along with batching and transactional operations in the local SQLite database via Room.
  *
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 class EmailDetectionLocalRepository @Inject constructor(
     private val database: AppDatabase,

@@ -16,7 +16,7 @@ import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_fu
 import com.martinszuc.phishing_emails_detection.utils.Converters
 
 /**
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 
 @Database(entities = [EmailMinimal::class, EmailFull::class, EmailMboxMetadata::class, Subject::class, EmailDetection::class], exportSchema = false, version = 2)

@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey
  * @param id The unique identifier for the mbox metadata entry.
  * @param timestamp The time at which the mbox file was processed or added, represented as a timestamp.
  *
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 @Entity(tableName = "email_mbox_metadata")
 data class EmailMboxMetadata(

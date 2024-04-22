@@ -13,7 +13,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 
 @Module
@@ -47,9 +47,7 @@ object DatabaseModule {
         @ApplicationContext context: Context,
         openHelperFactory: SupportSQLiteOpenHelper.Factory
     ): AppDatabase {
-        return Room.databaseBuilder(context, AppDatabase::class.java, "phishing-detection-db/**\n" +
-                " * Authored by matoszuc@gmail.com\n" +
-                " */")
+        return Room.databaseBuilder(context, AppDatabase::class.java, "phishing-detection-db")
             .openHelperFactory(openHelperFactory)
             .fallbackToDestructiveMigration()
             .build()

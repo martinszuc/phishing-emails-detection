@@ -19,7 +19,7 @@ import javax.inject.Inject
 private const val logTag = "ModelRepository"
 
 /**
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 
 class ModelRepository @Inject constructor(

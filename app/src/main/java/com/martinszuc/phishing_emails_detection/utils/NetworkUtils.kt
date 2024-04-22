@@ -9,6 +9,10 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.TrustManagerFactory
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 object NetworkUtils {
 
     fun createCustomTrustManager(context: Context): TrustManagerFactory {

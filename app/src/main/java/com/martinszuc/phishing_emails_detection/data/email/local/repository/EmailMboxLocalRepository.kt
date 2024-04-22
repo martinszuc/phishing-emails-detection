@@ -15,7 +15,7 @@ import javax.inject.Inject
  * objects to mbox format for storage. It interacts with both the file system and the local database to ensure
  * consistency between stored files and their recorded metadata.
  *
- * Authored by matoszuc@gmail.com
+ * @author matoszuc@gmail.com
  */
 private const val logTag = "EmailMboxRepository"
 
