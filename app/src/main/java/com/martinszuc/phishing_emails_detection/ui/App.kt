@@ -21,5 +21,7 @@ class App : Application() {
         GlobalScope.launch(Dispatchers.IO) {
             PythonSingleton.initialize(appContext)
         }
+
+
     }
 }

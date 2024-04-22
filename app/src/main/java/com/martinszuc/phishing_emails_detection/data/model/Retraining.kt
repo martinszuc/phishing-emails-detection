@@ -12,7 +12,6 @@ private const val logTag = "ModelRetrainingModule"
 
 class Retraining @Inject constructor() {
 
-
     fun retrainModel(resourcesDir: String, safeFilename: String, phishingFilename: String, modelName: String) {
         Log.d(logTag, "Starting model retraining")
 

@@ -7,7 +7,7 @@ import com.martinszuc.phishing_emails_detection.data.data_class.Resource
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
 import com.martinszuc.phishing_emails_detection.data.model.WeightManager
 import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
-import com.martinszuc.phishing_emails_detection.data.model_manager.retrofit.ModelWeightsService
+import com.martinszuc.phishing_emails_detection.data.network.retrofit.ModelWeightsService
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody

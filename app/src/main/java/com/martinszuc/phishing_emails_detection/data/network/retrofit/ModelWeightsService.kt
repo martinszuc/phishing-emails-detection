@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.data.model_manager.retrofit
+package com.martinszuc.phishing_emails_detection.data.network.retrofit
 
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
