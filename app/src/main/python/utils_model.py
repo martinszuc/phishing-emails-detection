@@ -1,9 +1,11 @@
 # utils_model.py module
 import numpy as np
-import utils_config as cfg
+import tensorflow as tf
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc, \
     precision_score, recall_score, f1_score
-import tensorflow as tf
+
+import utils_config as cfg
+
 
 def build_model():
     config = cfg.Config()

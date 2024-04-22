@@ -3,8 +3,6 @@ import mailbox
 import os
 import pandas as pd
 import re
-import base64
-
 
 import utils_finders as utils
 from feature_finders import HTMLFormFinder, AttachmentFinder, FlashFinder, IFrameFinder, \

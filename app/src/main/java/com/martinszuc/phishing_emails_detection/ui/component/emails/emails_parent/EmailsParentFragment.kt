@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsParentBinding
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_parent.adapter.EmailsPagerAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailParentSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
  */
 
 @AndroidEntryPoint
-class EmailsParentFragment : Fragment() {
+class EmailsParentFragment : AbstractBaseFragment() {
 
     private var _binding: FragmentEmailsParentBinding? = null
     private val emailParentSharedViewModel: EmailParentSharedViewModel by activityViewModels()
@@ -31,6 +31,7 @@ class EmailsParentFragment : Fragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
     private var emailsPagerAdapter: EmailsPagerAdapter? = null
+    private var tabLayoutMediator: TabLayoutMediator? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,7 +62,7 @@ class EmailsParentFragment : Fragment() {
         emailsPagerAdapter = EmailsPagerAdapter(this)
         viewPager.adapter = emailsPagerAdapter
 
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+        tabLayoutMediator = TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             when (position) {
                 0 -> {
                     tab.text = "Gmail"
@@ -87,13 +88,17 @@ class EmailsParentFragment : Fragment() {
                     tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_package_processed)
                 }
             }
-        }.attach()
+        }
+        tabLayoutMediator?.attach()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+
+        // Detach TabLayoutMediator to prevent memory leaks
+        tabLayoutMediator?.detach()
+        tabLayoutMediator = null
+
         _binding = null
-        viewPager.adapter = null
-        emailsPagerAdapter = null
     }
 }

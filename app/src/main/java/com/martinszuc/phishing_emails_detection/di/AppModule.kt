@@ -1,7 +1,6 @@
 package com.martinszuc.phishing_emails_detection.di
 
 import android.content.Context
-import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
 import com.martinszuc.phishing_emails_detection.data.auth.AccountManager
 import com.martinszuc.phishing_emails_detection.data.auth.UserRepository
@@ -24,7 +23,6 @@ import com.martinszuc.phishing_emails_detection.data.model_manager.ModelReposito
 import com.martinszuc.phishing_emails_detection.data.model_manager.retrofit.ModelWeightsService
 import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageManifestManager
 import com.martinszuc.phishing_emails_detection.data.processed_packages.ProcessedPackageRepository
-import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

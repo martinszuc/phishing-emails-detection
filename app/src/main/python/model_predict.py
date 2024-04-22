@@ -1,8 +1,8 @@
+import logging
 import numpy as np
 import os
 import pandas as pd
 import tensorflow as tf
-import logging
 
 import utils_data_preparation as udp
 import utils_feature_extraction as ufe

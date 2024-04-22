@@ -1,7 +1,9 @@
 # utils_string.py
-from utils_config import Config
 import re
 from bs4 import BeautifulSoup
+
+from utils_config import Config
+
 
 def clean_text(html_content):
     soup = BeautifulSoup(html_content, "html.parser")

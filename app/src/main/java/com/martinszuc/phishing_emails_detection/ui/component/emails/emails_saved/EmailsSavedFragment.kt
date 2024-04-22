@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.CheckBox
 import android.widget.EditText
@@ -18,7 +17,6 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MediatorLiveData
@@ -29,10 +27,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.data_class.PhishyDialogResult
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsSavedBinding
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.EmailsDetailsDialogFragment
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_saved.adapter.EmailsSavedAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailFullSharedViewModel
@@ -42,8 +40,6 @@ import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * Authored by matoszuc@gmail.com
@@ -52,7 +48,7 @@ import kotlin.coroutines.suspendCoroutine
 private const val logTag = "EmailsSavedFragment"
 
 @AndroidEntryPoint
-class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismissListener {
+class EmailsSavedFragment : AbstractBaseFragment(), EmailsDetailsDialogFragment.DialogDismissListener {
     private var _binding: FragmentEmailsSavedBinding? = null
     private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()
     private val emailParentSharedViewModel: EmailParentSharedViewModel by activityViewModels()
@@ -89,6 +85,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
     }
 
     override fun onDestroyView() {
+        binding.emailSelectionRecyclerView.adapter = null
         super.onDestroyView()
         Log.d(logTag, "onDestroyView called")
         emailsSavedViewModel.resetSelectionMode()
@@ -152,7 +149,7 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
 
         fab.setOnClickListener {
             lifecycleScope.launch {
-                val result = showPhishyConfirmationDialog()
+                val result = showPackageConfigDialog(requireContext())
                 if (!result.wasCancelled && result.packageName != null) {
                     // Only proceed if the dialog was not cancelled and a package name was entered
                     emailsSavedViewModel.createEmailPackageFromSelected(
@@ -167,71 +164,6 @@ class EmailsSavedFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismis
 
     }
 
-
-    private suspend fun showPhishyConfirmationDialog(): PhishyDialogResult =
-        suspendCoroutine { cont ->
-            val context = requireContext()
-            val input = EditText(context)
-            input.inputType = InputType.TYPE_CLASS_TEXT
-            input.hint = "Enter package name"
-            input.setOnEditorActionListener { v, actionId, event ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    // Show a Toast message
-                    Toast.makeText(
-                        context,
-                        "Please select if the package is phishing or safe.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    true // Consume the event
-                } else {
-                    false // Do not consume the event
-                }
-            }
-
-            val dialog = AlertDialog.Builder(context).apply {
-                setTitle("Confirm Email Package")
-                setMessage("Is this package phishing?")
-                setView(input) // Add the input field to the dialog
-                setPositiveButton(getString(R.string.yes)) { _, _ ->
-                    cont.resume(
-                        PhishyDialogResult(
-                            isPhishy = true,
-                            packageName = input.text.toString()
-                        )
-                    )
-                }
-                setNegativeButton(getString(R.string.no)) { _, _ ->
-                    cont.resume(
-                        PhishyDialogResult(
-                            isPhishy = false,
-                            packageName = input.text.toString()
-                        )
-                    )
-                }
-                setNeutralButton(getString(R.string.cancel_big)) { _, _ ->
-                    cont.resume(
-                        PhishyDialogResult(
-                            isPhishy = false,
-                            packageName = null,
-                            wasCancelled = true
-                        )
-                    )
-                }
-                setCancelable(true)
-                setOnCancelListener {
-                    cont.resume(
-                        PhishyDialogResult(
-                            isPhishy = false,
-                            packageName = null,
-                            wasCancelled = true
-                        )
-                    )
-                }
-
-            }.create()
-
-            dialog.show()
-        }
 
     private fun showCreatePackageDialog() {
         val context = requireContext()

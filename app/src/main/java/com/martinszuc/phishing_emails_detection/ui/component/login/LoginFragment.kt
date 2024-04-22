@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.martinszuc.phishing_emails_detection.databinding.FragmentLoginBinding
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.user.AccountSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
  */
 
 @AndroidEntryPoint
-class LoginFragment : Fragment() {
+class LoginFragment : AbstractBaseFragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
     private val accountSharedViewModel: AccountSharedViewModel by activityViewModels()

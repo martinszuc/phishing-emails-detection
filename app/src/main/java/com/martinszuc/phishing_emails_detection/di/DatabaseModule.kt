@@ -4,15 +4,13 @@ import android.content.Context
 import androidx.room.Room
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
-
 import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
-import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)

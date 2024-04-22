@@ -1,11 +1,12 @@
 import json
-import numpy as np
-import pandas as pd
-import os
-import tensorflow as tf
-import utils_model as um
-import utils_config as cfg
 import logging
+import numpy as np
+import os
+import pandas as pd
+import tensorflow as tf
+
+import utils_config as cfg
+import utils_model as um
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')

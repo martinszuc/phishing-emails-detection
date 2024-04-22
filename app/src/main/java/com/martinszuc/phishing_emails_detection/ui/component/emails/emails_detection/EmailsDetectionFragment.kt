@@ -3,7 +3,6 @@ package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_dete
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +10,6 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MediatorLiveData
@@ -23,6 +20,7 @@ import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsDetectionBinding
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_details.EmailsDetailsDialogFragment
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detection.adapter.EmailsDetectionAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailDetectionSharedViewModel
@@ -43,7 +41,7 @@ import kotlin.coroutines.suspendCoroutine
 private const val logTag = "EmailsDetectionFragment"
 
 @AndroidEntryPoint
-class EmailsDetectionFragment : Fragment(), EmailsDetailsDialogFragment.DialogDismissListener {
+class EmailsDetectionFragment : AbstractBaseFragment(), EmailsDetailsDialogFragment.DialogDismissListener {
     private var _binding: FragmentEmailsDetectionBinding? = null
     private val binding get() = _binding!!
 

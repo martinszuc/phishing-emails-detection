@@ -7,17 +7,17 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.databinding.FragmentModelManagerBinding
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
 
 @AndroidEntryPoint
-class ModelManagerFragment : Fragment() {
+class ModelManagerFragment : AbstractBaseFragment() {
     private var _binding: FragmentModelManagerBinding? = null
     private val modelManagerSharedViewModel: ModelManagerSharedViewModel by activityViewModels()
     private val modelManagerViewModel: ModelManagerViewModel by viewModels()

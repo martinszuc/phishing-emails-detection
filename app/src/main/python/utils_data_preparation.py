@@ -3,9 +3,10 @@ import numpy as np
 import os
 import pandas as pd
 import tensorflow as tf
-import utils_config as cfg
 # noinspection PyUnresolvedReferences
 from sklearn.model_selection import train_test_split
+
+import utils_config as cfg
 
 
 def load_datasets(resources_dir, safe_filename, phishing_filename):

@@ -2,40 +2,34 @@ package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_proc
 
 import ProcessedPackageAdapter
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.EditText
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.R
-import com.martinszuc.phishing_emails_detection.data.data_class.PhishyDialogResult
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsProcessedPackageManagerBinding
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailParentSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 private const val logTag = "ProcessedPackageManagerFragment"
 
 @AndroidEntryPoint
-class ProcessedPackageManagerFragment : Fragment() {
+class ProcessedPackageManagerFragment : AbstractBaseFragment() {
     private var _binding: FragmentEmailsProcessedPackageManagerBinding? = null
     private val binding get() = _binding!!
     private val processedPackageManagerViewModel: ProcessedPackageManagerViewModel by viewModels()
@@ -113,51 +107,13 @@ class ProcessedPackageManagerFragment : Fragment() {
 
     private fun onCsvFileSelected(uri: Uri) {
         lifecycleScope.launch {
-            val result = showPhishyConfirmationDialog()
+            val result = showPackageConfigDialog(requireContext())
             if (!result.wasCancelled && result.packageName != null) {
                 processedPackageManagerViewModel.createAndSaveProcessedPackageFromCsvFile(uri, result.isPhishy, result.packageName)
                 processedPackageSharedViewModel.refreshAndLoadProcessedPackages()
                 Toast.makeText(context, "Processed package created successfully.", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private suspend fun showPhishyConfirmationDialog(): PhishyDialogResult = suspendCoroutine { cont ->
-        val context = requireContext()
-        val input = EditText(context)
-        input.inputType = InputType.TYPE_CLASS_TEXT
-        input.hint = "Enter package name"
-        input.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                // Show a Toast message
-                Toast.makeText(context, "Please select if the package is phishing or safe.", Toast.LENGTH_LONG).show()
-                true // Consume the event
-            } else {
-                false // Do not consume the event
-            }
-        }
-
-        val dialog = AlertDialog.Builder(context).apply {
-            setTitle("Confirm Processed Package")
-            setMessage("Is this processed package phishing?")
-            setView(input) // Add the input field to the dialog
-            setPositiveButton(getString(R.string.yes)) { _, _ ->
-                cont.resume(PhishyDialogResult(isPhishy = true, packageName = input.text.toString()))
-            }
-            setNegativeButton(getString(R.string.no)) { _, _ ->
-                cont.resume(PhishyDialogResult(isPhishy = false, packageName = input.text.toString()))
-            }
-            setNeutralButton(getString(R.string.cancel_big)) { _, _ ->
-                cont.resume(PhishyDialogResult(isPhishy = false, packageName = null, wasCancelled = true))
-            }
-            setCancelable(true)
-            setOnCancelListener {
-                cont.resume(PhishyDialogResult(isPhishy = false, packageName = null, wasCancelled = true))
-            }
-
-        }.create()
-
-        dialog.show()
     }
 
     private fun observeViewModel() {
@@ -177,7 +133,9 @@ class ProcessedPackageManagerFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        binding.rvProcessedPackages.adapter = null
         super.onDestroyView()
+        lifecycleScope.cancel()
         _binding = null
     }
 }

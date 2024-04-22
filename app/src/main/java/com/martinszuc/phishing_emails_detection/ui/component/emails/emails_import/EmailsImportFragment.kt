@@ -12,7 +12,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -25,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsImportBinding
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.adapter.EmailsImportAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailMinimalSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.user.AccountSharedViewModel
@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 private const val logTag = "EmailsImportFragment"
 
 @AndroidEntryPoint
-    class EmailsImportFragment : Fragment() {                       // TODO better loading screen when batch downloading
+    class EmailsImportFragment : AbstractBaseFragment() {                       // TODO better loading screen when batch downloading
     private var _binding: FragmentEmailsImportBinding? = null
     private val emailsImportViewModel: EmailsImportViewModel by viewModels()
     private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()

@@ -1,6 +1,5 @@
 package com.martinszuc.phishing_emails_detection.data.model_manager.retrofit
 
-import com.martinszuc.phishing_emails_detection.data.data_class.WeightsResponse
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response

@@ -1,5 +1,4 @@
 import os
-import tensorflow as tf
 
 import utils_data_preparation as udp
 import utils_model as um

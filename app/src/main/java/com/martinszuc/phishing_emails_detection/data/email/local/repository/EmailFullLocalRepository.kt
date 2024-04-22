@@ -1,6 +1,5 @@
 package com.martinszuc.phishing_emails_detection.data.email.local.repository
 
-import android.content.Context
 import android.net.Uri
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -8,10 +7,8 @@ import androidx.paging.PagingData
 import androidx.room.withTransaction
 import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.Subject
-import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailDetection
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailFull
 import com.martinszuc.phishing_emails_detection.data.file.FileRepository
-import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.utils.emails.EmailFactory
 import com.martinszuc.phishing_emails_detection.utils.emails.MboxFactory
 import kotlinx.coroutines.Dispatchers

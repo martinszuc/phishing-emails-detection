@@ -8,15 +8,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.martinszuc.phishing_emails_detection.databinding.FragmentLearningBinding
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.utils.Constants
 
 /**
  * Authored by matoszuc@gmail.com
  */
 
-class LearningFragment : Fragment() {   // TODO maybe change this to model info and evaluation on a testing dataset from internal
+class LearningFragment : AbstractBaseFragment() {   // TODO maybe change this to model info and evaluation on a testing dataset from internal
 
     private var _binding: FragmentLearningBinding? = null
     private val binding get() = _binding!!
@@ -52,11 +52,6 @@ class LearningFragment : Fragment() {   // TODO maybe change this to model info 
                 startActivity(Intent.createChooser(intent, "Choose browser"))
             }
         }
-    }
-
-    private fun getStringResourceByName(name: String): String {
-        val resId = resources.getIdentifier(name, "string", requireActivity().packageName)
-        return getString(resId)
     }
 
     override fun onDestroyView() {

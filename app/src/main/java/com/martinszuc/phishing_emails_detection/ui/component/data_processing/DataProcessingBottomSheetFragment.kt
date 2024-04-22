@@ -11,11 +11,9 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlDataProcessingBinding
 import com.martinszuc.phishing_emails_detection.ui.component.data_picking.DataPickingViewModel
-import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
@@ -70,7 +68,6 @@ class DataProcessingBottomSheetFragment : BottomSheetDialogFragment() {
             if (isFinished && processingStarted) {
                 // Show the check icon if processing has finished and was started by the button press
                 binding.ivCheck.visibility = View.VISIBLE
-                binding.fab.visibility = View.VISIBLE
 
                 processedPackageSharedViewModel.refreshAndLoadProcessedPackages()
 

@@ -8,17 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlTrainingBinding
-import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentSharedViewModel
-import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningState
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.component.training.adapter.TrainingSelectionAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
@@ -29,8 +26,8 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 @AndroidEntryPoint
-class TrainingFragment : Fragment() {
-
+class TrainingFragment : AbstractBaseFragment() { // TODO toast when invalid seelct
+// TODO clear completed
     private var _binding: FragmentMlTrainingBinding? = null
     private val binding get() = _binding!!
     private val processedPackageSharedViewModel: ProcessedPackageSharedViewModel by activityViewModels()
@@ -163,9 +160,10 @@ class TrainingFragment : Fragment() {
 
 
     override fun onDestroyView() {
-        lifecycleScope.cancel()  // Cancel all coroutines started by this fragment's scope
         binding.rvProcessedPackages.adapter = null  // Detach the adapter
+        trainingViewModel.clearStates()
         super.onDestroyView()
+        lifecycleScope.cancel()  // Cancel all coroutines started by this fragment's scope
         _binding = null
     }
 }

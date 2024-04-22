@@ -9,25 +9,23 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlRetrainingBinding
-import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningParentSharedViewModel
-import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.MachineLearningState
+import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import com.martinszuc.phishing_emails_detection.ui.component.training.adapter.TrainingSelectionAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.cancel
 import java.util.Date
 
 @AndroidEntryPoint
-class RetrainingFragment : Fragment() {
+class RetrainingFragment : AbstractBaseFragment() {
 
     private var _binding: FragmentMlRetrainingBinding? = null
     private val binding get() = _binding!!
@@ -186,6 +184,8 @@ class RetrainingFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        binding.rvProcessedPackages.adapter = null
+        lifecycleScope.cancel()
         super.onDestroyView()
         _binding = null
     }

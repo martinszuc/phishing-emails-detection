@@ -11,8 +11,6 @@ import com.martinszuc.phishing_emails_detection.data.model_manager.entity.ModelM
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private const val logTag = "ModelManagerViewModel"
