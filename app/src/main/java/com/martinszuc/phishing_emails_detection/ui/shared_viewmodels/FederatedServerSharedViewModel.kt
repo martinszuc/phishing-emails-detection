@@ -10,7 +10,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val logTag = "FederatedServerVM"
+private const val logTag = "FederatedServerSharedViewModel"
+
+/**
+ * Authored by matoszuc@gmail.com
+ */
 
 @HiltViewModel
 class FederatedServerSharedViewModel @Inject constructor(

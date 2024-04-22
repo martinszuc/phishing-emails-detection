@@ -9,7 +9,15 @@ import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.utils.emails.MboxFactory
 import javax.inject.Inject
 
-private const val logTag = "EmailMboxRepo"
+/**
+ * Facilitates storage and management of mbox files and their metadata locally. This repository is responsible
+ * for saving and retrieving mbox file content and metadata, deleting mbox files, and converting EmailFull
+ * objects to mbox format for storage. It interacts with both the file system and the local database to ensure
+ * consistency between stored files and their recorded metadata.
+ *
+ * Authored by matoszuc@gmail.com
+ */
+private const val logTag = "EmailMboxRepository"
 
 class EmailMboxLocalRepository @Inject constructor(
     private val database: AppDatabase,

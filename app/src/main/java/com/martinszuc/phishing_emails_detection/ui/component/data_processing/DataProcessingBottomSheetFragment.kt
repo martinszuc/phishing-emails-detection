@@ -18,6 +18,10 @@ import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPa
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @AndroidEntryPoint
 class DataProcessingBottomSheetFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentMlDataProcessingBinding? = null

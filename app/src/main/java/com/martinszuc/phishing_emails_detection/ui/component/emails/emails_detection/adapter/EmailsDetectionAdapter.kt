@@ -14,6 +14,10 @@ import com.martinszuc.phishing_emails_detection.databinding.ItemEmailDetectionBi
 import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_detection.EmailsDetectionViewModel
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 class EmailsDetectionAdapter(
     private val emailsDetectionViewModel: EmailsDetectionViewModel,
     private val onEmailClicked: (String) -> Unit,

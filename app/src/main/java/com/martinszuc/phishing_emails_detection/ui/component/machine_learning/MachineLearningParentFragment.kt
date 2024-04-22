@@ -11,6 +11,10 @@ import com.martinszuc.phishing_emails_detection.databinding.FragmentMachineLearn
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @AndroidEntryPoint
 class MachineLearningParentFragment : AbstractBaseFragment() {
     private var _binding: FragmentMachineLearningBinding? = null

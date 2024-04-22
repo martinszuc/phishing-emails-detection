@@ -18,6 +18,10 @@ import javax.inject.Inject
 
 private const val logTag = "ModelRepository"
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 class ModelRepository @Inject constructor(
     private val modelManifestManager: ModelManifestManager,
     private val fileRepository: FileRepository,

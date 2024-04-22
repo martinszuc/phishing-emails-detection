@@ -13,6 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @HiltViewModel
 class TrainingViewModel @Inject constructor(
     private val training: Training,

@@ -105,4 +105,6 @@
     <string name="no">NO</string>
     <string name="phish">Phish</string>
     <string name="emails_successfully_packaged">Packaging sucessfull!</string>
+    <string name="enter_package_name">Enter package name</string>
+    <string name="package_config">Package config</string>
 </resources>

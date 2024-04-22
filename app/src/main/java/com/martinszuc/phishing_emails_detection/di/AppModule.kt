@@ -5,7 +5,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.martinszuc.phishing_emails_detection.data.auth.AccountManager
 import com.martinszuc.phishing_emails_detection.data.auth.UserRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.db.AppDatabase
-import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailBlobLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailDetectionLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.local.repository.EmailMboxLocalRepository
 import com.martinszuc.phishing_emails_detection.data.email.remote.api.GmailApiService
@@ -46,13 +45,12 @@ object AppModule {
     /**
      * Provides the classifier for the application.
      *
-     * @param context The application context.
      * @return An instance of [Prediction].
      */
     @Provides
     @Singleton
-    fun provideClassifier(@ApplicationContext context: Context): Prediction {
-        return Prediction(context)
+    fun provideClassifier(): Prediction {
+        return Prediction()
     }
 
     @Provides
@@ -65,7 +63,6 @@ object AppModule {
     @Singleton
     fun provideGmailApiService(
         @ApplicationContext context: Context,
-        accountManager: AccountManager
     ): GmailApiService =
         GmailApiService(context)
 
@@ -87,12 +84,6 @@ object AppModule {
         return FileRepository(fileManager)
     }
 
-    // Provide EmailBlobLocalRepository
-    @Provides
-    @Singleton
-    fun provideEmailBlobLocalRepository(appDatabase: AppDatabase): EmailBlobLocalRepository {
-        return EmailBlobLocalRepository(appDatabase)
-    }
 
     // Provide EmailBlobLocalRepository
     @Provides
@@ -119,7 +110,11 @@ object AppModule {
         emailPackageManifestManager: EmailPackageManifestManager,
         fileRepository: FileRepository
     ): EmailPackageRepository {
-        return EmailPackageRepository(emailMboxLocalRepository, fileRepository, emailPackageManifestManager)
+        return EmailPackageRepository(
+            emailMboxLocalRepository,
+            fileRepository,
+            emailPackageManifestManager
+        )
     }
 
     // Provide MachineLearningUtils
@@ -159,7 +154,12 @@ object AppModule {
         modelWeightsService: ModelWeightsService, // Add this parameter
         weightManager: WeightManager // Ensure this parameter is here if needed by ModelRepository
     ): ModelRepository {
-        return ModelRepository(modelManifestManager, fileRepository, modelWeightsService, weightManager)
+        return ModelRepository(
+            modelManifestManager,
+            fileRepository,
+            modelWeightsService,
+            weightManager
+        )
     }
 
     // If your Training class requires any dependencies, provide them here

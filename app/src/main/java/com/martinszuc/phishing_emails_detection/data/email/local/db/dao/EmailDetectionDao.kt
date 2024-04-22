@@ -9,6 +9,10 @@ import androidx.room.Query
 import androidx.room.Update
 import com.martinszuc.phishing_emails_detection.data.email.local.entity.email_full.EmailDetection
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @Dao
 interface EmailDetectionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -32,7 +36,6 @@ interface EmailDetectionDao {
     @Query("DELETE FROM email_detection")
     suspend fun clearAll()
 
-    // Check if an EmailDetection exists by its id_detection
     @Query("SELECT EXISTS(SELECT 1 FROM email_detection WHERE id_detection = :id)")
     suspend fun isEmailSaved(id: String): Boolean
 }

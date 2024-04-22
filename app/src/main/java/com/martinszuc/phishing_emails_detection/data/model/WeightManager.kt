@@ -5,13 +5,15 @@ import com.martinszuc.phishing_emails_detection.data.python.PythonSingleton
 import java.io.File
 import javax.inject.Inject
 
+private const val logTag = "WeightManagerModule"
+
+
 /**
  * Authored by matoszuc@gmail.com
  */
 
 class WeightManager @Inject constructor() {
 
-    private val logTag = "FederatedWeightManager"
 
     fun extractModelWeights(modelName: String): String {
         Log.d(logTag, "Extracting weights for model at: $modelName")

@@ -34,11 +34,12 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+private const val logTag = "EmailsDetectionFragment"
+
 /**
  * Authored by matoszuc@gmail.com
  */
 
-private const val logTag = "EmailsDetectionFragment"
 
 @AndroidEntryPoint
 class EmailsDetectionFragment : AbstractBaseFragment(), EmailsDetailsDialogFragment.DialogDismissListener {

@@ -1,6 +1,6 @@
 package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_processed_manager
 
-import ProcessedPackageAdapter
+import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_processed_manager.adapter.ProcessedPackageAdapter
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -27,6 +26,10 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 private const val logTag = "ProcessedPackageManagerFragment"
+
+/**
+ * Authored by matoszuc@gmail.com
+ */
 
 @AndroidEntryPoint
 class ProcessedPackageManagerFragment : AbstractBaseFragment() {

@@ -24,6 +24,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 import java.util.Date
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @AndroidEntryPoint
 class RetrainingFragment : AbstractBaseFragment() {
 

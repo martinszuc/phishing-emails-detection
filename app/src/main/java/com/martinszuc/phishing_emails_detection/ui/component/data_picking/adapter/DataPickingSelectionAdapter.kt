@@ -7,6 +7,10 @@ import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailP
 import com.martinszuc.phishing_emails_detection.databinding.ItemPackageEmailCheckboxBinding;
 import com.martinszuc.phishing_emails_detection.utils.StringUtils;
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 class DataPickingSelectionAdapter(
     private val onPackageSelected: (EmailPackageMetadata, Boolean) -> Unit
 ) : RecyclerView.Adapter<DataPickingSelectionAdapter.PackageViewHolder>() {

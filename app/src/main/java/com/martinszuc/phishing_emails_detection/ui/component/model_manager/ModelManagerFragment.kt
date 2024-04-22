@@ -16,6 +16,10 @@ import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManage
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @AndroidEntryPoint
 class ModelManagerFragment : AbstractBaseFragment() {
     private var _binding: FragmentModelManagerBinding? = null

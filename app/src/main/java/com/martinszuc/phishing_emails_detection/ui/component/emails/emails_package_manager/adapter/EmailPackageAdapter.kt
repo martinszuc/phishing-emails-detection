@@ -10,6 +10,10 @@ import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailPackageMetadata
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 class EmailPackageAdapter(
     private var items: List<EmailPackageMetadata>,
     private val onDeleteClicked: (String) -> Unit,

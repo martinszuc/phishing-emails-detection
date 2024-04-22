@@ -14,6 +14,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @HiltViewModel
 class EmailDetectionSharedViewModel @Inject constructor(
     private val emailDetectionLocalRepository: EmailDetectionLocalRepository

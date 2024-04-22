@@ -12,6 +12,10 @@ import javax.inject.Inject
 
 private const val logTag = "AccountSharedViewModel"
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @HiltViewModel
 class AccountSharedViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository,

@@ -25,14 +25,17 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @AndroidEntryPoint
-class TrainingFragment : AbstractBaseFragment() { // TODO toast when invalid seelct
-// TODO clear completed
+class TrainingFragment : AbstractBaseFragment() {
     private var _binding: FragmentMlTrainingBinding? = null
     private val binding get() = _binding!!
-    private val processedPackageSharedViewModel: ProcessedPackageSharedViewModel by activityViewModels()
-    private val trainingViewModel: TrainingViewModel by activityViewModels()
     private val modelManagerSharedViewModel: ModelManagerSharedViewModel by activityViewModels()
+    private val processedPackageSharedViewModel: ProcessedPackageSharedViewModel by activityViewModels()    // TODO toast when invalid select
+    private val trainingViewModel: TrainingViewModel by activityViewModels()                                // TODO clear completed
 
     private lateinit var trainingSelectionAdapter: TrainingSelectionAdapter
 

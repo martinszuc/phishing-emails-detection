@@ -13,6 +13,10 @@ import javax.inject.Inject
 
 private const val logTag = "RetrainingViewModel"
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @HiltViewModel
 class RetrainingViewModel @Inject constructor(
     private val retraining: Retraining

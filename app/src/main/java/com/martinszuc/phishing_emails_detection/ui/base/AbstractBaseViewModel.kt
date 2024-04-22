@@ -1,8 +1,6 @@
 package com.martinszuc.phishing_emails_detection.ui.base
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,6 +13,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private const val logTag = "BaseViewModel"
+
+/**
+ * Authored by matoszuc@gmail.com
+ */
 
 abstract class AbstractBaseViewModel : ViewModel() {
     protected val _isLoading = MutableLiveData(false)

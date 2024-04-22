@@ -1,3 +1,5 @@
+package com.martinszuc.phishing_emails_detection.ui.component.emails.emails_processed_manager.adapter
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -6,6 +8,10 @@ import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.processed_packages.entity.ProcessedPackageMetadata
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailProcessedPackageBinding
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
+
+/**
+ * Authored by matoszuc@gmail.com
+ */
 
 class ProcessedPackageAdapter(
     private var packages: List<ProcessedPackageMetadata>,
@@ -60,7 +66,7 @@ class ProcessedPackageAdapter(
     inner class ProcessedPackageViewHolder(private val binding: ItemEmailProcessedPackageBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(processedPackage: ProcessedPackageMetadata) {
             binding.tvPackageName.text = processedPackage.packageName
-            binding.tvIsPhishy.text = if (processedPackage.isPhishy) "Phishy" else "Safe"
+            binding.tvIsPhishy.text = if (processedPackage.isPhishy) "Phishing" else "Safe"
             binding.tvCreationDate.text = StringUtils.formatTimestamp(processedPackage.creationDate)
             binding.tvPackageSize.text = "Size: ${StringUtils.formatBytes(processedPackage.fileSize)}"
             binding.tvNumberOfEmails.text = "Emails: ${processedPackage.numberOfEmails}"

@@ -6,6 +6,10 @@ import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @HiltViewModel
 class EmailParentSharedViewModel @Inject constructor() : AbstractBaseViewModel() {
 

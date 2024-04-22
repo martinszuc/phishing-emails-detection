@@ -6,6 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.martinszuc.phishing_emails_detection.data.processed_packages.entity.ProcessedPackageMetadata
 import com.martinszuc.phishing_emails_detection.databinding.ItemProcessedPackageBinding
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 class TrainingSelectionAdapter(
     private val onPackageSelected: (ProcessedPackageMetadata, Boolean) -> Unit
 ) : RecyclerView.Adapter<TrainingSelectionAdapter.ProcessedPackageViewHolder>() {

@@ -14,7 +14,13 @@ import java.util.zip.GZIPOutputStream
 
 private const val logTag = "FileManager"
 
-
+/**
+ * Provides low-level file handling operations within the app's internal storage.
+ * This class manages basic file operations such as save, load, delete, and compress,
+ * directly interacting with the Android file system to perform these tasks.
+ *
+ * Authored by matoszuc@gmail.com
+ */
 class FileManager(private val context: Context) {
 
     fun getAppDirectory(): File {
@@ -31,16 +37,6 @@ class FileManager(private val context: Context) {
         return file
     }
 
-     fun decompressFile(originalFile: File, decompressedFile: File) {
-        GZIPInputStream(FileInputStream(originalFile)).use { gzipInputStream ->
-            FileOutputStream(decompressedFile).use { fileOutputStream ->
-                gzipInputStream.copyTo(fileOutputStream)
-            }
-        }
-    }
-
-
-
     fun compressFile(directoryName: String, originalFileName: String, compressedFileName: String): String {
         val originalFile = File(context.filesDir, directoryName + File.separator + originalFileName)
         val compressedFile = File(context.filesDir, directoryName + File.separator + compressedFileName)
@@ -52,6 +48,24 @@ class FileManager(private val context: Context) {
         }
 
         return compressedFile.name
+    }
+
+    /**
+     * Decompresses a specified gzip (.gz) file and returns the resulting file.
+     * This method directly interacts with file streams to efficiently decompress the file contents.
+     *
+     * @param originalFile The compressed file to be decompressed.
+     * @return File The decompressed file object.
+     * @throws IOException If an I/O error occurs during decompression.
+     */
+    fun decompressFile(originalFile: File): File {
+        val decompressedFile = File(originalFile.parent, originalFile.name.replace(".gz", ""))
+        GZIPInputStream(FileInputStream(originalFile)).use { gzipInputStream ->
+            FileOutputStream(decompressedFile).use { fileOutputStream ->
+                gzipInputStream.copyTo(fileOutputStream)
+            }
+        }
+        return decompressedFile
     }
 
     fun saveTextToFile(textContent: String, directoryName: String, fileName: String): File {
@@ -71,21 +85,6 @@ class FileManager(private val context: Context) {
         val file = File(dir, fileName)
         file.appendText("$text\n\n")
     }
-
-    suspend fun saveTextToFileAndGetFileSize(textContent: String, directoryName: String, fileName: String): Long {
-        val directory = File(context.filesDir, directoryName).apply {
-            if (!exists()) mkdirs() // Create directory if it doesn't exist
-        }
-        val file = File(directory, fileName)
-
-        // Write the text content to the file
-        file.writeText(textContent)
-
-        // Return the size of the file
-        // Using a new File instance to ensure we're getting updated file metadata
-        return File(file.absolutePath).length()
-    }
-
 
     // Loads a file from a specified directory by its name
     fun loadFileFromDirectory(directoryName: String, fileName: String): File? {
@@ -148,20 +147,6 @@ class FileManager(private val context: Context) {
         return emailCount
     }
 
-    // Method to get all directories within the app's internal files folder
-    fun getAllDirectories(): List<File> {
-        val filesDir = context.filesDir
-        return filesDir.listFiles()?.filter { it.isDirectory }.orEmpty()
-    }
-
-    // Method to remove a directory by name in the app's internal files folder
-    fun removeDirectory(directoryName: String): Boolean {
-        val directory = File(context.filesDir, directoryName)
-        return if (directory.exists() && directory.isDirectory) {
-            directory.deleteRecursively()
-        } else false
-    }
-
     fun saveMboxForPrediction(context: Context, mboxContent: String, fileName: String = "emails.mbox"): File {
         val directory = File(context.filesDir, Constants.PREDICTION_MBOX_DIR).apply {
             if (!exists()) mkdirs() // Create directory if it doesn't exist
@@ -193,6 +178,4 @@ class FileManager(private val context: Context) {
         }
         throw FileNotFoundException("Unable to open file from URI: $uri")
     }
-
-
 }

@@ -6,14 +6,17 @@ import android.util.Log
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.util.zip.GZIPInputStream
-import java.util.zip.ZipException
 import javax.inject.Inject
 
 private const val logTag = "FileRepository"
 
+/**
+ * Serves as a high-level abstraction over the FileManager for managing file operations related
+ * to email packages and mbox files. This class simplifies file management tasks by providing
+ * methods to save, load, delete, and manipulate mbox content and related metadata.
+ *
+ * Authored by matoszuc@gmail.com
+ */
 
 class FileRepository @Inject constructor(private val fileManager: FileManager) {
 
@@ -26,20 +29,21 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
         } ?: throw Exception("Original file for compression not found: $fileName")
     }
 
+    /**
+     * Decompresses a file stored in a specific directory and handles any exceptions or errors.
+     * Utilizes FileManager to perform the actual decompression.
+     *
+     * @param originalFile The file to be decompressed.
+     * @return The path of the decompressed file, or the original file path if decompression fails.
+     */
     fun decompressFile(originalFile: File): String {
-        val decompressedFile = File(originalFile.parent, originalFile.name.replace(".gz", ""))
         try {
-            GZIPInputStream(FileInputStream(originalFile)).use { gzipInputStream ->
-                FileOutputStream(decompressedFile).use { fileOutputStream ->
-                    gzipInputStream.copyTo(fileOutputStream)
-                }
-            }
-        } catch (e: ZipException) {
-            // Log the error or handle it appropriately
+            val decompressedFile = fileManager.decompressFile(originalFile)
+            return decompressedFile.absolutePath
+        } catch (e: Exception) {
             Log.e(logTag, "Error decompressing file: ${e.message}")
             return originalFile.absolutePath  // Return the original path if decompression fails
         }
-        return decompressedFile.absolutePath
     }
 
     // Save mbox content to a file within a specified directory

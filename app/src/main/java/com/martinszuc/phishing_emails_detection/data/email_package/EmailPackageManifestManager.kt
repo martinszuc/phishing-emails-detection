@@ -7,6 +7,13 @@ import com.martinszuc.phishing_emails_detection.ui.base.AbstractManifestManager
 import java.io.File
 import javax.inject.Inject
 
+/**
+ * Manages the manifest file that tracks metadata about email packages. This class is responsible for
+ * maintaining an updated list of all email packages, including their metadata like name, phishing status,
+ * creation date, and size. It interfaces with the local file system to update and retrieve manifest data.
+ *
+ * Authored by matoszuc@gmail.com
+ */
 class EmailPackageManifestManager @Inject constructor(context: Context) :
     AbstractManifestManager<EmailPackageMetadata>(context) {
 

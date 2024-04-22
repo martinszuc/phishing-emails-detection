@@ -10,6 +10,10 @@ import java.util.regex.Pattern
 
 private const val logTag = "MboxFactory"
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 object MboxFactory {
 
     fun formatEmailFullToMbox(emailFull: EmailFull): String {

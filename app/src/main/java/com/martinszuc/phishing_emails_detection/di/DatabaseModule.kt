@@ -12,6 +12,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
@@ -43,7 +47,9 @@ object DatabaseModule {
         @ApplicationContext context: Context,
         openHelperFactory: SupportSQLiteOpenHelper.Factory
     ): AppDatabase {
-        return Room.databaseBuilder(context, AppDatabase::class.java, "your-database-name")
+        return Room.databaseBuilder(context, AppDatabase::class.java, "phishing-detection-db/**\n" +
+                " * Authored by matoszuc@gmail.com\n" +
+                " */")
             .openHelperFactory(openHelperFactory)
             .fallbackToDestructiveMigration()
             .build()

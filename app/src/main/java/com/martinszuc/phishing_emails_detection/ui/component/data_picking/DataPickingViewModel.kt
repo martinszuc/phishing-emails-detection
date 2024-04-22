@@ -7,6 +7,10 @@ import com.martinszuc.phishing_emails_detection.data.email_package.entity.EmailP
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @HiltViewModel
 class DataPickingViewModel @Inject constructor(
 ) : ViewModel() {

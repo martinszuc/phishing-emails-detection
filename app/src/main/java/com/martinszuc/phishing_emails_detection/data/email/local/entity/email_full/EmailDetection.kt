@@ -7,6 +7,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
+/**
+ * Represents an email detection entry with phishing labeling.
+ * This entity includes detailed email data and a phishing classification.
+ * It's used to store and retrieve email detection data from the local database.
+ *
+ * @author matoszuc@gmail.com
+ */
 @Parcelize
 @Entity(tableName = "email_detection")
 data class EmailDetection(

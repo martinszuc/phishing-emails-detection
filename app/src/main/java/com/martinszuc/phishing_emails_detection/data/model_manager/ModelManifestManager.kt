@@ -8,6 +8,10 @@ import java.io.File
 import java.util.Date
 import javax.inject.Inject
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 class ModelManifestManager @Inject constructor(context: Context) :
     AbstractManifestManager<ModelMetadata>(context) {
 

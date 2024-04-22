@@ -15,6 +15,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @HiltViewModel
 class EmailFullSharedViewModel @Inject constructor(
     private val emailFullLocalRepository: EmailFullLocalRepository

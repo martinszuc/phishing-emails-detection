@@ -10,6 +10,10 @@ import javax.inject.Inject
 
 private const val logTag = "DataProcessingViewModel"
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @HiltViewModel
 class DataProcessingViewModel @Inject constructor(
     private val dataProcessing: DataProcessing

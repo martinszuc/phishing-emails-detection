@@ -9,6 +9,9 @@ import javax.inject.Inject
 
 private const val logTag = "SettingsViewModel"
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(

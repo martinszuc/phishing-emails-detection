@@ -12,6 +12,14 @@ import javax.inject.Inject
 
 private const val logTag = "EmailPackageRepository"
 
+/**
+ * Provides methods to create, save, manage, and delete email packages. This repository handles interactions
+ * with both the file system for mbox file operations and the local database for metadata management.
+ * It supports creating packages from individual emails or directly from mbox files, managing their lifecycle,
+ * and maintaining a manifest of all packages.
+ *
+ * Authored by matoszuc@gmail.com
+ */
 class EmailPackageRepository @Inject constructor(
     private val emailMboxLocalRepository: EmailMboxLocalRepository,
     private val fileRepository: FileRepository,
@@ -91,10 +99,6 @@ class EmailPackageRepository @Inject constructor(
         return emailPackageManifestManager.loadManifest()
     }
 
-    fun loadEmailPackageContent(fileName: String): String? {
-        Log.d(logTag, "Loading email package content for $fileName")
-        return fileRepository.loadFileContent(Constants.DIR_EMAIL_PACKAGES, fileName)
-    }
 
     fun deleteEmailPackage(fileName: String) {
         Log.d(logTag, "Deleting email package: $fileName")

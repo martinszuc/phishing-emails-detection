@@ -6,6 +6,10 @@ import com.google.gson.reflect.TypeToken
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import java.io.File
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 abstract class AbstractManifestManager<T>(protected val context: Context) {
     protected abstract val manifestFileName: String
     private val gson = Gson()

@@ -19,9 +19,13 @@ import javax.inject.Inject
 private const val logTag = "EmailFullLocalRepository"
 
 /**
+ * Manages the lifecycle and storage of EmailFull entities within the local database. This repository facilitates
+ * CRUD operations on emails, supports complex transactions such as the simultaneous storage of emails and their
+ * associated metadata, and provides methods to query and manage emails based on various attributes. It also handles
+ * the conversion of emails from EML to mbox format and ensures their persistence.
+ *
  * Authored by matoszuc@gmail.com
  */
-
 class EmailFullLocalRepository @Inject constructor(
     private val database: AppDatabase,
     private val fileRepository: FileRepository,
@@ -39,7 +43,6 @@ class EmailFullLocalRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             val content = fileRepository.loadFileContent(uri) // TODO Read line by line
             val emailFull = EmailFactory.parseEmlToEmailFull(content)
-                ?: throw IllegalArgumentException("Failed to parse the EML file")
 
             database.withTransaction {
                 // Insert EmailFull
@@ -80,7 +83,6 @@ class EmailFullLocalRepository @Inject constructor(
             emailFullDao.clearAll()
             subjectDao.clearAll()
             database.emailMinimalDao().clearAll()
-            database.emailBlobDao().clearAll()
         }
     }
 

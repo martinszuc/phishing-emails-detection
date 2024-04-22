@@ -11,6 +11,10 @@ import javax.inject.Inject
 
 private const val logTag = "EmailsDetectionViewModel"
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @HiltViewModel
 class EmailsDetectionViewModel @Inject constructor(
     private val emailDetectionLocalRepository: EmailDetectionLocalRepository,

@@ -13,6 +13,10 @@ import com.martinszuc.phishing_emails_detection.data.data_class.PhishyDialogResu
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 abstract class AbstractBaseFragment : Fragment() {
 
     protected fun showToast(message: String) {
@@ -22,7 +26,7 @@ abstract class AbstractBaseFragment : Fragment() {
     protected suspend fun showPackageConfigDialog(context: Context): PhishyDialogResult =
         suspendCoroutine { cont ->
             val packageNameInput = EditText(context).apply {
-                hint = "Enter package name"
+                hint = context.getString(R.string.enter_package_name)
                 inputType = InputType.TYPE_CLASS_TEXT
             }
 
@@ -37,9 +41,9 @@ abstract class AbstractBaseFragment : Fragment() {
             }
 
             MaterialAlertDialogBuilder(context).apply {
-                setTitle("Package config")
+                setTitle(getString(R.string.package_config))
                 setView(layout)
-                setPositiveButton("Confirm") { _, _ ->
+                setPositiveButton(getString(R.string.confirm_big)) { _, _ ->
                     cont.resume(
                         PhishyDialogResult(
                             isPhishy = isPhishyCheckbox.isChecked,
@@ -47,7 +51,7 @@ abstract class AbstractBaseFragment : Fragment() {
                         )
                     )
                 }
-                setNegativeButton("Cancel") { _, _ ->
+                setNegativeButton(getString(R.string.cancel_big)) { _, _ ->
                     cont.resume(
                         PhishyDialogResult(
                             isPhishy = false,

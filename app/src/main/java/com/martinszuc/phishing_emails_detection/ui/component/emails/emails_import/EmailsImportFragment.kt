@@ -33,10 +33,11 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+private const val logTag = "EmailsImportFragment"
+
 /**
  * Authored by matoszuc@gmail.com
  */
-private const val logTag = "EmailsImportFragment"
 
 @AndroidEntryPoint
 class EmailsImportFragment :

@@ -41,11 +41,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+private const val logTag = "EmailsSavedFragment"
+
+
 /**
  * Authored by matoszuc@gmail.com
  */
-
-private const val logTag = "EmailsSavedFragment"
 
 @AndroidEntryPoint
 class EmailsSavedFragment : AbstractBaseFragment(),

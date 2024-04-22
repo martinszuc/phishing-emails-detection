@@ -17,6 +17,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+/**
+ * Manages local storage and retrieval of email detection data. This repository handles CRUD operations
+ * for EmailDetection entities, supporting operations such as inserting, fetching, updating, and deleting
+ * email detections, along with batching and transactional operations in the local SQLite database via Room.
+ *
+ * Authored by matoszuc@gmail.com
+ */
 class EmailDetectionLocalRepository @Inject constructor(
     private val database: AppDatabase,
     private val fileRepository: FileRepository,
@@ -57,7 +64,6 @@ class EmailDetectionLocalRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             val content = fileRepository.loadFileContent(uri)
             val emailFull = EmailFactory.parseEmlToEmailFull(content)
-                ?: throw IllegalArgumentException("Failed to parse the EML file")
 
             database.withTransaction {
                 database.emailFullDao().insert(emailFull)

@@ -20,6 +20,9 @@ import org.apache.commons.codec.binary.Base64
 import javax.inject.Inject
 import kotlin.math.min
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
 
 private const val logTag = "GmailApiService"
 

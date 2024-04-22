@@ -4,23 +4,24 @@ import android.util.Log
 import com.martinszuc.phishing_emails_detection.data.python.PythonSingleton
 import javax.inject.Inject
 
+private const val logTag = "ModelTrainingModule"
+
+
 /**
  * Authored by matoszuc@gmail.com
  */
 
 class Training @Inject constructor() {
 
-    private val TAG = "ModelTraining"
-
     fun trainModel(resourcesDir: String, safeFilename: String, phishingFilename: String, modelSaveDir: String) {
-        Log.d(TAG, "Starting model training")
+        Log.d(logTag, "Starting model training")
 
         val python = PythonSingleton.instance
-        Log.d(TAG, "Python instance obtained")
+        Log.d(logTag, "Python instance obtained")
 
         // Assuming your Python script is named 'train_model_script' and placed in the correct location
         val pythonScript = python.getModule("model_train")
-        Log.d(TAG, "Python script module loaded")
+        Log.d(logTag, "Python script module loaded")
 
         pythonScript.callAttr(
             "train_and_evaluate_model",
@@ -29,6 +30,6 @@ class Training @Inject constructor() {
             phishingFilename,
             modelSaveDir
         )
-        Log.d(TAG, "Called train_and_evaluate_model with parameters - resourcesDir: $resourcesDir, safeFilename: $safeFilename, phishingFilename: $phishingFilename, modelSaveDir: $modelSaveDir")
+        Log.d(logTag, "Called train_and_evaluate_model with parameters - resourcesDir: $resourcesDir, safeFilename: $safeFilename, phishingFilename: $phishingFilename, modelSaveDir: $modelSaveDir")
     }
 }

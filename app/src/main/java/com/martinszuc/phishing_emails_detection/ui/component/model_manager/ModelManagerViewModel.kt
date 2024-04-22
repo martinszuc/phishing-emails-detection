@@ -15,6 +15,9 @@ import javax.inject.Inject
 
 private const val logTag = "ModelManagerViewModel"
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
 
 @HiltViewModel
 class ModelManagerViewModel @Inject constructor(

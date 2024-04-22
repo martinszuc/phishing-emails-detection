@@ -8,6 +8,10 @@ import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+/**
+ * Authored by matoszuc@gmail.com
+ */
+
 @HiltViewModel
 class ModelManagerSharedViewModel @Inject constructor(
     private val modelRepository: ModelRepository
