@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.shared_viewmodels
+package com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

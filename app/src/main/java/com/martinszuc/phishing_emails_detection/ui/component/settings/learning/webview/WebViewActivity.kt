@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.webview
+package com.martinszuc.phishing_emails_detection.ui.component.settings.learning.webview
 
 import android.os.Bundle
 import android.util.Log

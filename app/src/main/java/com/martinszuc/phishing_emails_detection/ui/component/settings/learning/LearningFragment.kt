@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.learning
+package com.martinszuc.phishing_emails_detection.ui.component.settings.learning
 
 import android.content.ActivityNotFoundException
 import android.content.Intent

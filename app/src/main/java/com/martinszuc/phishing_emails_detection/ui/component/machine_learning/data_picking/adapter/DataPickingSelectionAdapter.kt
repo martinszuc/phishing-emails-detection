@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.data_picking.adapter;
+package com.martinszuc.phishing_emails_detection.ui.component.machine_learning.data_picking.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;

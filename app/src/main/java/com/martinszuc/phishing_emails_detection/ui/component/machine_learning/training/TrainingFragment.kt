@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.training
+package com.martinszuc.phishing_emails_detection.ui.component.machine_learning.training
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -16,9 +16,9 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlTrainingBinding
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
-import com.martinszuc.phishing_emails_detection.ui.component.training.adapter.TrainingSelectionAdapter
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.training.adapter.TrainingSelectionAdapter
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
-import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.ProcessedPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch

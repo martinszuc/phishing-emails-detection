@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.data_picking
+package com.martinszuc.phishing_emails_detection.ui.component.machine_learning.data_picking
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlDataPickingBinding
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
-import com.martinszuc.phishing_emails_detection.ui.component.data_picking.adapter.DataPickingSelectionAdapter
-import com.martinszuc.phishing_emails_detection.ui.component.data_processing.DataProcessingBottomSheetFragment
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.data_picking.adapter.DataPickingSelectionAdapter
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.data_processing.DataProcessingBottomSheetFragment
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

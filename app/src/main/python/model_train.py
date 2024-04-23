@@ -14,6 +14,7 @@ def train_and_evaluate_model(resources_dir, safe_filename, phishing_filename, mo
     - phishing_filename: Filename of the dataset containing phishing emails.
     - model_save_dir: Directory where the trained model should be saved.
     """
+
     print("Starting data preparation...")
 
     resources_path = os.path.join(os.environ["HOME"], resources_dir)

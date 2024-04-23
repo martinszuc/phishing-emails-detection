@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.retraining
+package com.martinszuc.phishing_emails_detection.ui.component.machine_learning.retraining
 
 import android.util.Log
 import androidx.lifecycle.LiveData

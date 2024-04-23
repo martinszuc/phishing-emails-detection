@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.data_processing
+package com.martinszuc.phishing_emails_detection.ui.component.machine_learning.data_processing
 
 import android.util.Log
 import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.EmailPackageMetadata

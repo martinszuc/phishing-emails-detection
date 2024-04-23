@@ -2,9 +2,9 @@ package com.martinszuc.phishing_emails_detection.ui.component.machine_learning
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.martinszuc.phishing_emails_detection.ui.component.data_picking.DataPickingFragment
-import com.martinszuc.phishing_emails_detection.ui.component.retraining.RetrainingFragment
-import com.martinszuc.phishing_emails_detection.ui.component.training.TrainingFragment
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.data_picking.DataPickingFragment
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.retraining.RetrainingFragment
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.training.TrainingFragment
 
 /**
  * Authored by matoszuc@gmail.com

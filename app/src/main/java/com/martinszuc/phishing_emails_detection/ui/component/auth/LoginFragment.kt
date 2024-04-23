@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.login
+package com.martinszuc.phishing_emails_detection.ui.component.auth
 
 import android.app.Activity
 import android.os.Bundle

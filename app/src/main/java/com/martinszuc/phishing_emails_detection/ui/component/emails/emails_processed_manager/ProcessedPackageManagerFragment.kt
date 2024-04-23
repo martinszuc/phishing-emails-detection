@@ -19,7 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.databinding.FragmentEmailsProcessedPackageManagerBinding
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
-import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.ProcessedPackageSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.EmailParentSharedViewModel
 import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint

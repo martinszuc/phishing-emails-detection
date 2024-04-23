@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.training
+package com.martinszuc.phishing_emails_detection.ui.component.machine_learning.training
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

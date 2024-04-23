@@ -93,6 +93,7 @@ class EmailsParentFragment : AbstractBaseFragment() {
     }
 
     override fun onDestroyView() {
+        binding.viewPager.adapter = null
         super.onDestroyView()
 
         // Detach TabLayoutMediator to prevent memory leaks

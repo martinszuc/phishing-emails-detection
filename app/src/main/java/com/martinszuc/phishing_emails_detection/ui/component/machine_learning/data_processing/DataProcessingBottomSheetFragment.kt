@@ -1,4 +1,4 @@
-package com.martinszuc.phishing_emails_detection.ui.component.data_processing
+package com.martinszuc.phishing_emails_detection.ui.component.machine_learning.data_processing
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,8 +13,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.EmailPackageMetadata
 import com.martinszuc.phishing_emails_detection.databinding.FragmentMlDataProcessingBinding
-import com.martinszuc.phishing_emails_detection.ui.component.data_picking.DataPickingViewModel
-import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ProcessedPackageSharedViewModel
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.data_picking.DataPickingViewModel
+import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.emails.ProcessedPackageSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 

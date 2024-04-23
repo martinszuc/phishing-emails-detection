@@ -7,7 +7,7 @@
     <!-- Login Fragment -->
     <fragment
         android:id="@+id/LoginFragment"
-        android:name="com.martinszuc.phishing_emails_detection.ui.component.login.LoginFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.auth.LoginFragment"
         android:label="@string/login_fragment_label"
         tools:layout="@layout/fragment_login">
         <action
@@ -46,7 +46,7 @@
     <!-- Learning Fragment -->
     <fragment
         android:id="@+id/LearningFragment"
-        android:name="com.martinszuc.phishing_emails_detection.ui.component.learning.LearningFragment"
+        android:name="com.martinszuc.phishing_emails_detection.ui.component.settings.learning.LearningFragment"
         android:label="@string/title_learn"
         tools:layout="@layout/fragment_learning"/>
 
