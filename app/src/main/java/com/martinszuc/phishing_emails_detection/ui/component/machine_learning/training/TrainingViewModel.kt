@@ -59,6 +59,7 @@ class TrainingViewModel @Inject constructor(
 
                     modelRepository.addModelToManifest(modelName)
                 } finally {
+
                     _isLoading.postValue(false) // Notify UI that the training process has ended
                     _isFinished.postValue(true)
                 }

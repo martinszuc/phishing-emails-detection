@@ -9,6 +9,8 @@ import com.martinszuc.phishing_emails_detection.data.python.model.WeightManager
 import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.data.data_repository.remote.network.retrofit.ModelWeightsService
 import com.martinszuc.phishing_emails_detection.utils.Constants
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -99,7 +101,15 @@ class ModelRepository @Inject constructor(
         }
     }
 
-
+    suspend fun deleteModelDirectory(modelName: String) {
+        withContext(Dispatchers.IO) {
+            val modelsDirPath = fileRepository.getFilePath(Constants.MODELS_DIR, "") ?: return@withContext
+            val modelDirPath = File(modelsDirPath, modelName)
+            if (modelDirPath.exists()) {
+                modelDirPath.deleteRecursively()
+            }
+        }
+    }
 
 
     fun loadModelsMetadata(): List<ModelMetadata> {

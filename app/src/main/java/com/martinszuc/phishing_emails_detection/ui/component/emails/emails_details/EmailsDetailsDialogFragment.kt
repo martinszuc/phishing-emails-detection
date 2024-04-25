@@ -24,15 +24,15 @@ class EmailsDetailsDialogFragment(
     private val emailFull: EmailFull
 ) : DialogFragment() {
 
-    private lateinit var dialogBinding: DialogEmailDetailsBinding
+    private lateinit var binding: DialogEmailDetailsBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Initialize the BottomSheetDialog with context
         val dialog = BottomSheetDialog(requireContext())
 
         // Inflate the layout for this dialog
-        dialogBinding = DialogEmailDetailsBinding.inflate(LayoutInflater.from(context))
-        dialog.setContentView(dialogBinding.root)
+        binding = DialogEmailDetailsBinding.inflate(LayoutInflater.from(context))
+        dialog.setContentView(binding.root)
 
         // Setup ViewPager2 with adapter
         setupViewPager()
@@ -47,13 +47,13 @@ class EmailsDetailsDialogFragment(
     // Setup ViewPager2 with adapter and page change callback
     private fun setupViewPager() {
         val adapter = DetailsPagerAdapter(requireActivity(), emailMinimal, emailFull)
-        dialogBinding.detailsViewPager.adapter = adapter
+        binding.detailsViewPager.adapter = adapter
 
         // Register a callback to hide the arrow on the last page
-        dialogBinding.detailsViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.detailsViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                dialogBinding.swipeIndicatorArrow.visibility = if (position >= adapter.itemCount - 1) View.INVISIBLE else View.VISIBLE
+                binding.swipeIndicatorArrow.visibility = if (position >= adapter.itemCount - 1) View.INVISIBLE else View.VISIBLE
             }
         })
     }
@@ -72,7 +72,7 @@ class EmailsDetailsDialogFragment(
 
         // Set the height of the BottomSheet and the ViewPager2
         bottomSheet.layoutParams = bottomSheet.layoutParams.apply { height = desiredHeight }
-        dialogBinding.detailsViewPager.layoutParams = dialogBinding.detailsViewPager.layoutParams.apply { height = desiredHeight }
+        binding.detailsViewPager.layoutParams = binding.detailsViewPager.layoutParams.apply { height = desiredHeight }
 
         bottomSheet.requestLayout() // Apply the layout changes
 
@@ -92,6 +92,7 @@ class EmailsDetailsDialogFragment(
     }
 
     override fun onDismiss(dialog: DialogInterface) {
+        binding.detailsViewPager.adapter = null
         super.onDismiss(dialog)
         dismissListener?.onDialogDismissed()
     }

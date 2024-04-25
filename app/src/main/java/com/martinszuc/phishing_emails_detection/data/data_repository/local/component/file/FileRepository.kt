@@ -37,12 +37,12 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
      * @return The path of the decompressed file, or the original file path if decompression fails.
      */
     fun decompressFile(originalFile: File): String {
-        try {
+        return try {
             val decompressedFile = fileManager.decompressFile(originalFile)
-            return decompressedFile.absolutePath
+            decompressedFile.absolutePath
         } catch (e: Exception) {
             Log.e(logTag, "Error decompressing file: ${e.message}")
-            return originalFile.absolutePath  // Return the original path if decompression fails
+            originalFile.absolutePath  // Return the original path if decompression fails
         }
     }
 
@@ -54,9 +54,11 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
     ): File {
         return fileManager.saveTextToFile(mboxContent, directoryName, fileName)
     }
-    fun saveTemporaryWeights(weightsContent: ByteArray, fileName: String = "temp_weights.gz"): File {
-        val tempFile = fileManager.saveBinaryToFile(weightsContent, "", fileName)
-        return tempFile
+    fun saveTemporaryWeights(
+        weightsContent: ByteArray,
+        fileName: String = "temp_weights.gz"
+    ): File {
+        return fileManager.saveBinaryToFile(weightsContent, "", fileName)
     }
 
 
@@ -66,11 +68,6 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
         fileName: String
     ): File? {
         return fileManager.loadFileFromDirectory(directoryName, fileName)
-    }
-
-    // List all files within a specified directory
-    fun listFilesInDirectory(directoryName: String = Constants.DIR_EMAIL_PACKAGES): List<File>? {
-        return fileManager.listFilesInDirectory(directoryName)
     }
 
     fun loadFileContent(
@@ -101,12 +98,6 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
         return fileManager.copyFileFromUri(uri, directoryName, fileName)
     }
 
-    // In FileRepository.kt
-    fun saveTemporaryWeights(weightsContent: String, fileName: String = "temp_weights.json"): File {
-        // This will overwrite the file each time it's called
-        return fileManager.saveTextToFile(weightsContent, "", fileName)
-    }
-
     fun countEmailsInMbox(file: File): Int {
         return fileManager.countEmailsInMbox(file)
     }
@@ -114,14 +105,6 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
     fun getFilePath(directoryName: String, fileName: String): String? {
         val file = loadFileFromDirectory(directoryName, fileName)
         return file?.absolutePath
-    }
-
-    // Load a CSV file content by name from a specified directory
-    fun loadCsvContent(
-        directoryName: String = Constants.OUTPUT_CSV_DIR,
-        fileName: String
-    ): String? {
-        return fileManager.readFileContent(directoryName, fileName)
     }
 
     fun clearDirectory(directoryName: String) {
@@ -174,5 +157,13 @@ class FileRepository @Inject constructor(private val fileManager: FileManager) {
         mboxContent: String
     ) {
         fileManager.appendMboxToFile(directoryName, fileName, mboxContent)
+    }
+
+    // Load a CSV file content by name from a specified directory
+    private fun loadCsvContent(
+        directoryName: String = Constants.OUTPUT_CSV_DIR,
+        fileName: String
+    ): String? {
+        return fileManager.readFileContent(directoryName, fileName)
     }
 }

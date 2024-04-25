@@ -112,7 +112,9 @@ class EmailsSavedViewModel @Inject constructor(
                     _progress.postValue(progress)  // Safely update progress on UI thread
                 })
         }, onSuccess = {
-            deleteEmails(emailIds)
+            deleteEmails(emailIds, progressCallback = { progress ->
+                _progress.postValue(progress)  // Safely update progress on UI thread
+            })
         })
     }
 
@@ -133,9 +135,11 @@ class EmailsSavedViewModel @Inject constructor(
                         }
                     )
                 }, onSuccess = {
-                    _totalCount.postValue(0)
+                    _progress.postValue(0)
                     // After successfully creating the package, delete the emails
-                    deleteEmails(latestEmailIds)
+                    deleteEmails(latestEmailIds, progressCallback = { progress ->
+                        _progress.postValue(progress)  // Update progress safely on the UI thread
+                    })
 
                 }, onFailure = { e ->
                     Log.e(logTag, "Error during package creation: ${e.message}")
@@ -146,20 +150,23 @@ class EmailsSavedViewModel @Inject constructor(
         }
     }
 
-    private fun deleteEmails(emailIds: List<String>) {
+    private fun deleteEmails(emailIds: List<String>, progressCallback: (Int) -> Unit) {
         launchDataLoad(execution = {
-            emailIds.forEach { emailId ->
+            emailIds.forEachIndexed { index, emailId ->
                 if (!emailDetectionLocalRepository.isEmailSaved(emailId)) {
                     emailFullLocalRepository.deleteEmailById(emailId)
                     emailMinimalLocalRepository.deleteEmailById(emailId)
                     emailMboxLocalRepository.deleteEmailMboxById(emailId)
+                    progressCallback(index + 1)
                 } else {
                     emailFullLocalRepository.deleteEmailById(emailId)
+                    progressCallback(index + 1)
                     Log.d(logTag, "Skipped deletion for saved email with ID: $emailId")
                 }
             }
         }, onSuccess = {
             Log.d(logTag, "Emails deleted successfully.")
+            _progress.postValue(0)
         }, onFailure = { e ->
             Log.e(logTag, "Failed to delete emails: ${e.message}")
         })

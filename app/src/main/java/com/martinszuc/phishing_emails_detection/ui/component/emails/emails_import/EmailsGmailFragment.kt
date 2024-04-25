@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -40,10 +39,10 @@ private const val logTag = "EmailsImportFragment"
  */
 
 @AndroidEntryPoint
-class EmailsImportFragment :
+class EmailsGmailFragment :
     AbstractBaseFragment() {                       // TODO better loading screen when batch downloading
     private var _binding: FragmentEmailsImportBinding? = null
-    private val emailsImportViewModel: EmailsImportViewModel by viewModels()
+    private val emailsGmailViewModel: EmailsGmailViewModel by viewModels()
     private val emailMinimalSharedViewModel: EmailMinimalSharedViewModel by activityViewModels()
     private val accountSharedViewModel: AccountSharedViewModel by activityViewModels() // Inject UserAccountViewModel
     private lateinit var emailsImportAdapter: EmailsImportAdapter
@@ -91,7 +90,7 @@ class EmailsImportFragment :
 
     private fun initObserveSelectedEmails() {
         // Observe selected emails LiveData to update UI accordingly
-        emailsImportViewModel.selectedEmails.observe(viewLifecycleOwner) {
+        emailsGmailViewModel.selectedEmails.observe(viewLifecycleOwner) {
             // Notify the adapter that the selection state has changed
             emailsImportAdapter.notifyDataSetChanged() // This triggers a UI refresh
         }
@@ -117,7 +116,7 @@ class EmailsImportFragment :
             setPositiveButton("Ok") { _, _ ->
                 val count = input.text.toString().toIntOrNull()
                 if (count != null) {
-                    emailsImportViewModel.fetchAndSaveEmailsBasedOnFilterAndLimit(
+                    emailsGmailViewModel.fetchAndSaveEmailsBasedOnFilterAndLimit(
                         currentQuery,
                         count
                     )
@@ -136,7 +135,7 @@ class EmailsImportFragment :
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         // Initialize EmailAdapter
-        emailsImportAdapter = EmailsImportAdapter(emailsImportViewModel)
+        emailsImportAdapter = EmailsImportAdapter(emailsGmailViewModel)
         recyclerView.adapter = emailsImportAdapter
 
         recyclerView.visibility = View.VISIBLE
@@ -177,7 +176,7 @@ class EmailsImportFragment :
         val fab: FloatingActionButton = binding.fab
 
         // Set an observer on the selectedEmails LiveData
-        emailsImportViewModel.selectedEmails.observe(viewLifecycleOwner) { emails ->
+        emailsGmailViewModel.selectedEmails.observe(viewLifecycleOwner) { emails ->
             if (emails.isNotEmpty()) {
                 fab.show()
             } else {
@@ -186,7 +185,7 @@ class EmailsImportFragment :
         }
 
         fab.setOnClickListener {
-            emailsImportViewModel.importSelectedEmails()
+            emailsGmailViewModel.importSelectedEmails()
         }
     }
 
@@ -238,23 +237,23 @@ class EmailsImportFragment :
     }
 
     private fun setupObservers() {
-        emailsImportViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+        emailsGmailViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.loadingSpinner.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
-        emailsImportViewModel.isFinished.observe(viewLifecycleOwner) { isFinished ->
+        emailsGmailViewModel.isFinished.observe(viewLifecycleOwner) { isFinished ->
             if (isFinished) {
                 showImportFinishedToast(success = true)
             }
         }
 
-        emailsImportViewModel.operationFailed.observe(viewLifecycleOwner) { isFailed ->
+        emailsGmailViewModel.operationFailed.observe(viewLifecycleOwner) { isFailed ->
             if (isFailed) {
                 showImportFinishedToast(success = false)
             }
         }
 
-        emailsImportViewModel.totalCount.observe(viewLifecycleOwner) { total ->
+        emailsGmailViewModel.totalCount.observe(viewLifecycleOwner) { total ->
             if (total > 0) {
                 binding.loadingOverlay.visibility = View.VISIBLE
                 binding.progressBar.max = total
@@ -262,7 +261,7 @@ class EmailsImportFragment :
             }
         }
 
-        emailsImportViewModel.progress.observe(viewLifecycleOwner) { progress ->
+        emailsGmailViewModel.progress.observe(viewLifecycleOwner) { progress ->
             binding.progressBar.progress = progress
             binding.progressText.text = "$progress / ${binding.progressBar.max}"
             if (progress == binding.progressBar.max) {

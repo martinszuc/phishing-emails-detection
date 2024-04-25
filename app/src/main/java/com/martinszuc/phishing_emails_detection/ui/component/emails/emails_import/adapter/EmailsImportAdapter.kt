@@ -14,14 +14,14 @@ import com.google.android.material.snackbar.Snackbar
 import com.martinszuc.phishing_emails_detection.R
 import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.EmailMinimal
 import com.martinszuc.phishing_emails_detection.databinding.ItemEmailSelectionBinding
-import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.EmailsImportViewModel
+import com.martinszuc.phishing_emails_detection.ui.component.emails.emails_import.EmailsGmailViewModel
 import com.martinszuc.phishing_emails_detection.utils.StringUtils
 
 /**
  * Authored by matoszuc@gmail.com
  */
 
-class EmailsImportAdapter(private val viewModel: EmailsImportViewModel) :
+class EmailsImportAdapter(private val viewModel: EmailsGmailViewModel) :
     PagingDataAdapter<EmailMinimal, EmailsImportAdapter.EmailViewHolder>(EMAIL_COMPARATOR) {
 
     inner class EmailViewHolder(val binding: ItemEmailSelectionBinding) :

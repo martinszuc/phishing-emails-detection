@@ -72,6 +72,14 @@ class ModelManagerFragment : AbstractBaseFragment() {
                 showToast("Downloading weights for ${modelMetadata.modelName}...")
             } ?: showToast("Please select a model first")
         }
+
+        binding.btnDeleteModel.setOnClickListener {
+            modelManagerViewModel.selectedModel.value?.let { modelMetadata ->
+                modelManagerViewModel.deleteModelDirectory()
+                showToast("Deleting model: ${modelMetadata.modelName}...")
+                modelManagerSharedViewModel.refreshAndLoadModels()
+            } ?: showToast("Please select a model first")
+        }
     }
 
     private fun setupModelSpinner(models: List<ModelMetadata>) {
@@ -115,6 +123,7 @@ class ModelManagerFragment : AbstractBaseFragment() {
 
 
     override fun onDestroyView() {
+        binding.spinnerModelSelector.adapter = null
         super.onDestroyView()
         _binding = null
     }

@@ -26,7 +26,7 @@ private const val logTag = "EmailsImportViewModel"
  */
 
 @HiltViewModel
-class EmailsImportViewModel @Inject constructor(
+class EmailsGmailViewModel @Inject constructor(
     private val emailMinimalLocalRepository: EmailMinimalLocalRepository,
     private val emailFullLocalRepository: EmailFullLocalRepository,
     private val emailFullRemoteRepository: EmailFullRemoteRepository,
@@ -113,6 +113,7 @@ class EmailsImportViewModel @Inject constructor(
                         _progress.postValue(progress)  // Directly post progress updates
                     }
                 )
+                _progress.postValue(0)
 
                 // Proceed with processing emails if any
                 if (emails.isNotEmpty()) {

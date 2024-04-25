@@ -71,4 +71,18 @@ class ModelManagerViewModel @Inject constructor(
             })
         } ?: Log.e(logTag, "No model selected for downloading weights.")
     }
+
+    fun deleteModelDirectory() {
+        _selectedModel.value?.let { model ->
+            launchDataLoad(execution = {
+                modelRepository.deleteModelDirectory(model.modelName)
+            }, onSuccess = {
+                // Handle success if needed
+                Log.d(logTag, "Model directory deleted successfully: ${model.modelName}")
+            }, onFailure = { exception ->
+                // Handle failure if needed
+                Log.e(logTag, "Error deleting model directory: ${exception.message}")
+            })
+        }
+    }
 }
