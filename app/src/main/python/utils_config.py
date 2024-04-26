@@ -1,4 +1,6 @@
 # utils_config.py
+#  * Authored by matoszuc@gmail.com
+
 class Config:
     URLREGEX = r"^(https?|ftp)://[^\s/$.?#].[^\s]*$"
     URLREGEX_NOT_ALONE = r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"

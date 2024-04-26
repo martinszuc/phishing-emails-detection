@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.martinszuc.phishing_emails_detection.data.data_repository.auth.AccountManager
 import com.martinszuc.phishing_emails_detection.data.data_repository.auth.AuthenticationRepository
+import com.martinszuc.phishing_emails_detection.data.data_repository.remote.repository.BaseUrlRepository
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -19,7 +20,8 @@ private const val logTag = "AccountSharedViewModel"
 @HiltViewModel
 class AccountSharedViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository,
-    private val accountManager: AccountManager
+    private val accountManager: AccountManager,
+    private val baseUrlRepository: BaseUrlRepository
 ) : AbstractBaseViewModel() {
     val loginState: LiveData<Boolean> = accountManager.isUserLoggedIn
 
@@ -53,6 +55,15 @@ class AccountSharedViewModel @Inject constructor(
                 Log.e(logTag, "Error during logout and clear files: ${e.message}")
             })
 
+    }
+
+    /**
+     * Save the server URL to SharedPreferences.
+     *
+     * @param url The new server URL to save.
+     */
+    fun saveServerUrl(url: String) {
+        baseUrlRepository.saveBaseUrl(url)
     }
 
     fun refreshAccount() {

@@ -1,6 +1,7 @@
 package com.martinszuc.phishing_emails_detection.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
@@ -20,11 +21,15 @@ import com.martinszuc.phishing_emails_detection.data.python.model.Prediction
 import com.martinszuc.phishing_emails_detection.databinding.ActivityMainBinding
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.user.AccountSharedViewModel
+import com.martinszuc.phishing_emails_detection.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import javax.inject.Inject
 
 /**
@@ -51,7 +56,9 @@ class MainActivity :
         setupAuthentication()
         setupModelSharedViewModel()
         launchPython {}
+        copyTestingDataset()
     }
+
 
     private fun launchPython(onPythonStarted: () -> Unit) {
         GlobalScope.launch {
@@ -64,6 +71,45 @@ class MainActivity :
                 withContext(Dispatchers.Main) {
                     onPythonStarted()
                 }
+            }
+        }
+    }
+    private fun copyTestingDataset() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val assets = applicationContext.assets
+            val testingDsDir = File(filesDir, Constants.TESTING_DS_DIR)
+            if (!testingDsDir.exists()) {
+                testingDsDir.mkdirs()
+            }
+
+            // Copy phishing dataset
+            val phishingOutputFile = File(testingDsDir, Constants.TESTING_DS_PHIS_FILENAME)
+            try {
+                assets.open(Constants.TESTING_DS_PHIS_FILENAME).use { inputStream ->
+                    FileOutputStream(phishingOutputFile).use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
+                Log.d("CopyDataset", "Phishing dataset copied successfully")
+            } catch (e: IOException) {
+                // Handle error
+                e.printStackTrace()
+                Log.e("CopyDataset", "Error copying phishing dataset: ${e.message}")
+            }
+
+            // Copy safe dataset
+            val safeOutputFile = File(testingDsDir, Constants.TESTING_DS_SAFE_FILENAME)
+            try {
+                assets.open(Constants.TESTING_DS_SAFE_FILENAME).use { inputStream ->
+                    FileOutputStream(safeOutputFile).use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
+                Log.d("CopyDataset", "Safe dataset copied successfully")
+            } catch (e: IOException) {
+                // Handle error
+                e.printStackTrace()
+                Log.e("CopyDataset", "Error copying safe dataset: ${e.message}")
             }
         }
     }

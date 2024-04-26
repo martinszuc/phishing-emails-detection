@@ -107,4 +107,21 @@
     <string name="emails_successfully_packaged">Packaging sucessfull!</string>
     <string name="enter_package_name">Enter package name</string>
     <string name="package_config">Package config</string>
+    <string name="evaluation_matrix">Evaluation matrix:</string>
+    <string name="f1_score">F1 Score:</string>
+    <string name="recall">Recall:</string>
+    <string name="precision">Precision:</string>
+    <string name="accuracy">Accuracy:</string>
+    <string name="evaluation_results">Model evaluation</string>
+    <string name="evaluate_model">Evaluate model</string>
+    <string name="process_emails">Process Emails</string>
+    <string name="rocAuc">ROC AUC:</string>
+    <string name="actual_predicted">Actual predicted</string>
+    <string name="positive">positive</string>
+    <string name="negative">Negative</string>
+    <string name="actual_negative">Actual Negative</string>
+    <string name="actual_legitimate">Actual Safe</string>
+    <string name="predicted_legitimate">Predicted Safe</string>
+    <string name="predicted_phishing">Predicted Phishing</string>
+    <string name="actual_phishing">Actual Phishing</string>
 </resources>

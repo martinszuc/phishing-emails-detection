@@ -58,13 +58,25 @@
 
         </LinearLayout>
 
+        <!-- Small button at the bottom for deleting the model -->
+        <Button
+            android:id="@+id/btnEvaluateModel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/evaluate_model"
+            android:backgroundTint="@color/md_theme_dark_primary"
+            android:drawableLeft="@drawable/ic_evaluate"
+            android:textColor="@color/black"/>
+
 
         <!-- Small button at the bottom for deleting the model -->
         <Button
             android:id="@+id/btnDeleteModel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:layout_gravity="center_horizontal"
             android:text="@string/delete"
             android:backgroundTint="@color/md_theme_dark_errorContainer"

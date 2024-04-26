@@ -1,4 +1,5 @@
 # feature_finders.py
+#  * Authored by matoszuc@gmail.com
 import re
 from abc import ABC, abstractmethod
 

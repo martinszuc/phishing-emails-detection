@@ -6,6 +6,7 @@ import tensorflow as tf
 import utils_data_preparation as udp
 import utils_model as um
 import utils_weights as uw
+#  * Authored by matoszuc@gmail.com
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

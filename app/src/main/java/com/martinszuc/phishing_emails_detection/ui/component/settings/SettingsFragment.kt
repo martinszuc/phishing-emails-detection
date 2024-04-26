@@ -1,10 +1,14 @@
 package com.martinszuc.phishing_emails_detection.ui.component.settings
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
+import android.webkit.URLUtil
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -81,8 +85,36 @@ class SettingsFragment : PreferenceFragmentCompat() {
             "check_connection" -> {
                 federatedServerSharedViewModel.checkServerConnection()
             }
+            "edit_url" -> {
+                showEditServerUrlDialog()
+                return true
+            }
         }
         return super.onPreferenceTreeClick(preference)
+    }
+
+    private fun showEditServerUrlDialog() {
+        val input = EditText(requireContext()).apply {
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
+            setText("https://ip:port/")
+        }
+
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle("Edit Server URL")
+            setMessage("Please enter the new server URL:")
+            setView(input)
+            setPositiveButton(getString(R.string.confirm_big)) { dialog, _ ->
+                val url = input.text.toString()
+                if (URLUtil.isValidUrl(url) && url.startsWith("https://")) {
+                    accountSharedViewModel.saveServerUrl(url)
+                    Toast.makeText(context, "Saved! URL is applied after restart", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Invalid URL", Toast.LENGTH_SHORT).show()
+                }
+                dialog.dismiss()
+            }
+            setNegativeButton(getString(R.string.cancel_big)) { dialog, _ -> dialog.cancel() }
+        }.create().show()
     }
 
     private fun setupServerStatusListener() {

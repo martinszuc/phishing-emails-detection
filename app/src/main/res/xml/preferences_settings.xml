@@ -33,6 +33,12 @@
     <PreferenceCategory app:title="Server settings">
 
         <Preference
+            app:key="edit_url"
+            app:title="Edit Server URL"
+            android:layout="@layout/preference_layout"
+            android:summary="Edit URL of the federated server."/>
+
+        <Preference
             app:key="check_connection"
             app:title="Check server connection"
             android:layout="@layout/preference_layout"

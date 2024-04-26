@@ -47,22 +47,42 @@ def generate_predictions(model, test_ds, threshold=0.45):
     return test_labels, predictions, predicted_classes
 
 def generate_metrics(test_labels, predicted_classes, predictions):
-    print("Classification Report:")
-    print(classification_report(test_labels, predicted_classes))
-
-    print("Confusion Matrix:")
-    print(confusion_matrix(test_labels, predicted_classes))
-
-    fpr, tpr, thresholds = roc_curve(test_labels, predictions)
-    roc_auc = auc(fpr, tpr)
-    print("ROC AUC:", roc_auc)
-
-    precision = precision_score(test_labels, predicted_classes)
-    recall = recall_score(test_labels, predicted_classes)
-    f1 = f1_score(test_labels, predicted_classes)
-    print("Precision:", precision)
-    print("Recall:", recall)
-    print("F1 Score:", f1)
+    return {
+        "classification_report": classification_report(test_labels, predicted_classes, output_dict=True),
+        "confusion_matrix": confusion_matrix(test_labels, predicted_classes).tolist(),
+        "roc_auc": auc(*roc_curve(test_labels, predictions)[:2])
+    }
 
 def save_model(model, path='tf_model_saved'):
     model.save(path, save_format='tf')
+
+def load_model(model_path):
+    """
+    Load a TensorFlow model from the specified path.
+
+    Parameters:
+    - model_path: The path where the model is saved.
+    """
+    return tf.keras.models.load_model(model_path)
+
+def detailed_evaluate_model(model, test_ds, epochs=5):
+    """Evaluates the TensorFlow model with detailed metrics, averaged over a number of epochs."""
+    aggregated_results = {'loss': [], 'accuracy': [], 'precision': [], 'recall': [], 'f1-score': [], 'roc_auc': []}
+
+    for _ in range(epochs):
+        results = model.evaluate(test_ds)
+        test_labels, predictions, predicted_classes = generate_predictions(model, test_ds)
+        metrics = generate_metrics(test_labels, predicted_classes, predictions)
+
+        # Aggregate results
+        aggregated_results['loss'].append(results[0])
+        aggregated_results['accuracy'].append(results[1])
+        aggregated_results['precision'].append(metrics['classification_report']['weighted avg']['precision'])
+        aggregated_results['recall'].append(metrics['classification_report']['weighted avg']['recall'])
+        aggregated_results['f1-score'].append(metrics['classification_report']['weighted avg']['f1-score'])
+        aggregated_results['roc_auc'].append(metrics['roc_auc'])
+
+    # Average results
+    final_results = {k: sum(v) / len(v) for k, v in aggregated_results.items()}
+    final_results['confusion_matrix'] = metrics['confusion_matrix']  # Assume last epoch matrix as representative
+    return final_results

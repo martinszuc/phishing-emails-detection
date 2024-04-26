@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import com.martinszuc.phishing_emails_detection.data.data_repository.local.entity.ModelMetadata
 import com.martinszuc.phishing_emails_detection.databinding.FragmentModelManagerBinding
 import com.martinszuc.phishing_emails_detection.ui.base.AbstractBaseFragment
+import com.martinszuc.phishing_emails_detection.ui.component.machine_learning.evaluate_model.EvaluateModelFragment
 import com.martinszuc.phishing_emails_detection.ui.shared_viewmodels.ModelManagerSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
@@ -23,7 +24,7 @@ import java.util.Date
 class ModelManagerFragment : AbstractBaseFragment() {
     private var _binding: FragmentModelManagerBinding? = null
     private val modelManagerSharedViewModel: ModelManagerSharedViewModel by activityViewModels()
-    private val modelManagerViewModel: ModelManagerViewModel by viewModels()
+    private val modelManagerViewModel: ModelManagerViewModel by activityViewModels()
 
     private val binding get() = _binding!!
 
@@ -41,6 +42,7 @@ class ModelManagerFragment : AbstractBaseFragment() {
         observeModels()
         setupFabRefresh()
         setupButtonListeners()
+        setupEvaluationButton()
     }
 
     private fun observeModels() {
@@ -121,6 +123,16 @@ class ModelManagerFragment : AbstractBaseFragment() {
         binding.spinnerModelSelector.setSelection(0)
     }
 
+    private fun setupEvaluationButton() {
+        binding.btnEvaluateModel.setOnClickListener {
+            val selectedModel = modelManagerViewModel.selectedModel.value
+            if (selectedModel == null) {
+                showToast("Please select a model first")
+            } else {
+                EvaluateModelFragment().show(parentFragmentManager, "EvaluateModelFragment")
+            }
+        }
+    }
 
     override fun onDestroyView() {
         binding.spinnerModelSelector.adapter = null

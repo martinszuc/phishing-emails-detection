@@ -1,4 +1,5 @@
 # process_emails_mbox_to_csv.py
+#  * Authored by matoszuc@gmail.com
 import os
 import sys
 

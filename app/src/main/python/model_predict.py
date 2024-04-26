@@ -6,6 +6,7 @@ import tensorflow as tf
 
 import utils_data_preparation as udp
 import utils_feature_extraction as ufe
+#  * Authored by matoszuc@gmail.com
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

@@ -41,6 +41,9 @@ class Constants {
         const val MANIFESTS_DIR = "manifests"
         const val WEIGHTS_DIR = "weights"
         const val SAVED_EMAILS_DIR = "saved_emails"
+        const val TESTING_DS_DIR = "testing_datasets"
+        const val TESTING_DS_SAFE_FILENAME = "testing_safe.csv"
+        const val TESTING_DS_PHIS_FILENAME = "testing_phis.csv"
 
 
 
