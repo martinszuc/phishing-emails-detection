@@ -98,6 +98,10 @@ abstract class AbstractBaseViewModel : ViewModel() {
     fun clearIsFinished() {
         _isFinished.postValue(false)
     }
+    fun setIsFinished(boolean: Boolean) {
+        _isFinished.postValue(boolean)
+    }
+
 
     fun clearOperationFailed() {
         _operationFailed.postValue(false)

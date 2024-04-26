@@ -244,12 +244,14 @@ class EmailsGmailFragment :
         emailsGmailViewModel.isFinished.observe(viewLifecycleOwner) { isFinished ->
             if (isFinished) {
                 showImportFinishedToast(success = true)
+                binding.loadingOverlay.visibility = View.GONE  // Hide the overlay when finished
             }
         }
 
         emailsGmailViewModel.operationFailed.observe(viewLifecycleOwner) { isFailed ->
             if (isFailed) {
                 showImportFinishedToast(success = false)
+                binding.loadingOverlay.visibility = View.GONE  // Hide the overlay on failure
             }
         }
 
@@ -264,11 +266,9 @@ class EmailsGmailFragment :
         emailsGmailViewModel.progress.observe(viewLifecycleOwner) { progress ->
             binding.progressBar.progress = progress
             binding.progressText.text = "$progress / ${binding.progressBar.max}"
-            if (progress == binding.progressBar.max) {
-                binding.loadingOverlay.visibility = View.GONE
-            }
         }
     }
+
 
     private fun showImportFinishedToast(success: Boolean) {
         val message = if (success) "Import finished successfully." else "Import failed."

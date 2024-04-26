@@ -133,6 +133,8 @@ class EmailsGmailViewModel @Inject constructor(
                         _progress.postValue(index + 1)  // Continue to update progress correctly
                         Log.d(logTag, "Updated progress to ${index + 1}")
                     }
+
+                    _isFinished.postValue(true)
                 } else {
                     withContext(Dispatchers.Main) {
                         Log.e(logTag, "No emails fetched with the given query and limit.")

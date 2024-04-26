@@ -62,7 +62,7 @@ class MachineLearningParentFragment : AbstractBaseFragment() {
 
     private fun setupTabLayout() {
         val tabTitles =
-            listOf("Data Picking", "Training", "Retraining")  // Adjusted to remove Data Processing
+            listOf("Data Processing", "Training", "Retraining")  // Adjusted to remove Data Processing
         tabTitles.forEachIndexed { index, title ->
             binding.machineLearningTabs.addTab(
                 binding.machineLearningTabs.newTab().setText(title),
