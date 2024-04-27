@@ -86,17 +86,15 @@ def df_to_dataset(dataframe, shuffle=True, batch_size=32):
     return ds.batch(batch_size)
 
 
-def prepare_data_for_model(resources_dir, safe_filename, phishing_filename, test_size=0.2,
-                           random_state=42, batch_size=32):
-    """Load, preprocess, and prepare data for the model."""
+def prepare_data_for_model(resources_dir, safe_filename, phishing_filename, batch_size=32):
+    """Load, equalize, and prepare data for the model without splitting."""
     logger.info("Preparing data for model...")
     combined_df = load_datasets(resources_dir, safe_filename, phishing_filename)
     preprocessed_df = preprocess_features(combined_df)
-    train_df, test_df = split_data(preprocessed_df, test_size=test_size, random_state=random_state)
-    train_ds = df_to_dataset(train_df, shuffle=True, batch_size=batch_size)
-    test_ds = df_to_dataset(test_df, shuffle=False, batch_size=batch_size)
+    dataset = df_to_dataset(preprocessed_df, shuffle=True, batch_size=batch_size)
     logger.info("Data preparation completed.")
-    return train_ds, test_ds
+    return dataset
+
 
 
 def prepare_data_for_retraining(resources_dir, safe_filename, phishing_filename, batch_size=32):

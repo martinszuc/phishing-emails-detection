@@ -21,28 +21,14 @@ def train_and_evaluate_model(resources_dir, safe_filename, phishing_filename, mo
     resources_path = os.path.join(os.environ["HOME"], resources_dir)
     model_save_path = os.path.join(os.environ["HOME"], 'models', model_save_dir)
 
-    train_ds, test_ds = udp.prepare_data_for_model(resources_path, safe_filename, phishing_filename)
-
-    # Debug: Print a sample of one data point from the training dataset
-    for features, label in train_ds.take(1):
-        print("Sample data point from training set:", features, "Label:", label.numpy())
+    dataset = udp.prepare_data_for_model(resources_path, safe_filename, phishing_filename)
 
     print("Building and training the model...")
     model = um.build_model()  # Build the model using the updated build_model function
 
     print("Training the model...")
-    um.compile_and_train_model(model, train_ds, test_ds, epochs=10)
+    model.fit(dataset, epochs=10)  # Assuming model.fit() can handle dataset directly
 
-    print("Evaluating the model...")
-    um.evaluate_model(model, test_ds)
-
-    # Generate and print metrics
-    print("Generating metrics for the test dataset...")
-    test_labels, predictions, predicted_classes = um.generate_predictions(model, test_ds)
-    um.generate_metrics(test_labels, predicted_classes, predictions)
-
-    # Save the model
-    # model_save_path = os.path.join('models, 'model_save_dir, 'my_model')
     print("Saving the model to:", model_save_path)
     um.save_model(model, model_save_path)
     print("Model saved successfully.")
