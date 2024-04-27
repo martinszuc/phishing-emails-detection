@@ -15,6 +15,7 @@ class TrainingSelectionAdapter(
 ) : RecyclerView.Adapter<TrainingSelectionAdapter.ProcessedPackageViewHolder>() {
 
     private var items: List<ProcessedPackageMetadata> = emptyList()
+    private var checkedStates: MutableMap<String, Boolean> = mutableMapOf()
 
     fun setItems(newItems: List<ProcessedPackageMetadata>) {
         items = newItems
@@ -30,11 +31,17 @@ class TrainingSelectionAdapter(
         val item = items[position]
         with(holder.binding) {
             tvProcessedPackageName.text = item.packageName
+
+            // Set checkbox state based on the map or default to false if not present
             checkBoxSelectProcessed.setOnCheckedChangeListener(null) // Clear existing listeners
-            checkBoxSelectProcessed.isChecked = false // Reset the checkbox state
+            checkBoxSelectProcessed.isChecked = checkedStates[item.fileName] ?: false
+
+            // Update the map and handle the checkbox state when changed
             checkBoxSelectProcessed.setOnCheckedChangeListener { _, isChecked ->
+                checkedStates[item.fileName] = isChecked
                 onPackageSelected(item, isChecked)
             }
+
             tvIsPhishy.text = if (item.isPhishy) "Phishing" else "Safe"
         }
     }

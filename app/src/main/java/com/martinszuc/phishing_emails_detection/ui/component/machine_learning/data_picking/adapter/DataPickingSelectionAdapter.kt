@@ -16,6 +16,7 @@ class DataPickingSelectionAdapter(
 ) : RecyclerView.Adapter<DataPickingSelectionAdapter.PackageViewHolder>() {
 
     private var items: List<EmailPackageMetadata> = emptyList()
+    private var checkedStates: MutableMap<String, Boolean> = mutableMapOf()
 
     fun setItems(newItems: List<EmailPackageMetadata>) {
         items = newItems;
@@ -37,8 +38,9 @@ class DataPickingSelectionAdapter(
             tvCreationDate.text = StringUtils.formatTimestamp(item.creationDate);
             tvNumberOfEmails.text = "Emails: ${item.numberOfEmails}";
             checkBoxSelect.setOnCheckedChangeListener(null); // Clear existing listeners
-            checkBoxSelect.isChecked = false; // Reset the checkbox state
+            checkBoxSelect.isChecked = checkedStates[item.fileName] ?: false // Reset the checkbox state
             checkBoxSelect.setOnCheckedChangeListener { _, isChecked ->
+                checkedStates[item.fileName] = isChecked
                 onPackageSelected(item, isChecked);
             }
         }
