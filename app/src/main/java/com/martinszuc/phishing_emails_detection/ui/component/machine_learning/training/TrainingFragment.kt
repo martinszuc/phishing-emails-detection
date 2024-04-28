@@ -129,6 +129,9 @@ class TrainingFragment : AbstractBaseFragment() {
 
         trainingViewModel.isFinished.observe(viewLifecycleOwner) { isFinished ->
             if (isFinished) {
+                trainingViewModel.clearSelectedPackages()  // Clear selected packages
+                trainingSelectionAdapter.clearCheckedStates()  // Clear the checked states in the adapter
+                trainingSelectionAdapter.notifyDataSetChanged()  // Notify the adapter to reset the checkboxes
                 // Show the dialog with options
                 showFinishTrainingDialog()
                 // Optionally, hide the ProgressBar when finished

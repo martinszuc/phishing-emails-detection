@@ -70,4 +70,8 @@ class TrainingViewModel @Inject constructor(
         }
     }
 
+    fun clearSelectedPackages() {
+        _selectedPackages.postValue(setOf())
+    }
+
 }

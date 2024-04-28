@@ -69,4 +69,9 @@ class RetrainingViewModel @Inject constructor(
             _operationFailed.postValue(true)
         }
     }
+
+    fun clearSelectedPackages() {
+        _selectedPackages.postValue(setOf())
+    }
+
 }

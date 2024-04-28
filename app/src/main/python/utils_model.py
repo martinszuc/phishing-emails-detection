@@ -26,6 +26,7 @@ def build_model():
         tf.keras.layers.Dense(1, activation='sigmoid')
     ])
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
     print("Compiled the model with Adam optimizer and binary_crossentropy loss")
 
     return model

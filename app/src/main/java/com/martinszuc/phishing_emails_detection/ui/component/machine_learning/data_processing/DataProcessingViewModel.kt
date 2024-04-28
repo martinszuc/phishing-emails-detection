@@ -41,7 +41,7 @@ class DataProcessingViewModel @Inject constructor(
             metadata.fileName,
             Constants.OUTPUT_CSV_DIR,
             "utf-8", // Placeholder for encoding
-            2000, // Placeholder for limit
+            500, // Placeholder for limit
             metadata.isPhishy
         )
 

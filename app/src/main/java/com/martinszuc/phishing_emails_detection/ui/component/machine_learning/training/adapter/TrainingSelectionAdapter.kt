@@ -49,4 +49,9 @@ class TrainingSelectionAdapter(
     override fun getItemCount(): Int = items.size
 
     class ProcessedPackageViewHolder(val binding: ItemProcessedPackageBinding) : RecyclerView.ViewHolder(binding.root)
+
+    fun clearCheckedStates() {
+        checkedStates.clear()
+        notifyDataSetChanged()  // Notify the adapter to update all items
+    }
 }
