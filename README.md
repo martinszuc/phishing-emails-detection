@@ -17,24 +17,29 @@ This project aims to detect phishing emails using federated learning for OS Andr
 - [Contributing](#contributing)
 - [License](#license)
 
+
 ## Installation
 ### Android App
 
 To install and set up the Android application, follow these steps:
 
-1. Download the debug APK from the [Releases](https://github.com/your-username/phishing-emails-detection/releases) section of this repository.
-   - The latest debug APK can be found [here](https://github.com/your-username/phishing-emails-detection/releases/download/v1.0/app-debug.apk).
+1. **Clone the repository:**
+   ```bash
+    git clone https://github.com/your-username/phishing-emails-detection.git
+    ```
+2. Install the app through Android Studio:
 
-2. Transfer the APK to your Android device.
+3. Open the cloned project in Android Studio.
+4. Set up debug key:
+  - Open `File` -> `Project Structure`.
+  - Navigate to `SDK Location` -> `Debug keystore`.
+  - Set the path to the `debug.keystore` file in the root directory.
+5. Build and run the app:
+  - Click `Run` -> `Run 'app'`.
+  - Choose your device or an emulat
+Note: This app is currently in development mode and limited to test users.
 
-3. Install the APK:
-   - On your Android device, locate the APK file using a file manager.
-   - Tap on the APK file to begin the installation process.
-   - You may need to allow installations from unknown sources in your device settings.
-
-4. **Note**: This app is currently in development mode and limited to test users.
-
-5. If you would like to be added as a test user to try out the app, please contact us at [your-email@example.com](mailto:your-email@example.com) with your Google account email address.
+For test access, contact [matoszuc@gmail.com](mailto:matoszuc@gmail.com).
 
 ### Federated Server
 
