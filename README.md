@@ -11,9 +11,11 @@ This project aims to detect phishing emails using federated learning for OS Andr
   - [Email Processing](#email-processing)
   - [Machine Learning](#machine-learning)
   - [Phishing Detection](#phishing-detection)
-  - [Federated Server](#federated-server-usage)
+  - [Federated Server Usage](#federated-server-usage)
 - [Features](#features)
-- [Architecture](#architecture)
+- [App Architecture](#architecture)
+- [Python Component](#python-component)
+  - [Feature Finders and Detection Strategy](#feature-finders-and-detection-strategy)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -180,8 +182,35 @@ The project is structured to separate concerns and ensure modularity. Below is a
   - **App**: Main application class.
   - **MainActivity**: Main activity of the application.
   - **Utils**: Utility classes and functions.
-    
-This modular structure keeps application maintainable, with a clear separation of concerns between different parts of the app.
+ 
+## Python Component
+### Feature Finders and Detection Strategy
+
+Our phishing detection uses several feature finders, each responsible for extracting specific elements from emails that are commonly used by phishing attempts:
+
+- **HTMLFormFinder**: Identifies HTML forms within emails, a common phishing vector to solicit user information.
+- **IFrameFinder**: Detects the use of IFrames, potentially embedding malicious content invisibly.
+- **FlashFinder**: Searches for Flash content links, which could execute harmful scripts.
+- **AttachmentFinder**: Counts email attachments, which may contain malicious payloads.
+- **HTMLContentFinder**: Looks for specific HTML content indicative of phishing.
+- **URLsFinder**: Extracts and evaluates URLs found within emails for malicious links.
+- **ExternalResourcesFinder**: Identifies external resources linked within emails that could be harmful.
+- **JavascriptFinder**: Detects JavaScript, which can be used in phishing for malicious activities.
+- **CssFinder**: Searches for custom CSS that might be used to disguise phishing attempts.
+- **IPsInURLs**: Checks for IP addresses in URLs, a technique used to bypass domain name suspicion.
+- **AtInURLs**: Identifies '@' symbols in URLs, which can be a sign of deceptive links.
+- **EncodingFinder**: Analyzes the content encoding for signs of obfuscation or unusual patterns.
+
+### Acknowledgments and References
+
+This project builds upon and extends the work found at [MachineLearningPhishing](https://github.com/diegoocampoh/MachineLearningPhishing) by Diego Ocampo.
+
+### Data Sources
+
+The data used for training the phishing detection model were sourced from two main repositories, which provided a rich dataset of phishing emails:
+
+- [Phishing Pot Dataset](https://github.com/rf-peixoto/phishing_pot) by rf-peixoto (converted .eml to mbox using scripts in this repo)
+- [Phishing Dataset](https://monkey.org/~jose/phishing/) by jose at monkey.org (downloaded mbox files)
 
 ## Contributing
 
